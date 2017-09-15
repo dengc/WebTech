@@ -7,10 +7,10 @@
 -------------------
 
 ### `<a>`
-Use the `href` attribute to define the link address
-Use the `href` attribute (href = "#value") to link to the bookmark
-Use the `target` attribute to define where to open the linked document
-Use the `<img>` element (inside `<a>`) to use an image as a link
+· Use the `href` attribute to define the link address
+· Use the `href` attribute (href = "#value") to link to the bookmark
+· Use the `target` attribute to define where to open the linked document
+· Use the `<img>` element (inside `<a>`) to use an image as a link
 
 ###`<img>` 
 Use the HTML `src` attribute to define the URL of the image
@@ -47,12 +47,12 @@ Use the HTML `<li>` element to define a list item
 ** Use the CSS property `float:left` or `display:inline` to display a list horizontally
 
 ###`<form>`
-*	disable, readonly, size, maxlength...
+*   disable, readonly, size, maxlength...
 ####`<input>`
-*	text, submit, reset, radio, checkbox: name, value
-*	button: onclick, value
-*	password
-*	range, color, date, email…...
+*   text, submit, reset, radio, checkbox: name, value
+*   button: onclick, value
+*   password
+*   range, color, date, email…...
 ####`<select>`: option value
 ####`<textarea>`: rows, cols
 
@@ -93,7 +93,7 @@ Use the HTML `<li>` element to define a list item
 - `document.write("Hello");`
 `document.getElementByID(‘id’).innerHTML = "Hello";`
 - Object cannot be compared.
-	> <b>== means value, === means same
+    > <b>== means value, === means same
 
 ### XMLHttpRequest
 ```javascript
