@@ -7,10 +7,10 @@
 -------------------
 
 ### `<a>`
-· Use the `href` attribute to define the link address
-· Use the `href` attribute (href = "#value") to link to the bookmark
-· Use the `target` attribute to define where to open the linked document
-· Use the `<img>` element (inside `<a>`) to use an image as a link
+- Use the `href` attribute to define the link address
+- Use the `href` attribute (href = "#value") to link to the bookmark
+- Use the `target` attribute to define where to open the linked document
+- Use the `<img>` element (inside `<a>`) to use an image as a link
 
 ###`<img>` 
 Use the HTML `src` attribute to define the URL of the image
