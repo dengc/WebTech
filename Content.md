@@ -12,49 +12,49 @@
 - Use the `target` attribute to define where to open the linked document
 - Use the `<img>` element (inside `<a>`) to use an image as a link
 
-###`<img>` 
-Use the HTML `src` attribute to define the URL of the image
-Use the HTML `alt` attribute to define an alternate text for an image, if it cannot be displayed
-Use the CSS `float` property to let the image float
-Use the HTML `<map>` element to define an image-map
-Use the HTML `<area>` element to define the clickable areas in the image-map
-Use the HTML `<img>`'s element usemap attribute to point to an image-map
+### `<img>` 
+- Use the HTML `src` attribute to define the URL of the image
+- Use the HTML `alt` attribute to define an alternate text for an image, if it cannot be displayed
+- Use the CSS `float` property to let the image float
+- Use the HTML `<map>` element to define an image-map
+- Use the HTML `<area>` element to define the clickable areas in the image-map
+- Use the HTML `<img>`'s element usemap attribute to point to an image-map
 
-###`<table>` 
-Use the HTML `<tr>` element to define a table row
-Use the HTML `<td>` element to define a table data
-Use the HTML `<th>` element to define a table heading
-Use the HTML `<caption>` element to define a table caption
-Use the CSS `border` property to define a border
-Use the CSS `border-collapse` property to collapse cell borders
-Use the CSS `padding` property to add padding to cells
-Use the CSS `text-align` property to align cell text
-Use the CSS `border-spacing` property to set the spacing between cells
-Use the `colspan` attribute to make a cell span many columns
-Use the `rowspan` attribute to make a cell span many rows
-table#t01 `tr:nth-child(odd)`
+### `<table>` 
+- Use the HTML `<tr>` element to define a table row
+- Use the HTML `<td>` element to define a table data
+- Use the HTML `<th>` element to define a table heading
+- Use the HTML `<caption>` element to define a table caption
+- Use the CSS `border` property to define a border
+- Use the CSS `border-collapse` property to collapse cell borders
+- Use the CSS `padding` property to add padding to cells
+- Use the CSS `text-align` property to align cell text
+- Use the CSS `border-spacing` property to set the spacing between cells
+- Use the `colspan` attribute to make a cell span many columns
+- Use the `rowspan` attribute to make a cell span many rows
+- table#t01 `tr:nth-child(odd)`
 
 ### list 
-Use the HTML `<ul>` element to define an unordered list
-Use the CSS `list-style-type` property to define the list item marker
-Use the HTML `<ol>` element to define an ordered list
-Use the HTML `type` attribute to define the numbering type
-Use the HTML `<li>` element to define a list item
-####description list:
+- Use the HTML `<ul>` element to define an unordered list
+- Use the CSS `list-style-type` property to define the list item marker
+- Use the HTML `<ol>` element to define an ordered list
+- Use the HTML `type` attribute to define the numbering type
+- Use the HTML `<li>` element to define a list item
+#### description list:
 **`<dl>` element to define a description list
 **`<dt>` element to define the description term
 **`<dd>` element to describe the term in a description list
 ** Use the CSS property `float:left` or `display:inline` to display a list horizontally
 
-###`<form>`
+### `<form>`
 *   disable, readonly, size, maxlength...
-####`<input>`
+#### `<input>`
 *   text, submit, reset, radio, checkbox: name, value
 *   button: onclick, value
 *   password
 *   range, color, date, email…...
-####`<select>`: option value
-####`<textarea>`: rows, cols
+#### `<select>`: option value
+#### `<textarea>`: rows, cols
 
 
 ## CSS
