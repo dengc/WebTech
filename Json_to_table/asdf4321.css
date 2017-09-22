@@ -1,0 +1,26 @@
+body,p{
+    margin-top: 5px;
+    font-family: Helvetica Neue, Helvetica, Arial Nova, Arial, sans-serif;
+}
+
+h1{
+    text-align: center;
+    margin-top: 80px;
+}
+
+form{
+    text-align: center;
+    margin-top: 40px;
+}
+#text_url{
+    width: 300px;
+    height: 20px;
+}
+#btn_submit{
+    background-color: rgb(192,192,192);
+    border-radius: 4px;
+    margin-top: 35px;
+    height: 40px;
+    width: 130px;
+    font-size: 1em;
+}
