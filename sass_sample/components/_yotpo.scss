@@ -1,0 +1,23 @@
+#stars {
+  padding-top: 10px;
+  padding-bottom: 15px;
+
+  .yotpo {
+    .yotpo-display-wrapper {
+      .standalone-bottomline {
+        .yotpo-bottomline.star-clickable {
+          .yotpo-stars {
+            .yotpo-icon {
+              font-size: 28px;
+            }
+          }
+          .text-m {
+            font-size: 16px;
+            line-height: 1.9;
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+  }
+}

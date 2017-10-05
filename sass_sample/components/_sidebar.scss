@@ -1,0 +1,179 @@
+.prodlist {
+  width: 100%;
+}
+
+.sidebar {
+
+  div {
+    &.box {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      margin-bottom: 1px;
+      @include breakpoint(0 $bpt1) {
+        width: 50%;
+        float: left;
+        margin-bottom: 10px;
+        a {
+          left: 2px !important;
+          right: 2px !important;
+        }
+      }
+      a {
+        position: absolute;
+        top: 0;
+        right: 20px;
+        bottom: 0;
+        left: 10px;
+        @include border-radius(6px);
+      }
+      &.call {
+        @include breakpoint(0 $bpt1) {
+          width: 100%;
+          height: 70px;
+        }
+        a {
+        @include background-image(linear-gradient(#cf1e00, #bc1c00));
+        div.icon {
+          background-image: url("../images/icon_callus.png");
+        }
+        @include breakpoint($bpt2) {
+          &:hover {
+            @include background-image(linear-gradient(#a31800, #a31800));
+          }
+        }
+        div:nth-child(2) {
+          @include breakpoint(0 $bpt3) {
+            bottom: unset;
+            top: 10px;
+          }
+        }
+      }
+      }
+      &.gallery {
+        @include breakpoint(0 $bpt1) {
+          width: 100%;
+        }
+        a {
+        @include background-image(linear-gradient(#4d4d4c, #3e3e3d));
+        div.icon {
+          background-image: url("../images/icon_catalog.png");
+        }
+        @include breakpoint($bpt2) {
+          &:hover {
+            @include background-image(linear-gradient(#353534, #353534));
+          }
+        }
+        }
+      }
+      &.aboutus {
+        a {
+          @include background-image(linear-gradient(#4d4d4c, #3e3e3d));
+          div.icon {
+            background-image: url("../images/icon_hb.png");
+          }
+          @include breakpoint($bpt2) {
+            &:hover {
+              @include background-image(linear-gradient(#353534, #353534));
+            }
+          }
+          @include breakpoint(0 $bpt0) {
+            div:nth-child(2) {
+              bottom: 10px;
+            }
+            div:nth-child(3) {
+              bottom: unset;
+              top: 10px;
+            }
+          }
+        }
+        @include breakpoint(0 $bpt2) {
+          width: 100%;
+        }
+      }
+      &.lumens {
+        a {
+          @include background-image(linear-gradient(#4d4d4c, #3e3e3d));
+          div.icon {
+            background-image: url("../images/icon_counter.png");
+          }
+          &:hover {
+            @include background-image(linear-gradient(#4d4d4c, #3e3e3d));
+          }
+          @include breakpoint(0 $bpt0) {
+            div:nth-child(2) {
+              bottom: 10px;
+            }
+            div:nth-child(3) {
+              bottom: unset;
+              top: 10px;
+            }
+          }
+        }
+        @include breakpoint(0 $bpt2) {
+          width: 100%;
+        }
+      }
+      a {
+        div {
+          position: absolute;
+          text-transform: uppercase;
+          line-height: 1.1;
+        }
+        div.icon {
+          top: 10px;
+          right: 10px;
+          width: 30px;
+          height: 30px;
+          background-position: top right;
+          background-repeat: no-repeat;
+          background-size: contain;
+        }
+        div:nth-child(2) {
+          font-family: $altregular;
+          color: rgba(255, 255, 255, 0.75);
+          font-size: 16px;
+          left: 10px;
+          bottom: 45px;
+        }
+        div:nth-child(3) {
+          font-family: $altbold;
+          color: white;
+          font-size: 28px;
+          left: 10px;
+          bottom: 12px;
+        }
+      }
+    }
+  }
+
+  ul.articles {
+
+    display: block;
+    margin: 20px 0 0 10px;
+    border-left: 1px solid #b9b9b9;
+    width: 100%;
+
+    li {
+      padding: 0 40px 8px 10px;
+      width: 100%;
+      font-family: $altregular;
+      font-size: 16px;
+      color: #717171;
+      line-height: 1.2;
+      &:hover a {
+        text-decoration: underline;
+        color: #4a4a4a;
+      }
+    }
+
+    li.pub-date {
+      font-family: $bodylight;
+      color: #7096bc;
+    }
+
+    &.last {
+      margin-bottom: 20px;
+    }
+  }
+}

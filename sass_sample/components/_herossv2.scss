@@ -1,0 +1,338 @@
+$herobar-height: 210px;
+$herobar-height-sm: 140px;
+$heronav-padding: 45px;
+$hilight: #a31800;
+$hero-offset: 150px;
+
+.herobox {
+  position: relative;
+}
+
+// ----- ** Rotating Hero Slides ** ----------
+.herobar {
+  display: none;
+  &.active {
+    display: block;
+    @include cf();
+  }
+  position: relative;
+  height: $herobar-height;
+  background-color: white;
+
+  .slide {
+    height: $herobar-height;
+    padding: 40px 0 10px 50px;
+    background-color: white;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+
+    @include breakpoint(0 $bpt1) {
+      height: $herobar-height-sm;
+      background-image: none!important;
+      padding: 20px!important;
+      h2 {padding: 0 0 10px 0!important;}
+      p, p.short {padding: 0!important;width: unset!important}
+    }
+
+    @include breakpoint($bpt1 $bpt2) {
+      background-position: calc(100% + #{$hero-offset}) 0;
+      p, p.short {line-height: 1.2!important;width: unset!important}
+    }
+
+    h2 {
+      font-family: $bodythin;
+      font-size: 34px;
+      color: #304057;
+      line-height: .75;
+      padding-bottom: 20px;
+      b {
+        font-family: $bodylight;
+      }
+      @include breakpoint(0 $bpt1) {
+        font-size: 28px;
+      }
+    }
+    p {
+      font-family: $bodylight;
+      font-size: 18px;
+      line-height: 1.5;
+      color: #2b2b2b;
+      &.short {
+        display: none;
+      }
+      b {
+        font-family: $bodyregular;
+      }
+      @include breakpoint(0 $bpt1) {
+        display: none;
+        line-height: 1.0;
+        &.short {display: block;}
+      }
+    }
+    &.full {
+      background-size: cover;
+      background-position: 50% 50%;
+    }
+    &#default {
+      background-image: url("../images/assorted/hero_default.jpg");
+      h2 {padding-right: 260px;}
+      p {padding-right: 300px;}
+      @include breakpoint($bpt1 $bpt2) {
+        h2 {padding-right: 260px - $hero-offset}
+        p {padding-right: 300px - $hero-offset;}
+      }
+    }
+    &#shoplight {
+      background-image: url("../images/assorted/hero_shoplight.jpg");
+      h2 {padding-right: 350px;}
+      p {padding-right: 150px;}
+      @include breakpoint($bpt1 $bpt2) {
+        h2 {padding-right: 350px - $hero-offset;}
+        p {padding-right: 150px - $hero-offset;}
+      }
+    }
+    &#popular {
+      background-image: url("../images/assorted/hero_popular.jpg");
+      h2 {padding-right: 390px;}
+      p {padding-right: 350px;}
+      @include breakpoint($bpt1 $bpt2) {
+        h2 {padding-right: 390px - $hero-offset;}
+        p {padding-right: 350px - $hero-offset - 50px;}
+      }
+    }
+    &#gogreen {
+      background-image: url("../images/assorted/hero_gogreen.jpg");
+      h2 {
+        color: white;
+        @include text-shadow(2px 2px 10px rgba(0,0,0,0.8));
+        font-family: $bodyregular;
+        padding-right: 50px;
+        strong, b {
+          color: white;
+          font-family: $bodymedium;
+        }
+      }
+      p {
+        color: white;
+        @include text-shadow(1px 1px 5px rgba(0,0,0,0.5));
+        font-family: $bodyregular;
+        padding-right: 50px;
+        @include breakpoint(0 $bpt1) {
+          line-height: 1.1;
+        }
+      }
+      @include breakpoint(0 $bpt1) {
+        background-image: url("../images/assorted/hero_default.jpg")!important;
+        background-size: 300%;
+        background-position: 0 0;
+      }
+    }
+  }
+}
+
+// ----- ** Noricons ** ----------
+.herobar {
+  &.nori {
+    padding: 40px 120px 0 50px;
+    background-repeat: no-repeat;
+    background-position: right 50%;
+    background-size: contain;
+    @include breakpoint(0 $bpt1) {
+      height: $herobar-height-sm;
+      background-image: none!important;
+      padding: 20px 20px 0 20px;
+    }
+    h2 {
+      font-family: $bodythin;
+      font-size: 34px;
+      color: #304057;
+      line-height: .75;
+      padding-bottom: 20px;
+      b {
+        font-family: $bodylight;
+      }
+      @include breakpoint(0 $bpt1) {
+        font-size: 24px;
+      }
+      @include breakpoint($bpt1 $bpt2) {
+        font-size: 28px;
+      }
+    }
+    p {
+      font-family: $bodylight;
+      font-size: 18px;
+      line-height: 1.5;
+      color: #2b2b2b;
+      &.short {
+        display: none;
+      }
+      b {
+        font-family: $bodyregular;
+      }
+      @include breakpoint(0 $bpt1) {
+        display: none;
+        line-height: 1.0;
+        &.short {display: block;}
+      }
+      @include breakpoint($bpt1 $bpt2) {
+        line-height: 1.2;
+      }
+    }
+  }
+
+  strong {
+    color: $hilight;
+    a {
+      background: transparent url("../images/hotlink-ul.png") repeat-x bottom left;
+    }
+  }
+  b {
+    a {
+      background: transparent url("../images/boldlink-ul.png") repeat-x bottom left;
+    }
+  }
+  a {
+    background: transparent url("../images/link-ul.png") repeat-x bottom left;
+  }
+  .heroclose {
+    width: 64px;
+    height: 64px;
+    background: transparent url("../images/widget_close.png") no-repeat left top;
+    background-size: cover;
+    position: absolute;
+    top: -30px;
+    right: 30px;
+    cursor: pointer;
+    @include breakpoint(0 $bpt1) {
+      width: 42px;
+      height: 42px;
+      top: -10px;
+      right: 5px;
+    }
+  }
+
+  &#heroblock1 {
+    background-image: url("../images/assorted/noricon_factory-store.jpg");
+  }
+  &#heroblock2 {
+    background-image: url("../images/assorted/noricon_usa.jpg");
+  }
+  &#heroblock3 {
+    background-image: url("../images/assorted/noricon_quality.jpg");
+  }
+  &#heroblock4 {
+    background-image: url("../images/assorted/noricon_delivery.jpg");
+  }
+  &#heroblock5 {
+    background-image: url("../images/assorted/noricon_money-back.jpg");
+  }
+}
+
+.heronav {
+  position: relative;
+  background-color: #4a4a49;
+  width: 100%;
+  padding: 0 0 0 $heronav-padding;
+  @include cf();
+
+  h2 {
+    display: table-cell;
+    font-family: $bodylight;
+    font-size: 16px;
+    color: #f7f7f7;
+    padding: 10px 20px 10px 20px;
+    border-right: 1px solid white;
+    &:first-child {
+      padding-left: 0;
+    }
+    &:last-child {
+      padding-right: 0;
+      border-right: none;
+    }
+    &:hover, &.active {
+      cursor: pointer;
+      background-color: #323231;
+      color: white;
+      &:first-child {
+        @include background-image(linear-gradient(to left, #323231 70%, #4a4a49 100%));
+      }
+      &:last-child {
+        @include background-image(linear-gradient(to right, #323231 70%, #4a4a49 100%));
+      }
+    }
+  }
+  @include breakpoint(0 $bpt1) {
+    padding: 0 0 0 0;
+    h2 {
+      font-size: 12px;
+      padding: 8px 10px 8px 10px;
+      text-align: center;
+      vertical-align: middle;
+      &:first-child {
+        padding-left: 10px;
+      }
+      &:last-child {
+        padding-right: 10px;
+      }
+    }
+  }
+}
+
+//---------- ** BXSlider Overrides ** --------------------
+.bx-wrapper {
+  margin: 0 auto 0;
+  .bx-viewport {
+    left: 0;
+  }
+  .bx-pager, .bx-controls-auto {
+    padding-top: 0;
+    bottom: 10px;
+    right: 40px;
+    width: unset;
+  }
+  .bx-controls {
+    .bx-pager.bx-default-pager {
+      @include breakpoint(0 $bpt1) {
+        bottom: 5px;
+        right: 10px;
+      }
+      text-align: left;
+      margin-left: 45px;
+      .bx-pager-item {
+        a.bx-pager-link {
+          width: 6px;
+          height: 6px;
+          background-color: white;
+          border: 1px solid #4a4a49;
+          line-height: 0.7;
+          margin: 0 2px;
+          &.active {
+            width: 8px;
+            height: 8px;
+            background-color: #4a4a49;
+            border: none;
+            line-height: 1.0;
+          }
+        }
+      }
+
+    }
+    .bx-controls-direction {
+      @include breakpoint(0 $bpt1) {
+        display: none;
+      }
+      a {
+        width: 22px;
+        height: 35px;
+
+        &.bx-prev {
+          background: transparent url("../images/widget_gallery_prev.png") no-repeat scroll center center;
+        }
+        &.bx-next {
+          background: transparent url("../images/widget_gallery_next.png") no-repeat scroll center center;
+        }
+      }
+
+    }
+  }
+}

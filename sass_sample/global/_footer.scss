@@ -1,0 +1,268 @@
+footer {
+}
+
+#footer {
+  position: relative;
+  overflow: hidden;
+  .footerpic {
+    background: transparent url("../images/assorted/footer-pic.png") no-repeat center center;
+    position: absolute;
+    width: 354px;
+    height: 335px;
+    top: -50px;
+    right: -30px;
+    @include breakpoint(0 $bpt2) {
+      display: none;
+    }
+  }
+  .subscribe {
+    padding: 15px 50px 15px 100px;
+    background-color: white;
+    border-top: 1px solid #d7d7d7;
+    @include cf();
+    .title {
+      position: relative;
+      font-family: $altregular;
+      font-size: 24px;
+      color: #a51800;
+      letter-spacing: 0.03em;
+      &:before {
+        content: '';
+        position: absolute;
+        width: 34px;
+        height: 31px;
+        top: 22px;
+        left: -55px;
+        background: transparent url("../images/icon_subscribe.png") no-repeat center center;
+      }
+    }
+    .subform {
+      div {
+        float: left;
+        font-family: $altregular;
+        &.label {
+          font-size: 20px;
+          color: #5a5a5a;
+          padding: 0 8px 0 0;
+          line-height: 1.7;
+          letter-spacing: 0.03em;
+        }
+        &.clamp {
+          white-space: nowrap;
+        }
+      }
+      input#mce-EMAIL {
+        font-size: 20px;
+        border: 0 none transparent;
+        color: #61af1c;
+        background-color: transparent;
+        border-bottom: 1px dashed black;
+        padding: 3px 2px;
+        @include breakpoint($bpt0) {
+          max-width: 220px;
+        }
+        &:empty {
+          color: #7f7f7f;
+        }
+        &:focus {
+          background-color: white;
+          color: black;
+        }
+      }
+      input#mc-embedded-subscribe {
+        float: left;
+        font-family: $altregular;
+        font-size: 20px;
+        padding: 3px 2px;
+        display: block;
+        width: 30px;
+        background: transparent url("../images/widget_subscribe.png") no-repeat center center;
+        border: 0 none transparent;
+      }
+    }
+    @include breakpoint(0 $bpt0) {
+      padding: 15px 10px 15px 10px;
+      background-color: white;
+      border-top: 1px solid #d7d7d7;
+      @include cf();
+      .title {
+        position: relative;
+        font-family: $altregular;
+        font-size: 24px;
+        color: #a51800;
+        letter-spacing: 0.03em;
+        &:before {
+          content: '';
+          display: none;
+        }
+      }
+    }
+  }
+  .content {
+    background-color: #262626;
+    padding: 0 50px 60px 50px;
+    @include cf();
+    .footer-block {
+      color: white;
+      padding-right: 25px;
+      overflow-x: hidden;
+      &.contact {
+        float: left;
+        width: 30%;
+        max-width: 400px;
+        @include breakpoint(0 $bpt1) {
+          float: unset;
+          width: 100%;
+          max-width: unset;
+        }
+        @include breakpoint($bpr2) {
+          width: 40%;
+          max-width: unset;
+        }
+      }
+      &.follow {
+        float: left;
+        width: 25%;
+        max-width: 300px;
+        @include breakpoint(0 $bpt1) {
+          float: unset;
+          width: 100%;
+          max-width: unset;
+        }
+        @include breakpoint($bpr2) {
+          width: 30%;
+          max-width: unset;
+        }
+        a {
+          display: block;
+          width: 39px;
+          height: 39px;
+          @include opacity(0.4);
+          @include breakpoint($bpt2 $bpr6) {
+            &:hover {
+              @include opacity(1.0);
+            }
+          }
+        }
+        .icon {
+          display: block;
+          width: 39px;
+          height: 39px;
+          float: left;
+          background-repeat: no-repeat;
+          background-position: center center;
+
+          $follows: facebook, instagram, twitter, youtube, linkedin, vimeo, googleplus, pinterest;
+          @each $site in $follows {
+            &.#{$site} a {
+              background-image: url("../images/icon_follow-#{$site}.png");
+            }
+          }
+
+        }
+      }
+      &.other {
+        float: left;
+        width: 40%;
+        @include breakpoint(0 $bpt1) {
+          float: unset;
+          width: 100%;
+          max-width: unset;
+        }
+        @include breakpoint($bpr2) {
+          float: right;
+          width: 30%;
+          max-width: unset;
+        }
+        a {
+          @include breakpoint($bpt2 $bpr6) {
+            &:hover {
+              color: white;
+            }
+          }
+        }
+      }
+      ul {
+        li {
+          font-family: $bodylight;
+          font-size: 16px;
+          color: #bfbfbf;
+          line-height: 1.8;
+          &:first-child {
+            padding-top: 50px;
+            font-family: $bodybold;
+            font-size: 20px;
+            color: white;
+            padding-bottom: 10px;
+            line-height: 1.2;
+          }
+          strong {
+            font-weight: normal;
+            font-size: 16px;
+            font-family: $bodyregular;
+            color: white;
+            padding-right: 10px;
+          }
+        }
+      }
+    }
+    @include breakpoint(0 $bpt0) {
+      padding: 0 10px 60px 10px;
+    }
+  }
+  .bottom {
+    position: relative;
+    background-color: #111111;
+    font-family: $bodylight;
+    color: #bfbfbf;
+    font-size: 16px;
+    padding: 15px 50px;
+    strong {
+      font-weight: normal;
+      color: white;
+      font-family: $bodybold;
+      font-size: 24px;
+      vertical-align: baseline;
+      position: relative;
+      top: 0.2em;
+    }
+
+    .footer_logos {
+      position: absolute;
+      right: 50px;
+      top: -10px;
+      @include breakpoint(0 $bpt0) {
+        position: absolute;
+        left: 10px;
+        right: unset;
+        top: -50px;
+      }
+      @include breakpoint($bpt1 $bpt2) {
+        position: absolute;
+        left: 45px;
+        right: unset;
+        top: -50px;
+      }
+      .logo {
+        float: left;
+        margin-left: 5px;
+        height: 50px;
+        &.bbb {
+          width: 129px;
+          background: transparent url("../images/footerlogo_bbb.png") no-repeat scroll center center;
+        }
+        &.es {
+          width: 49px;
+          background: transparent url("../images/footerlogo_es.png") no-repeat scroll center center;
+        }
+        &.usa {
+          width: 99px;
+          background: transparent url("../images/footerlogo_usa.png") no-repeat scroll center center;
+        }
+      }
+    }
+    @include breakpoint(0 $bpt0) {
+      padding: 15px 10px;
+    }
+  }
+}

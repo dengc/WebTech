@@ -1,0 +1,197 @@
+$global-height: 30px;
+$branding-height: 110px;
+
+body {
+  width: 100%;
+}
+header {
+  position: relative;
+  //display: none;
+}
+
+.globalbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $global-height;
+  z-index: 10000;
+  background-color: #171819;
+  color: white;
+  @include cf();
+  .left {
+    float: left;
+  }
+  .right {
+    float: right;
+    display: table;
+    .txt {
+      @include breakpoint(0 $bpt1) {
+        display: none;
+      }
+      display: table-cell;
+      vertical-align: middle;
+      height: $global-height;
+      font-family: $bodylight;
+      color: #c5c5c5;
+      font-size: 16px;
+      padding: 0 15px;
+      a {
+        font-family: $bodymedium;
+        color: white;
+      }
+    }
+    .btn {
+      display: table-cell;
+      vertical-align: middle;
+      height: $global-height;
+      background-color: #949494;
+      color: black;
+      font-family: $bodylight;
+      font-size: 14px;
+      border-left: 1px solid black;
+      padding: 0 15px;
+      &.chat {
+        padding: 0;
+        color: #f1f1f1;
+        background-color: #525250;
+        width: 2 + $chat-width;
+        @include breakpoint(0 $bpt1) {
+          display: none;
+        }
+      }
+      &.cart {
+        position: relative;
+        width: 1 + $cart-width;
+        background-color: #a31800;
+        border-left: 1px solid #171819;
+      }
+    }
+  }
+}
+
+.hdrbar {
+  @include breakpoint(0 $bpt1) {
+    background-size: 280px;
+    background-position: 10px bottom;
+    height: $branding-height + $global-height - 30px;
+  }
+  position: relative;
+  height: $branding-height + $global-height;
+  background-color: #222325;
+  background-image: url("../images/chb-logo.png");
+  background-repeat: no-repeat;
+  background-position: 30px bottom;
+
+  h1 {
+    position: absolute;
+    bottom: 5px;
+    left: 190px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-family: $bodylight;
+    @include opacity(0.4);
+    &:before {
+      content: 'The Largest Online Store for Professional LED Lighting';
+    }
+    @include breakpoint(0 $bpt1) {
+      left: 91px;
+      &:before {
+        content: 'Professional LED Lighting';
+      }
+    }
+  }
+  a {
+    display: block;
+    position: absolute;
+    top: $global-height;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+.subheaderbar {
+
+  background: $llgray;
+  border-bottom: 1px solid $line;
+
+  .wrap {
+    height: 50px;
+    position: relative;
+    padding-left: 30px;
+  }
+
+  a {
+    display: block;
+    font-family: $bodyregular;
+    color: black;
+    font-size: 20px;
+    padding-top: 13px;
+    @include text-shadow(1px 1px 3px rgba(black, 0.3));
+
+    &:before {
+      content: '';
+      width: 16px;
+      height: 22px;
+      float: left;
+      background: transparent url("../images/widget_top-lchev.png") no-repeat center center;
+    }
+  }
+}
+
+//----- ** ZOHO CHAT BUG OVERRIDES ** --------------------
+.siqembed + .zls-btnmn {
+  padding: 0!important;
+  right: 2+$cart-width!important;
+  height: $global-height!important;
+  max-height: $global-height!important;
+  overflow-y: hidden;
+  width: $chat-width!important;
+}
+
+#zlstxtcnt {
+  &.zls_fltxtcnt {
+    padding: 0 10px 0 0!important;
+  }
+}
+
+.zlsps-rht {
+  right: $cart-width!important;
+  top: 0!important;
+  &.siqembed.siqtrans {
+    transform-origin: 99% 0 0!important;
+  }
+}
+.siqembed.zls-sptwndw {
+  padding: 0!important;
+}
+
+.siqtrans + .zls-btnmn.zls-small {
+  z-index: 83647 !important;
+}
+
+//----- ** SHOPIFY BUG OVERRIDES ** --------------------
+
+.shopify-buy-frame.shopify-buy-frame--toggle.is-sticky.is-active {
+
+  iframe {
+    width: $cart-width!important;
+  }
+}
+
+.shopify-buy-frame--toggle.is-sticky {
+  background-color: #ce2300!important;
+  position: fixed;
+  right: 0!important;
+  top: 0!important;
+  z-index: 2147483645;
+  width: $cart-width;
+  transform: none!important;
+}
+
+
+.shopify-buy__cart-toggle__count {
+  float: left!important;
+  font-size: 18px;
+}

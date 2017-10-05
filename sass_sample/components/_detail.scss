@@ -1,0 +1,566 @@
+//@include breakpoint(min-width $bp-details-sm) {xxx}
+
+body {
+  background-color: white;
+}
+
+main {
+  @include cf();
+}
+
+.content-block {
+
+  padding-left: 20px;
+  padding-right: 20px;
+  h1 {
+    font-family: $bodymedium;
+    font-size: 24px;
+    color: $mgray;
+    margin-top: 40px;
+    margin-bottom: 10px;
+    background: transparent url("../images/dotdiv.png") repeat-x left bottom;
+
+    @include breakpoint(min-width $bp-details-sm) {
+      margin-left: -30px;
+    }
+  }
+
+  .description {
+    clear: both;
+    font-family: $bodylight;
+    font-size: 18px;
+    line-height: 24px;
+    color: $mgray;
+  }
+}
+
+.stickerbook {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  .sticker {
+    display: block;
+    float: left;
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    &.sale {
+      background-image: url("../images/sticker_sale.png");
+    }
+    &.new {
+      background-image: url("../images/sticker_new.png");
+    }
+    &.hot {
+      background-image: url("../images/sticker_hot.png");
+    }
+    &.reduced {
+      background-image: url("../images/sticker_reduced.png");
+    }
+  }
+}
+
+.column-left {
+  @include span(full);
+  background-color: white;
+
+  @include breakpoint(min-width $bp-details-sm) {
+    @include span(1 of 2 inside no-gutters);
+
+    .content-block {
+      width: 100%;
+      max-width: 570px;
+      float: right;
+      clear: right;
+      padding-left: 20px;
+      padding-right: 25px;
+
+      &.gallery h1 {
+        display: none;
+      }
+    }
+  }
+
+  .content-block {
+    width: 100%;
+  }
+
+  .bigpic_frame {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    margin-top: 15px;
+    margin-bottom: 5px;
+
+    .bigpic {
+      //position: absolute;
+      //left: 0;
+      //top: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent url("../images/prod_sauron_lg.jpg") no-repeat center center;
+      background-size: cover;
+    }
+  }
+
+  .keyvalues {
+    padding: 5px 0 0 0;
+    color: black;
+    font-family: $bodyregular;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 28px;
+    div {
+      border-bottom: 1px dashed $lgray;
+    }
+    div::before {
+      color: $mgray;
+      font-family: $bodylight;
+      font-size: 14px;
+      content: attr(data-label);
+      margin-right: 10px;
+      text-transform: uppercase;
+    }
+
+    @include breakpoint(min-width $bp-details-sm) {
+      padding: 25px 0 0 0;
+      color: $dgray;
+      font-family: $bodylight;
+      font-size: 18px;
+      text-align: right;
+
+      div::before {
+        float: left;
+      }
+    }
+  }
+}
+
+.column-right {
+
+  position: relative;
+
+  @include span(full);
+  background-color: white;
+
+  @include breakpoint(min-width $bp-details-sm) {
+
+    @include span(1 of 2 inside no-gutters last);
+    background: $bg url("../images/bg_gradient.png") repeat-x left bottom;
+
+    .content-block {
+      width: 100%;
+      max-width: 570px;
+      padding-left: 55px;
+      padding-right: 20px;
+    }
+  }
+
+  .content-block {
+    width: 100%;
+
+    .general {
+      font-familY: $bodylight;
+      font-size: 18px;
+      line-height: 24px;
+      color: $mgray;
+      @include cf();
+
+      li {
+        @include cf();
+        &.certification-logos {
+          margin-top: 15px;
+        }
+      }
+
+      strong {
+        font-weight: normal;
+        font-family: $bodyregular;
+        color: black;
+      }
+
+      a {
+        display: inline-block;
+        font-family: $bodybold;
+        font-size: 28px;
+        line-height: 1;
+        color: $hot;
+        padding-top: 10px;
+
+        &.small-phone {
+          font-size: 18px;
+        }
+      }
+
+      .certlogo {
+        display: block;
+        float: left;
+        height: 52px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        margin-right: 1px;
+        @include cf();
+
+        @include breakpoint(min-width 450px) {
+          margin-right: 4px;
+        }
+
+        &.cert-leed {
+          width: 52px;
+          background-image: url("../images/certlogo_leed.png");
+        }
+        &.cert-ul {
+          width: 52px;
+          background-image: url("../images/certlogo_ul.png");
+        }
+        &.cert-etl {
+          width: 62px;
+          background-image: url("../images/certlogo_etl.png");
+        }
+        &.cert-ida {
+          width: 52px;
+          background-image: url("../images/certlogo_ida.png");
+        }
+        &.cert-ies {
+          width: 52px;
+          background-image: url("../images/certlogo_ies.png");
+        }
+        &.cert-usa {
+          width: 72px;
+          background-image: url("../images/certlogo_usa.png");
+        }
+      }
+    }
+
+    &.last {
+      h1 {
+        font-size: 5px;
+        line-height: 1;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        margin-left: 0;
+        background: transparent url("../images/dotdiv.png") repeat-x left top;
+      }
+      padding-bottom: 20px;
+
+      @include breakpoint(min-width $bp-details-sm) {
+        h1 {
+          margin-top: 40px;
+          margin-bottom: 5px;
+        }
+        padding-bottom: 40px;
+      }
+    }
+
+  }
+}
+
+.prod-links {
+  @include cf();
+  margin-top: 10px;
+  &.desktop {
+    display: none;
+  }
+  &.mobile {
+    display: block;
+  }
+  a {
+    display: block;
+    //float: left;
+    position: relative;
+    //margin-right: 1px;
+    margin-bottom: 4px;
+    font-family: $bodyregular;
+    font-size: 16px;
+    color: white;
+    background-color: $bg-dark;
+    @include background-image(linear-gradient($mgray, $dgray));
+    padding: 25px 50px 10px 15px;
+    @include border-radius(6px);
+    @include text-shadow(-1px -1px 1px black);
+    &::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 5px;
+      right: 8px;
+      color: $lgray;
+      font-family: $bodylight;
+      font-size: 14px;
+      @include text-shadow(0 0 0 rgba(0, 0, 0, 0));
+    }
+  }
+
+  @include breakpoint(min-width $bp-details-sm) {
+    &.desktop {
+      display: block;
+    }
+    &.mobile {
+      display: none;
+    }
+    a {
+      float: left;
+      margin-right: 1px;
+      margin-bottom: 1px;
+      @include border-radius(3px);
+    }
+  }
+}
+
+.introduction {
+
+  padding-top: 10px;
+  h1.pagetitle {
+    display: none;
+  }
+
+  @include breakpoint(min-width $bp-details-sm) {
+    padding-top: 78px;
+    h1.pagetitle {
+      display: block;
+      font-family: $bodyregular;
+      font-size: 34px;
+      color: $mgray;
+      margin-top: 0;
+      margin-bottom: 10px;
+      margin-left: -30px;
+      background: transparent url("../images/dotdiv.png") repeat-x left bottom;
+    }
+  }
+
+  ul {
+    display: none;
+    float: left;
+    clear: left;
+    margin-right: 15px;
+    margin-bottom: 1px;
+
+    li {
+      display: block;
+      float: left;
+      font-family: $bodylight;
+      font-size: 18px;
+      color: $mgray;
+
+      &:first-child {
+        font-family: $bodybold;
+        padding-right: 5px;
+      }
+
+      strong {
+        font-weight: normal;
+        color: $emph;
+      }
+    }
+
+    @include breakpoint(min-width $bp-details-sm) {
+      display: block;
+      clear: none;
+      margin-bottom: 15px;
+    }
+  }
+
+  .description {
+    clear: both;
+    font-family: $bodylight;
+    font-size: 18px;
+    line-height: 24px;
+    color: $mgray;
+  }
+}
+
+.purchase {
+
+  select {
+    margin-bottom: 5px;
+    font-family: $bodylight;
+    font-size: 18px;
+    line-height: 24px;
+    color: black;
+    padding: 3px 8px;
+    border: 1px solid $line2;
+    width: 100%;
+    appearance: none;
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Safari and Chrome */
+    background: white url("../images/dchev.png") no-repeat right center;
+    cursor: pointer;
+    option {
+      padding: 3px 8px;
+      color: black;
+    }
+  }
+
+  .buy-block {
+
+    position: relative;
+    margin: 0 0 15px 0;
+    @include span (1 of 2 inside no-gutters);
+    @include gutter(0);
+    @include cf();
+    float: none;
+
+    .price {
+
+      font-family: $bodylight;
+      font-size: 32px;
+      color: black;
+      height: 64px;
+      background: white;
+      border: 2px solid $hot;
+      padding-left: 15px;
+      padding-top: 11px;
+
+      b {
+        font-weight: normal;
+        font-size: 60%;
+        vertical-align: baseline;
+        position: relative;
+        top: -0.5em;
+        padding-left: 2px;
+      }
+    }
+
+    .cta {
+      cursor: pointer;
+      @include span (1 of 2 inside last);
+      font-family: $bodyregular;
+      font-size: 22px;
+      color: white;
+      height: 64px;
+      background: $hot;
+      border: 2px solid $hot;
+      text-align: center;
+      padding-top: 18px;
+      padding-left: 5%;
+      padding-right: calc(5% + 48px);
+      background: $hot url("../images/icon_lock.png") no-repeat right center;
+    }
+  }
+
+  .buy-info {
+
+    ul {
+      font-family: $bodylight;
+      font-size: 16px;
+      color: $mgray;
+
+      li:first-child {
+        font-family: $bodyregular;
+
+        strong {
+          font-weight: normal;
+          font-family: $bodymedium;
+          font-size: 18px;
+          color: black;
+        }
+
+        em {
+          font-weight: normal;
+          font-family: $bodymedium;
+          font-size: 18px;
+          color: $brand;
+          font-style: normal;
+        }
+
+        b {
+          font-weight: normal;
+          font-size: 80%;
+          vertical-align: baseline;
+          position: relative;
+          top: -0.2em;
+          padding-left: 1px;
+        }
+
+      }
+
+      li.payicons {
+        @include cf();
+        padding: 15px 0 5px 0;
+        .payicon {
+          display: block;
+          float: left;
+          height: 25px;
+          margin-right: 8px;
+          &.shopify {
+            width: 129px;
+            background: transparent url("../images/icon_shopify_secure.png") no-repeat center center;
+          }
+          &.cc {
+            width: 169px;
+            background: transparent url("../images/icon_cc.png") no-repeat center center;
+          }
+          &.pp {
+            width: 85px;
+            background: transparent url("../images/icon_paypal.png") no-repeat center center;
+          }
+          &.bc {
+            width: 108px;
+            background: transparent url("../images/icon_bc.png") no-repeat center center;
+          }
+        }
+      }
+
+    }
+
+  }
+
+  @include breakpoint(min-width $bp-details-sm) {
+    //margin-left: -30px;
+    width: calc(100% + 30px);
+  }
+}
+
+.center {
+  @include span(full);
+
+  h1 {
+    font-family: $bodymedium;
+    font-size: 24px;
+    color: $mgray;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    background: transparent url("../images/dotdiv.png") repeat-x left bottom;
+  }
+
+}
+
+form.capform {
+  padding-top: 15px;
+  padding-left: 55px;
+  font-family: $bodyregular;
+  input {
+    font-size: 20px;
+    padding: 2px 10px;
+    max-width: 320px;
+
+    &.button {
+      font-size: 16px;
+      color: white;
+      padding: 7px 10px 5px 10px;
+      border: none;
+      background-color: #82a000;
+      cursor: pointer;
+    }
+
+    &.small {
+      max-width: 120px;
+      margin-top: 5px;
+      margin-right: 5px;
+    }
+  }
+
+  span.label {
+    display: inline-block;
+    width: 100px;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  @include breakpoint(max-width $bpt1) {
+    padding-left: 20px;
+  }
+
+}

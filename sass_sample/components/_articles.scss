@@ -1,0 +1,443 @@
+body {
+  background-color: white;
+}
+
+.articles {
+  width: 100%;
+  padding-right: $edge-padding;
+  @include cf();
+}
+
+.sidebar {
+  @include breakpoint($bpr0) {
+    width: 100%;
+    float: left;
+  }
+  @include breakpoint($bpr1) {
+    width: 100%;
+    float: left;
+  }
+  @include breakpoint($bpr2) {
+    width: $sidebar-width2;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr3) {
+    width: $sidebar-width3;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr4) {
+    width: $sidebar-width4;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr5) {
+    width: $sidebar-width4;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr6) {
+    width: $sidebar-width5;
+    float: right;
+    clear: right;
+  }
+  &.company {
+    padding-top: 50px;
+  }
+}
+
+#activearticle {
+  float: left;
+  @include breakpoint($bpr0) {
+    width: 100%;
+  }
+  @include breakpoint($bpr1) {
+    width: 100%;
+  }
+  @include breakpoint($bpr2) {
+    width: calc(100% - #{$sidebar-width2});
+  }
+  @include breakpoint($bpr3) {
+    width: calc(100% - #{$sidebar-width3});
+  }
+  @include breakpoint($bpr4) {
+    width: calc(100% - #{$sidebar-width4});
+  }
+  @include breakpoint($bpr5) {
+    width: calc(100% - #{$sidebar-width5});
+  }
+  @include breakpoint($bpr6) {
+    width: calc(100% - #{$sidebar-width6});
+  }
+  &.paper {
+    padding: 50px;
+    .article-category {
+      font-family: $bodylight;
+      font-size: 14px;
+      color: #8993a7;
+      text-transform: uppercase;
+    }
+    .articlebanner {
+      width: 100%;
+      height: 150px;
+      background-repeat: no-repeat;
+      background-position: 50% 20%;
+      background-size: cover;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: $altregular;
+      font-size: 40px;
+      border-bottom: 1px solid #959592;
+      color: #3a3a39;
+      margin-bottom: 8px;
+      clear: left;
+    }
+    h2 {
+      font-family: $bodyregular;
+      font-size: 24px;
+      color: #3a3a39;
+      margin: 20px 0 5px 0;
+      clear: left;
+      &:before {
+        content:'';
+        display: block;
+        position: relative;
+        left: -10px;
+        top: 24px;
+        width: 5px;
+        height: 20px;
+        background-color: #bb1c00;
+      }
+      &.subtitle {
+        font-family: $altregular;
+        font-size: 18px;
+        color: #525251;
+        margin: 0 0 16px 0;
+        text-transform: capitalize;
+        &:before {
+          content:'';
+          display: none;
+        }
+      }
+      u {
+        color: #bb1c00;
+        text-decoration: none;
+        font-family: $bodybold;
+      }
+    }
+    h3 {
+      font-family: $bodyregular;
+      font-size: 20px;
+      color: #3a3a39;
+      margin: 20px 0 5px 0;
+      border-bottom: 1px solid #ccc;
+      clear: left;
+    }
+    blockquote {
+      padding: 5px 20px;
+      border-left: 1px solid #ccc;
+      margin: 5px 0;
+      p {
+        font-family: $altregular;
+        font-size: 20px;
+        color: #4a4a4a;
+      }
+    }
+    p {
+      font-family: $bodylight;
+      font-size: 18px;
+      color: #585856;
+      line-height: 1.6;
+      padding-bottom: 15px;
+      b {
+        font-weight: normal;
+        font-family: $bodyregular;
+      }
+      u {
+        font-weight: normal;
+        color: #a31800;
+        text-decoration: none;
+      }
+    }
+    img {
+      &.floater {
+        float: left;
+      }
+    }
+    a {
+      text-decoration: underline;
+    }
+    ol {
+      font-family: $bodylight;
+      font-size: 20px;
+      color: #585856;
+      line-height: 1.5;
+      >li {
+        list-style-type: decimal;
+        list-style-position: inside;
+        padding-top: 10px;
+      }
+    }
+    ul {
+      font-family: $bodylight;
+      font-size: 18px;
+      color: #585856;
+      line-height: 1.3;
+      margin-left: 20px;
+      >li {
+        list-style: square url("../images/widget_bullet.png");
+        padding-bottom: 10px;
+        //padding-left: 20px;
+        >ul {
+          >li {
+            list-style: disc inside none;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    .sharebox {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px dashed #d3d3d3;
+      .share {
+        margin-right: 20px;
+      }
+    }
+    table {
+      font-family: "Times New Roman", Georgia, Serif;
+      font-size: 20px;
+      color: #585856;
+      line-height: 1.5;
+      border-collapse: separate;
+      border-spacing: 10px 5px;
+    }
+    thead tr td {
+      font-weight: bold;
+      border-bottom: 1px solid black;
+    }
+    .vidblock {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      padding-top: 25px;
+      height: 0;
+      video {
+        width: 100%;
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    div.led-replacement-guide {
+      table {
+        border-collapse: separate;
+        border-spacing: 1px 1px;
+        font-family: $altregular;
+        font-size: 16px;
+        tr:first-child td {
+          background-color: #515151;
+          color: white;
+          padding: 5px 10px;
+          text-align: center;
+        }
+        tr td {
+          padding: 5px 10px;
+          background-color: #dddddd;
+          &:first-child {
+            font-family: $altbold;
+            background-color: #a31800;
+            color: white;
+          }
+        }
+      }
+    }
+
+    div.led-the-better-choice {
+      table {
+        border-collapse: separate;
+        border-spacing: 1px 1px;
+        font-family: $altregular;
+        font-size: 16px;
+        tr:first-child td {
+          background-color: #515151;
+          color: white;
+          padding: 5px 10px;
+          text-align: center;
+        }
+        tr td {
+          padding: 5px 10px;
+          background-color: #dddddd;
+          &:first-child {
+            font-family: $altbold;
+            background-color: #a31800;
+            color: white;
+          }
+        }
+      }
+    }
+
+    div.color-rendering-index {
+      table {
+        border-collapse: separate;
+        border-spacing: 1px 1px;
+        font-family: $altregular;
+        font-size: 16px;
+        margin: 10px 0;
+        tr td {
+          padding: 5px 10px;
+          text-align: center;
+          vertical-align: top;
+          &:nth-child(1) {
+            color: #7f7f7f;
+            font-family: $bodylight;
+            padding-top: 0;
+          }
+          &:nth-child(1n+2) {
+            vertical-align: bottom;
+            padding-bottom: 0;
+          }
+          &:nth-child(3) {
+            color: #cf1e00;
+          }
+        }
+      }
+    }
+
+  }
+  &.company {
+    padding: 50px;
+    h1 {
+      font-family: $altregular;
+      font-size: 40px;
+      border-bottom: 1px solid #959592;
+      color: #3a3a39;
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-family: $bodyregular;
+      font-size: 24px;
+      color: #3a3a39;
+      margin: 20px 0 5px 0;
+    }
+    p {
+      font-family: $bodylight;
+      font-size: 20px;
+      color: #585856;
+      line-height: 1.6;
+      padding-bottom: 15px;
+        &.isolated {
+          font-family: $altbold;
+          font-size: 24px;
+          color: #4a4a4a;
+        }
+      strong {
+        font-weight: normal;
+        color: #a31800;
+      }
+    }
+    a {
+      text-decoration: underline;
+    }
+
+    ul {
+      font-family: $bodylight;
+      font-size: 16px;
+      color: #585856;
+      line-height: 1.5;
+      li {
+        padding-top: 20px;
+        strong {
+          font-size: 18px;
+          font-weight: normal;
+          font-family: $bodymedium;
+        }
+      }
+    }
+
+    .quote {
+      display: inline-block;
+      font-family: "Times New Roman", Georgia, Serif;
+      font-size: 30px;
+      font-style: italic;
+      color: #a31800;
+      line-height: 1.2;
+      padding-bottom: 20px;
+      .qte {
+        color: #9d9d9a;
+        font-size: 60px;
+        position: relative;
+        top: 0.3em;
+        vertical-align: baseline;
+        line-height: .3;
+        &:last-child {
+          margin-left: -8px;
+        }
+      }
+      div:nth-child(2) {
+        float: right;
+        font-weight: normal;
+        font-size: 20px;
+        color: #353534;
+      }
+    }
+
+    .examples {
+      @include cf();
+      .example {
+        @include breakpoint(0 $bpt2) {
+          height: 100px;
+          @include span(1 of 1 inside no-gutters);
+          border-bottom: 2px solid white;
+        }
+        @include breakpoint($bpr3) {
+          height: 100px;
+          border-right: 2px solid white;
+        }
+        @include breakpoint($bpr4) {
+          height: 110px;
+          border-right: 2px solid white;
+        }
+        @include breakpoint($bpr5) {
+          height: 120px;
+          border-right: 2px solid white;
+        }
+        @include breakpoint($bpr6) {
+          height: 150px;
+          border-right: 2px solid white;
+        }
+        display: block;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-color: white;
+        background-size: cover;
+        @include span(1 of 4 inside no-gutters);
+        &:nth-child(4n+4) {
+          @include last;
+        }
+        &.ufo {
+          background-image: url("../images/assorted/product_ufo-hb.jpg");
+        }
+        &.colorful {
+          background-image: url("../images/assorted/product_colorful-domes.jpg");
+        }
+        &.sauron {
+          background-image: url("../images/assorted/product_sauron-hb.jpg");
+        }
+        &.install {
+          background-image: url("../images/assorted/install_yucaipa-water.jpg");
+        }
+      }
+    }
+  }
+}
+
+.wrap {
+  padding-right: 30px;
+}

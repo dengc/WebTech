@@ -1,0 +1,322 @@
+//----- ** GRIDS ** --------------------
+
+.products {
+  .product {
+
+    @include breakpoint($bpr0) {
+      @include span(1 of 2 inside no-gutters);
+      &:nth-child(2n+2) {
+        @include last;
+      }
+    }
+
+    @include breakpoint($bpr1) {
+      @include span(1 of 3 inside no-gutters);
+      &:nth-child(3n+3) {
+        @include last;
+      }
+    }
+
+    @include breakpoint($bpr2) {
+      @include span(1 of 3 inside no-gutters);
+      &:nth-child(3n+3) {
+        @include last;
+      }
+    }
+
+    @include breakpoint($bpr3) {
+      @include span(1 of 4 inside no-gutters);
+      &:nth-child(4n+4) {
+        @include last;
+      }
+    }
+
+    @include breakpoint($bpr4) {
+      @include span(1 of 5 inside no-gutters);
+      &:nth-child(5n+5) {
+        @include last;
+      }
+    }
+
+    @include breakpoint($bpr5) {
+      @include span(1 of 6 inside no-gutters);
+      &:nth-child(6n+6) {
+        @include last;
+      }
+    }
+
+    @include breakpoint($bpr6) {
+      @include span(1 of 8 inside no-gutters);
+      &:nth-child(8n+8) {
+        @include last;
+      }
+    }
+
+  }
+}
+
+
+//----- ** LAYOUT ** --------------------
+
+.prodlist {
+  @include cf();
+  padding: 15px $edge-padding 0 $edge-padding;
+  @include breakpoint(0 $bpt1) {
+    padding: 10px 5px;
+  }
+}
+
+.sidebar {
+  @include breakpoint($bpr0) {
+    width: 100%;
+    float: left;
+  }
+  @include breakpoint($bpr1) {
+    width: 100%;
+    float: left;
+  }
+  @include breakpoint($bpr2) {
+    width: $sidebar-width2;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr3) {
+    width: $sidebar-width3;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr4) {
+    width: $sidebar-width4;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr5) {
+    width: $sidebar-width5;
+    float: right;
+    clear: right;
+  }
+  @include breakpoint($bpr6) {
+    width: $sidebar-width6;
+    float: right;
+    clear: right;
+  }
+}
+
+.products {
+  @include breakpoint($bpr0) {
+    width: 100%;
+  }
+  @include breakpoint($bpr1) {
+    width: 100%;
+  }
+  @include breakpoint($bpr2) {
+    width: calc(100% - #{$sidebar-width2});
+  }
+  @include breakpoint($bpr3) {
+    width: calc(100% - #{$sidebar-width3});
+  }
+  @include breakpoint($bpr4) {
+    width: calc(100% - #{$sidebar-width4});
+  }
+  @include breakpoint($bpr5) {
+    width: calc(100% - #{$sidebar-width5});
+  }
+  @include breakpoint($bpr6) {
+    width: calc(100% - #{$sidebar-width6});
+  }
+
+  float: left;
+  .product {
+    .prodshot-frame-sm {
+      width: 100%;
+      padding-bottom: 100%;
+    }
+    ul {
+      float: left;
+      width: 100%;
+    }
+  }
+}
+
+//----- ** STYLING ** --------------------
+
+.products {
+
+  .product {
+    position: relative;
+    @include cf();
+    margin-bottom: 20px;
+
+    div.prod-name {
+      display: none;
+    }
+
+    .prodshot-frame-sm {
+      display: block;
+      position: relative;
+      height: 0;
+      float: left;
+      background: white;
+      border: 0 solid $line2;
+
+      .yotpo.bottomLine.yotpo-small {
+        margin-top: calc(100% - 20px);
+        margin-left: 5px;
+      }
+
+      .prod-mo {
+        display: none;
+      }
+
+      &.showdesc .prod-mo {
+        display: block;
+        background-color: rgba(white, 0.95);
+        padding: 20px;
+        font-family: $bodylight;
+        font-size: 14px;
+        text-align: center;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        //@include border-radius(12px);
+
+        &strong {
+          font-family: $bodymedium;
+        }
+
+        @include breakpoint(0 $bpt1) {
+          display: none;
+        }
+      }
+
+      .prodshot-sm {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .sticker {
+        position: absolute;
+        width: 35%;
+        height: 35%;
+        background-repeat: no-repeat;
+        background-size: contain;
+        &.sale {
+          top: 8px;
+          left: 8px;
+          background-image: url("../images/sticker_sale.png");
+        }
+        &.new {
+          top: 8px;
+          right: 8px;
+          background-image: url("../images/sticker_new.png");
+        }
+        &.hot {
+          bottom: 8px;
+          left: 8px;
+          background-image: url("../images/sticker_hot.png");
+        }
+        &.reduced {
+          top: 8px;
+          left: 8px;
+          background-image: url("../images/sticker_reduced.png");
+        }
+      }
+    }
+
+    ul {
+      position: relative;
+      padding: 0 5px 0 0;
+      margin: 0 5px;
+      //border-top: 1px dashed black;
+
+      li {
+        &.prod-name {
+          display: list-item;
+          padding-top: 8px;
+          padding-bottom: 4px;
+          font-family: $bodymedium;
+          font-size: 16px;
+          line-height: 20px;
+          color: #29342b;
+          background: transparent url("../images/prod-thumbnail-ul.png") no-repeat right top;
+        }
+        &.prod-description {
+          display: none;
+        }
+        &.price {
+          font-weight: normal;
+          &.price-special {
+            font-family: $bodymedium;
+            font-size: 20px;
+            color: #0e0e0e;
+          }
+          &.price-regular {
+            font-family: $bodylight;
+            padding-top: 5px;
+            font-size: 16px;
+            text-decoration: line-through;
+            color: #6e6e6e;
+            b {
+              text-decoration: none;
+            }
+          }
+          b {
+            font-size: 60%;
+            font-weight: normal;
+            vertical-align: baseline;
+            position: relative;
+            top: -0.5em;
+          }
+        }
+
+        &.prod-val {
+          padding: 0;
+          font-family: $bodyregular;
+          font-size: 16px;
+          line-height: 22px;
+          color: #636363;
+
+          strong {
+            font-weight: normal;
+          }
+
+          &.val1 strong {
+            font-weight: normal;
+          }
+
+          &.val2 strong {
+            font-weight: normal;
+          }
+          &.noval {
+            display: none;
+          }
+        }
+        &.prod-moreinfo {
+          padding: 6px 0 0 0;
+
+          .button {
+            font-family: $bodylight;
+            background-color: unset;
+            border: 0;
+            text-decoration: underline;
+            color: #718f00;
+            text-align: left;
+            padding: 0;
+          }
+        }
+      }
+    }
+
+    .prodshot-sm {
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+    }
+  }
+
+}

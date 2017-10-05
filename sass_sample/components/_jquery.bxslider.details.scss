@@ -1,0 +1,92 @@
+// -- DETAILS SLIDESHOW OVERRIDES ---------------------------------------
+
+.bx-wrapper {
+  margin-bottom: 5px;
+
+  .bx-viewport {
+	left: 0;
+
+	.bxslider {
+
+	  .bx-caption {
+		background-color: rgba(0, 0, 0, .6);
+		border-top: 1px solid white;
+
+		span {
+		  color: white;
+		  font-family: $bodylight;
+		  font-size: 16px;
+		}
+	  }
+
+	  @include breakpoint(min-width $bp-details-sm) {
+		.bx-caption {
+		background-color: rgba(255, 255, 255, .6);
+		border-top: 1px solid white;
+
+		span {
+		  color: $dgray;
+		  font-family: $bodylight;
+		  font-size: 20px;
+		}
+	  }}
+	}
+  }
+
+  .bx-controls {
+	.bx-controls-direction {
+	  a {
+		width: 22px;
+		height: 35px;
+
+		&.bx-prev {
+		  background: transparent url("../images/widget_gallery_prev.png") no-repeat scroll center center;
+		}
+		&.bx-next {
+		  background: transparent url("../images/widget_gallery_next.png") no-repeat scroll center center;
+		}
+	  }
+
+	}
+  }
+}
+
+#bx-pager {
+
+  display: none;
+  width: unset;
+  //height: 70px;
+  //background: red;
+  overflow-y: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+
+a {
+  display: inline-block;
+  //float: left;
+  //width: calc(20% - 6px);
+  width: 101px;
+  height: 70px;
+  overflow-y: hidden;
+  border: 1px solid $lgray;
+  margin-right: 0;
+  @include border-radius(0);
+
+  &:hover {
+	border: 1px solid $mgray;
+  }
+
+  &.active {
+	border: 1px solid $brand;
+  }
+
+  img {
+	margin-top: -10px;
+  }
+}
+
+  @include breakpoint(min-width $bp-details-sm) {
+	display: block;
+  }
+
+}

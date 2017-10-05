@@ -1,0 +1,98 @@
+// breakpoints
+$mobile: 500px;
+$container: 1140px;
+
+// Palette
+$bg: rgb(247,247,247);
+$brand: rgba(206, 35, 0, 1);
+//$hot: rgb(165,204,0);
+$hot: rgb(130,160,0);
+$emph: rgb(98,121,0);
+$llgray: rgb(229, 229, 229);
+$lgray: rgb(217, 217, 217);
+$mgray: rgb(78,78,78);
+$dgray: rgb(35, 35, 35);
+$line: rgb(165,169,161);
+$line2: rgb(190, 193, 185);
+$bg-dark: #262626;
+$fg-dark: $bg-dark;
+$fg-light: #cdcdcd;
+$edge-padding: 10px;
+
+// YOTPO
+$fg-med: #515151;
+$fg-reviews: #8a8a8a;
+$fg-darkest: #000;
+
+// ZOHO CHAT BUG
+$chat-width: 115px;
+
+// SHOPIFY BUG
+$cart-width: 125px;
+$cart-height: 35px;
+
+// sizes
+$base-font-size: 16px;
+$tablet: 550px;
+$bp-details-sm: 750px;
+
+// Roboto
+@each $fontface in roboto-thin, roboto-light, roboto-regular, roboto-medium, roboto-bold {
+  @include font-face(
+          "#{$fontface}",
+          font-files("#{$fontface}.woff2", "#{$fontface}.woff", "#{$fontface}.ttf", "#{$fontface}.svg"),
+          "#{$fontface}.eot", normal, normal
+  );
+}
+
+// RobotoSlab
+@each $fontface in robotoslab-regular, robotoslab-bold {
+  @include font-face(
+          "#{$fontface}",
+          font-files("#{$fontface}.woff2", "#{$fontface}.woff", "#{$fontface}.ttf", "#{$fontface}.svg"),
+          "#{$fontface}.eot", normal, normal
+  );
+}
+
+// BODY
+$bodythin: "roboto-thin", Helvetica, sans-serif;
+$bodylight: "roboto-light", Helvetica, sans-serif;
+$bodyregular: "roboto-regular", Helvetica, sans-serif;
+$bodymedium: "roboto-medium", Helvetica, sans-serif;
+$bodybold: "roboto-bold", Helvetica, sans-serif;
+
+// ALTERNATE
+$altregular: "robotoslab-regular", Helvetica, sans-serif;
+$altbold: "robotoslab-bold", Helvetica, sans-serif;
+
+// global button values
+$button-font: $bodyregular;
+$button-size: 16px;
+$button-bg: #82a000;
+$button-fg: white;
+$button-padding: 6px 22px;
+$button-border-size: 2px solid;
+$button-emboss-ul: rgba(black,0.15);
+$button-emboss-br: rgba(black,0.15);
+
+$bpt0: 400px;
+$bpt1: 650px;
+$bpt2: 850px;
+$bpt3: 1200px;
+$bpt4: 1400px;
+$bpt5: 1800px;
+
+$bpr0: 0 $bpt0;
+$bpr1: $bpt0+1 $bpt1;
+$bpr2: $bpt1+1 $bpt2;
+$bpr3: $bpt2+1 $bpt3;
+$bpr4: $bpt3+1 $bpt4;
+$bpr5: $bpt4+1 $bpt5;
+$bpr6: $bpt5+1;
+
+$sidebar-width1: $bpt1;
+$sidebar-width2: 200px;
+$sidebar-width3: 250px;
+$sidebar-width4: 300px;
+$sidebar-width5: 350px;
+$sidebar-width6: 350px;

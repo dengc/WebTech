@@ -1,0 +1,54 @@
+
+// RESET
+body {
+  font-size: $base-font-size;
+  background-color: $bg;
+  overflow-x: hidden;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+p {
+  margin: unset;
+  padding: unset;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+h1, h2 {
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+}
+
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}

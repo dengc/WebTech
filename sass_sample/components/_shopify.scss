@@ -1,0 +1,24 @@
+.purchase {
+  .shopify-buy__option-select {
+    label {
+      display: none;
+    }
+  }
+  .shopify-buy__btn-wrapper {
+    button.shopify-buy__btn {
+      cursor: pointer!important;
+      @include span (1 of 2 inside last);
+      font-family: $bodyregular;
+      font-size: 22px;
+      color: white;
+      height: 64px;
+      background: $hot;
+      border: 2px solid $hot;
+      text-align: center;
+      padding-top: 4px;
+      padding-left: 5%;
+      padding-right: calc(5% + 48px);
+      background: $hot url("../images/icon_lock.png") no-repeat right center;
+    }
+  }
+}
