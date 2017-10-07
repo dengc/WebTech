@@ -59,14 +59,14 @@
     }
     th{
         background-color: #f5f5f5;
-        width: 300px;
+        width: 295px;
         text-align: left;
         border: 1px solid #e0e0e0;
         padding: 5px;
     }
     td{
         background-color: #fbfbfb;
-        width: 1000px;
+        width: 997px;
         text-align: center;
         border: 1px solid #e0e0e0;
         padding: 5px;
@@ -107,22 +107,30 @@
 
             showTable($obj, $ticker);
             //showGraph($obj);
-            $dataArray = dayData($obj);
-            //print_r($dataArray);
+            $closeArray = dayClose($obj);
+            $volumeArray = dayVolume($obj);
+            $date = $obj['Meta Data']['3. Last Refreshed'];
+            //echo $date;
+            //print_r($closeArray);
         echo '<script type="text/javascript">',
             //'document.getElementById("container").innerHTML = "sss";',
 
-'var dataArray = ',json_encode($dataArray),';',
-            'dataArray = dataArray.map(Number);',
-            //'alert(dataArray.toString());',
+            'var closeArray = ',json_encode($closeArray),';',
+            'closeArray = closeArray.map(Number);',
+            'var volumeArray = ',json_encode($volumeArray),';',
+            'volumeArray = volumeArray.map(Number);',
+            'var date = ',json_encode($date), ';',
+            'var title = "Stock Price(" + date + ")";',
+            //'alert(volumeArray.toString());',
                 'Highcharts.chart(\'toGraph\', {
                     chart: {
                         borderColor: \'#d8d8d8\',
                         marginRight: 150,
-                        borderWidth: 1
+                        borderWidth: 1,
+                        marginRight: 200
                     },
                     title: {
-                        text: \'Stock Price\'
+                        text: title
                     },
                     subtitle: {
                         text: \'<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>\'
@@ -159,15 +167,15 @@
                         color: \'#ff898c\',
                         pointInterval: 24 * 3600000,
                         pointStart: Date.UTC(2006, 0, 1),
-                        data: dataArray
+                        data: closeArray
                     }, {
                         type: \'column\',
                         yAxis: 1,
-                        name: \'volume\',
+                        name: \'AAPL Volume\',
                         color: \'white\',
                         pointInterval: 24 * 3600000,
                         pointStart: Date.UTC(2006, 0, 1),
-                        data: dataArray,
+                        data: volumeArray,
                         tooltip: {
                             valueSuffix: \'M\'
                         },
@@ -234,7 +242,7 @@
         $html .= key($obj1);
         $html .= "</td></tr>";
         $html .= "</table></div>";
-        $html .= "<div id=\"toGraph\" style=\"width: 1300px; height: 400px; margin: 0 auto\"></div>";
+        $html .= "<div id=\"toGraph\" style=\"width: 1319px; height: 600px; margin: 0 auto\"></div>";
 
         if($ticker === ""){
             $html = "";
@@ -247,7 +255,7 @@
 
         echo $html;
     }
-    function dayData($obj){
+    function dayClose($obj){
         $obj1 = $obj['Time Series (Daily)'];
         $dataArray = array();
         $dataLength = count($obj1);
@@ -258,7 +266,18 @@
         }
         //print_r($dataArray);
         return $dataArray;
-
+    }
+    function dayVolume($obj){
+        $obj1 = $obj['Time Series (Daily)'];
+        $dataArray = array();
+        $dataLength = count($obj1);
+        for($i = 0; $i < $dataLength; $i++){
+            $day = getAttributeByIndex($obj1,$i);
+            $data = $day['5. volume'];
+            array_push($dataArray, $data/1000000);
+        }
+        //print_r($dataArray);
+        return $dataArray;
     }
     function getAttributeByIndex($obj, $index){
         $i = 0;

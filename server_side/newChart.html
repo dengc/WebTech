@@ -8,13 +8,15 @@
 </head>
 
 <body>
-    <div id="container" style="width: 1300px; height: 400px; margin: 0 auto"></div>
+    <div id="container" style="width: 1319px; height: 400px; margin: 0 auto"></div>
     <script language="JavaScript">
     $(document).ready(function() {
         var chart = {
             borderColor: '#d8d8d8',
             marginRight: 150,
-            borderWidth: 1
+            borderWidth: 1,
+            //margin: [0,0, 0, 0]
+            marginRight: 300
         };
         var title = {
             text: 'Stock Price'
@@ -82,7 +84,7 @@
         }, {
             type: 'column',
             yAxis: 1,
-            name: 'volume',
+            name: 'AAPL Volume',
             color: 'white',
             pointInterval: 24 * 3600000,
             pointStart: Date.UTC(2006, 0, 1),
