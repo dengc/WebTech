@@ -1,92 +1,92 @@
-<!DOCTYPE HTML>  
+<!DOCTYPE HTML>
 <html>
 <head>
-<style>
-    body,p{
-        text-align: center;
-        margin: 0;
-    }
-    form{
-        display: inline-block;
-        margin-top: 5px;
-        margin-bottom: 20px;
-        background-color: #f5f5f5;
-        width: 630px;
-        height: 260px;
-        border: #d9d9d9 solid 1px;
-    }
-    #title{
-        font-style:italic;
-        font-size: 3em;
-    }
-    #line{
-        background-color: #d9d9d9;
-        height: 1px;
-        margin:0 8px 25px 8px;
-    }
-    #tickerText{
-        text-align: left;
-        margin-left: -72px;
-        font-size: 1.6em;
-    }
-    #tickerInput{
-        width: 230px;
-    }
-    #btns{
-        margin: 10px auto 10px 30%;
-    }
-    #btnSearch{
-        height: 26px;
-        width: 100px;
-        font-size: 1.1em;
-        margin-right:10px
-    }
-    #btnClear{
-        height: 26px;
-        width: 90px;
-        font-size: 1.1em;
-    }
-    #mandText{
-        text-align: left;
-        margin-left: 8px;
-        font-size: 1.5em;
-        font-style:italic;
-    }
-    table{
-        display: inline-block;
-        border: 1px solid #d8d8d8;
-        border-collapse: collapse;
-    }
-    th{
-        background-color: #f5f5f5;
-        width: 295px;
-        text-align: left;
-        border: 1px solid #e0e0e0;
-        padding: 5px;
-    }
-    td{
-        background-color: #fbfbfb;
-        width: 997px;
-        text-align: center;
-        border: 1px solid #e0e0e0;
-        padding: 5px;
-    }
-    span{
-        color: blue;
-        cursor: pointer;
-    }
-</style>
+    <style>
+        body,p{
+            text-align: center;
+            margin: 0;
+        }
+        form{
+            display: inline-block;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            background-color: #f5f5f5;
+            width: 630px;
+            height: 260px;
+            border: #d9d9d9 solid 1px;
+        }
+        #title{
+            font-style:italic;
+            font-size: 3em;
+        }
+        #line{
+            background-color: #d9d9d9;
+            height: 1px;
+            margin:0 8px 25px 8px;
+        }
+        #tickerText{
+            text-align: left;
+            margin-left: -72px;
+            font-size: 1.6em;
+        }
+        #tickerInput{
+            width: 230px;
+        }
+        #btns{
+            margin: 10px auto 10px 30%;
+        }
+        #btnSearch{
+            height: 26px;
+            width: 100px;
+            font-size: 1.1em;
+            margin-right:10px
+        }
+        #btnClear{
+            height: 26px;
+            width: 90px;
+            font-size: 1.1em;
+        }
+        #mandText{
+            text-align: left;
+            margin-left: 8px;
+            font-size: 1.5em;
+            font-style:italic;
+        }
+        table{
+            display: inline-block;
+            border: 1px solid #d8d8d8;
+            border-collapse: collapse;
+        }
+        th{
+            background-color: #f5f5f5;
+            width: 295px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+            padding: 5px;
+        }
+        td{
+            background-color: #fbfbfb;
+            width: 997px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            padding: 5px;
+        }
+        span{
+            color: blue;
+            cursor: pointer;
+        }
+    </style>
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
 </head>
 
 <body>
 
 <?php
-    $ticker = $_POST["ticker"];
-    $url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-    $apiLink = "&apikey=OE0QXT6U0BKFHVV8";
+$ticker = $_POST["ticker"];
+$url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+$apiLink = "&apikey=OE0QXT6U0BKFHVV8";
 ?>
-<form method="post" action="<?=$_SERVER['PHP_SELF'];?>">
+<form name="myform" method="post" action="<?=$_SERVER['PHP_SELF'];?>">
     <p id="title">Stock Search</p>
     <p id="line"></p>
     <label for="tickerInput" id="tickerText">Enter Stock Ticker Symbol:*</label>
@@ -104,29 +104,34 @@
 
 <?php
 
-    if(isset($_POST['Search'])){
-        if($ticker !== "") {
-            $json = file_get_contents($url . $ticker . $apiLink);
-            $obj = json_decode($json, true);
+if(isset($_POST['Search'])){
+    if($ticker !== "") {
+        $json = file_get_contents($url . $ticker . $apiLink);
+        $obj = json_decode($json, true);
 
-            showTable($obj, $ticker);
-            //showGraph1($obj);
-            $closeArray = dayClose($obj);
-            $volumeArray = dayVolume($obj);
-            $date = $obj['Meta Data']['3. Last Refreshed'];
-            //echo $date;
-            //print_r($closeArray);
-        echo '<script type="text/javascript">',
-            //'document.getElementById("container").innerHTML = "sss";',
+        showTable($obj, $ticker);
+        //showGraph1($obj);
+        $closeArray = dayClose($obj);
+        $volumeArray = dayVolume($obj);
+        $date = $obj['Meta Data']['3. Last Refreshed'];
+        //echo $date;
+        //print_r($closeArray);
+        showPrice($closeArray, $volumeArray, $date);
+    }
 
-            'var closeArray = ',json_encode($closeArray),';',
-            'closeArray = closeArray.map(Number);',
-            'var volumeArray = ',json_encode($volumeArray),';',
-            'volumeArray = volumeArray.map(Number);',
-            'var date = ',json_encode($date), ';',
-            'var title = "Stock Price(" + date + ")";',
-            //'alert(volumeArray.toString());',
-                'Highcharts.chart(\'toGraph\', {
+}
+function showPrice($closeArray, $volumeArray, $date){
+    echo '<script type="text/javascript">',
+        //'document.getElementById("container").innerHTML = "sss";',
+
+    'var closeArray = ',json_encode($closeArray),';',
+    'closeArray = closeArray.map(Number);',
+    'var volumeArray = ',json_encode($volumeArray),';',
+    'volumeArray = volumeArray.map(Number);',
+    'var date = ',json_encode($date), ';',
+    'var title = "Stock Price(" + date + ")";',
+        //'alert(volumeArray.toString());',
+    'Highcharts.chart(\'toGraph\', {
                     chart: {
                         borderColor: \'#d8d8d8\',
                         borderWidth: 1,
@@ -184,127 +189,127 @@
                         },
                     }]
                 });',
-                '</script>';
-        }
+    '</script>';
+
+}
+function showTable($obj, $ticker){
+    $obj1 = $obj['Time Series (Daily)'];
+
+    $html = "<div id=\"toTable\"><table><tr><th>Stock Ticker Symbol</th><td>";
+    $html .= $ticker;
+    $html .= "</td></tr>";
+
+    $recentDay = getAttributeByIndex($obj1, 0);
+    $html .= "<tr><th>Close</th><td>";
+    $close = $recentDay['4. close'];
+    $html .= $close;
+    $html .= "</td></tr>";
+
+    $html .= "<tr><th>Open</th><td>";
+    $html .= $recentDay['1. open'];
+    $html .= "</td></tr>";
+
+    $previousDay = getAttributeByIndex($obj1, 1);
+    $html .= "<tr><th>Previous Close</th><td>";
+    $previous_close = $previousDay['4. close'];
+    $html .= $previous_close;
+    $html .= "</td></tr>";
+
+    $html .= "<tr><th>Change</th><td>";
+    //$change = 0;
+    if ($close > $previous_close) {
+        $change = $close - $previous_close;
+        $html .= number_format($change, 2, '.', ',');
+        $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
+    } else {
+        $change = $previous_close - $close;
+        $html .= number_format($change, 2, '.', ',');
+        $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
     }
-    function showTable($obj, $ticker){
-        $obj1 = $obj['Time Series (Daily)'];
+    $html .= "</td></tr>";
 
-        $html = "<div id=\"toTable\"><table><tr><th>Stock Ticker Symbol</th><td>";
-        $html .= $ticker;
-        $html .= "</td></tr>";
-
-        $recentDay = getAttributeByIndex($obj1, 0);
-        $html .= "<tr><th>Close</th><td>";
-        $close = $recentDay['4. close'];
-        $html .= $close;
-        $html .= "</td></tr>";
-
-        $html .= "<tr><th>Open</th><td>";
-        $html .= $recentDay['1. open'];
-        $html .= "</td></tr>";
-
-        $previousDay = getAttributeByIndex($obj1, 1);
-        $html .= "<tr><th>Previous Close</th><td>";
-        $previous_close = $previousDay['4. close'];
-        $html .= $previous_close;
-        $html .= "</td></tr>";
-
-        $html .= "<tr><th>Change</th><td>";
-        //$change = 0;
-        if ($close > $previous_close) {
-            $change = $close - $previous_close;
-            $html .= number_format($change, 2, '.', ',');
-            $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
-        } else {
-            $change = $previous_close - $close;
-            $html .= number_format($change, 2, '.', ',');
-            $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
-        }
-        $html .= "</td></tr>";
-
-        $html .= "<tr><th>Change Percent</th><td>";
-        $percent = 100 * $change / $previous_close;
-        $html .= number_format($percent, 2, '.', ',') . "%";
-        if ($close > $previous_close) {
-            $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
-        } else {
-            $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
-        }
-        $html .= "</td></tr>";
-
-        $html .= "<tr><th>Day's Range</th><td>";
-        $html .= $recentDay['3. low'] . "-" . $recentDay['2. high'];
-        $html .= "</td></tr>";
-
-        $html .= "<tr><th>volume</th><td>";
-        $html .= number_format($recentDay['5. volume']);
-        $html .= "</td></tr>";
-
-        $html .= "<tr><th>Timestamp</th><td>";
-        $html .= key($obj1);
-        $html .= "</td></tr>";
-
-        $html .= "<tr><th>Timestamp</th><td>";
-        $html .= "<span id='priceLink'>Price</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='SMALink' onclick=\"showGraph1(inputBox.value,'SMA')\">SMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='EMALink' onclick=\"showGraph1(inputBox.value,'EMA')\">EMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='STOCHLink' onclick=\"showGraph2(inputBox.value,'STOCH')\">STOCH</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='RSILink' onclick=\"showGraph1(inputBox.value,'RSI')\">RSI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='ADXLink' onclick=\"showGraph1(inputBox.value,'ADX')\">ADX</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='CCILink' onclick=\"showGraph1(inputBox.value,'CCI')\">CCI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='BBANDSLink'onclick=\"showGraph3(inputBox.value,'BBANDS')\">BBANDS</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='MACDLink' onclick=\"showGraph3(inputBox.value,'MACD')\">MACD</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "</td></tr>";
-
-        $html .= "</table></div>";
-        $html .= "<div id=\"toGraph\" style=\"width: 1319px; height: 600px; margin: 0 auto\"></div>";
-
-        if($ticker === ""){
-            $html = "";
-        }
-        else if (key($obj) === "Error Message") {
-            $html = "<div id=\"toTable\"><table><tr><th>Error</th><td>";
-            $html .= "Error: No recored has been found, please enter a valid symbol";
-            $html .= "</td></tr></table></div>";
-        }
-
-        echo $html;
+    $html .= "<tr><th>Change Percent</th><td>";
+    $percent = 100 * $change / $previous_close;
+    $html .= number_format($percent, 2, '.', ',') . "%";
+    if ($close > $previous_close) {
+        $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
+    } else {
+        $html .= "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
     }
-    function dayClose($obj){
-        $obj1 = $obj['Time Series (Daily)'];
-        $dataArray = array();
-        $dataLength = count($obj1);
-        for($i = 0; $i < $dataLength; $i++){
-            $day = getAttributeByIndex($obj1,$i);
-            $data = $day['4. close'];
-            array_push($dataArray, $data);
-        }
-        //print_r($dataArray);
-        return $dataArray;
+    $html .= "</td></tr>";
+
+    $html .= "<tr><th>Day's Range</th><td>";
+    $html .= $recentDay['3. low'] . "-" . $recentDay['2. high'];
+    $html .= "</td></tr>";
+
+    $html .= "<tr><th>volume</th><td>";
+    $html .= number_format($recentDay['5. volume']);
+    $html .= "</td></tr>";
+
+    $html .= "<tr><th>Timestamp</th><td>";
+    $html .= key($obj1);
+    $html .= "</td></tr>";
+
+    $html .= "<tr><th>Timestamp</th><td>";
+    $html .= "<span id='priceLink' onclick=\"document.getElementById('btnSearch').click()\">Price</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='SMALink' onclick=\"showGraph1(inputBox.value,'SMA')\">SMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='EMALink' onclick=\"showGraph1(inputBox.value,'EMA')\">EMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='STOCHLink' onclick=\"showGraph2(inputBox.value,'STOCH')\">STOCH</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='RSILink' onclick=\"showGraph1(inputBox.value,'RSI')\">RSI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='ADXLink' onclick=\"showGraph1(inputBox.value,'ADX')\">ADX</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='CCILink' onclick=\"showGraph1(inputBox.value,'CCI')\">CCI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='BBANDSLink'onclick=\"showGraph3(inputBox.value,'BBANDS')\">BBANDS</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "<span id='MACDLink' onclick=\"showGraph3(inputBox.value,'MACD')\">MACD</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+    $html .= "</td></tr>";
+
+    $html .= "</table></div>";
+    $html .= "<div id=\"toGraph\" style=\"width: 1319px; height: 600px; margin: 0 auto\"></div>";
+
+    if($ticker === ""){
+        $html = "";
     }
-    function dayVolume($obj){
-        $obj1 = $obj['Time Series (Daily)'];
-        $dataArray = array();
-        $dataLength = count($obj1);
-        for($i = 0; $i < $dataLength; $i++){
-            $day = getAttributeByIndex($obj1,$i);
-            $data = $day['5. volume'];
-            array_push($dataArray, $data/1000000);
-        }
-        //print_r($dataArray);
-        return $dataArray;
+    else if (key($obj) === "Error Message") {
+        $html = "<div id=\"toTable\"><table><tr><th>Error</th><td>";
+        $html .= "Error: No recored has been found, please enter a valid symbol";
+        $html .= "</td></tr></table></div>";
     }
-    function getAttributeByIndex($obj, $index){
-        $i = 0;
-        foreach ($obj as $attr){
-            if ($index === $i){
-                return $attr;
-            }
-            $i++;
-        }
-        return null;
+
+    echo $html;
+}
+function dayClose($obj){
+    $obj1 = $obj['Time Series (Daily)'];
+    $dataArray = array();
+    $dataLength = count($obj1);
+    for($i = 0; $i < $dataLength; $i++){
+        $day = getAttributeByIndex($obj1,$i);
+        $data = $day['4. close'];
+        array_push($dataArray, $data);
     }
+    //print_r($dataArray);
+    return $dataArray;
+}
+function dayVolume($obj){
+    $obj1 = $obj['Time Series (Daily)'];
+    $dataArray = array();
+    $dataLength = count($obj1);
+    for($i = 0; $i < $dataLength; $i++){
+        $day = getAttributeByIndex($obj1,$i);
+        $data = $day['5. volume'];
+        array_push($dataArray, $data/1000000);
+    }
+    //print_r($dataArray);
+    return $dataArray;
+}
+function getAttributeByIndex($obj, $index){
+    $i = 0;
+    foreach ($obj as $attr){
+        if ($index === $i){
+            return $attr;
+        }
+        $i++;
+    }
+    return null;
+}
 
 ?>
 </body>
@@ -424,7 +429,7 @@
         }
         indicatorDataD = indicatorDataD.map(Number);
         indicatorDataK = indicatorDataK.map(Number);
-        
+
         Highcharts.chart('toGraph', {
 
             chart: {
