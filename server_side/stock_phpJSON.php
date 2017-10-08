@@ -110,7 +110,7 @@
             $obj = json_decode($json, true);
 
             showTable($obj, $ticker);
-            //showGraph($obj);
+            //showGraph1($obj);
             $closeArray = dayClose($obj);
             $volumeArray = dayVolume($obj);
             $date = $obj['Meta Data']['3. Last Refreshed'];
@@ -129,7 +129,6 @@
                 'Highcharts.chart(\'toGraph\', {
                     chart: {
                         borderColor: \'#d8d8d8\',
-                        marginRight: 150,
                         borderWidth: 1,
                         marginRight: 200
                     },
@@ -248,14 +247,14 @@
 
         $html .= "<tr><th>Timestamp</th><td>";
         $html .= "<span id='priceLink'>Price</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='SMALink'>SMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='EMALink'>EMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='STOCHLink'>STOCH</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='RSILink'>RSI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='ADXLink'>ADX</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='CCILink'>CCI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='BBSNDSLink'>BBANDS</span>&nbsp;&nbsp;&nbsp;&nbsp;";
-        $html .= "<span id='MACDLink'>MACD</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='SMALink' onclick=\"showGraph1(inputBox.value,'SMA')\">SMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='EMALink' onclick=\"showGraph1(inputBox.value,'EMA')\">EMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='STOCHLink' onclick=\"showGraph2(inputBox.value,'STOCH')\">STOCH</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='RSILink' onclick=\"showGraph1(inputBox.value,'RSI')\">RSI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='ADXLink' onclick=\"showGraph1(inputBox.value,'ADX')\">ADX</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='CCILink' onclick=\"showGraph1(inputBox.value,'CCI')\">CCI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='BBANDSLink'onclick=\"showGraph3(inputBox.value,'BBANDS')\">BBANDS</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='MACDLink' onclick=\"showGraph3(inputBox.value,'MACD')\">MACD</span>&nbsp;&nbsp;&nbsp;&nbsp;";
         $html .= "</td></tr>";
 
         $html .= "</table></div>";
@@ -312,7 +311,6 @@
 
 <script type="text/javascript">
     var inputBox = document.getElementById('tickerInput');
-    var url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
     var apiLink = "&apikey=OE0QXT6U0BKFHVV8";
     function clearInput(){
         inputBox.value = "";
@@ -339,6 +337,267 @@
 
         }
     }
+
+    function showGraph1(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
+        //alert(url);
+        var to_json = loadXML(url);
+        var json = JSON.parse(to_json);
+        var obj0 = json["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = json[indi];
+//        alert(obj0["3: Last Refreshed"]);
+        var indicatorData = [];
+        for(var i = 0; i < 100; i++){
+            //var indiData = ;
+            indicatorData.push(getAttributeByIndex(obj1, i)[indicator]);
+        }
+        indicatorData = indicatorData.map(Number);
+
+        Highcharts.chart('toGraph', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                marginRight: 200,
+                type: 'line'
+            },
+
+
+            title: {
+                text: obj0["2: Indicator"]
+            },
+
+            subtitle: {
+                text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
+            },
+
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: 10,
+                y: 270
+            },
+            xAxis : {
+                type: 'datetime',
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+
+            series: [{
+                name: 'AAPL',
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: Date.UTC(2006, 0, 1),
+                data: indicatorData
+            }]
+        });
+
+    }
+    function showGraph2(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
+        //alert(url);
+        var to_json = loadXML(url);
+        var json = JSON.parse(to_json);
+        var obj0 = json["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = json[indi];
+//        alert(obj0["3: Last Refreshed"]);
+        var indicatorDataD = [];
+        var indicatorDataK = [];
+        for(var i = 0; i < 100; i++){
+            //var indiData = ;
+//            console.log(indicator);
+            indicatorDataD.push(getAttributeByIndex(obj1, i)["SlowD"]);
+            indicatorDataK.push(getAttributeByIndex(obj1, i)["SlowK"]);
+        }
+        indicatorDataD = indicatorDataD.map(Number);
+        indicatorDataK = indicatorDataK.map(Number);
+        
+        Highcharts.chart('toGraph', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                marginRight: 200,
+                type: 'line'
+            },
+
+
+            title: {
+                text: obj0["2: Indicator"]
+            },
+
+            subtitle: {
+                text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
+            },
+
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: 10,
+                y: 270
+            },
+            xAxis : {
+                type: 'datetime',
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+
+            series: [{
+                name: 'AAPL SlowD',
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: Date.UTC(2006, 0, 1),
+                data: indicatorDataD
+            },{
+                name: 'AAPL SlowK',
+                pointInterval: 24 * 3600000,
+                pointStart: Date.UTC(2006, 0, 1),
+                data: indicatorDataK
+            }]
+        });
+
+    }
+    function showGraph3(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
+        //alert(url);
+        var to_json = loadXML(url);
+        var json = JSON.parse(to_json);
+        var obj0 = json["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = json[indi];
+//        alert(obj0["3: Last Refreshed"]);
+        var indicatorData1 = [];
+        var indicatorData2 = [];
+        var indicatorData3 = [];
+        if(indicator === "BBANDS"){
+            var indi1 = "Real Upper Band";
+            var indi2 = "Real Middle Band";
+            var indi3 = "Real Lower Band";
+        } else {
+            indi1 = "MACD_Signal";
+            indi2 = "MACD_Hist";
+            indi3 = "MACD";
+        }
+        for(var i = 0; i < 100; i++){
+            //var indiData = ;
+//            console.log(indicator);
+            indicatorData1.push(getAttributeByIndex(obj1, i)[indi1]);
+            indicatorData2.push(getAttributeByIndex(obj1, i)[indi2]);
+            indicatorData3.push(getAttributeByIndex(obj1, i)[indi3]);
+        }
+        indicatorData1 = indicatorData1.map(Number);
+        indicatorData2 = indicatorData2.map(Number);
+        indicatorData3 = indicatorData3.map(Number);
+
+        Highcharts.chart('toGraph', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                marginRight: 200,
+                type: 'line'
+            },
+
+
+            title: {
+                text: obj0["2: Indicator"]
+            },
+
+            subtitle: {
+                text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
+            },
+
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: 10,
+                y: 270
+            },
+            xAxis : {
+                type: 'datetime',
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+
+            series: [{
+                name: 'AAPL ' + indi1,
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: Date.UTC(2006, 0, 1),
+                data: indicatorData1
+            },{
+                name: 'AAPL ' + indi2,
+                pointInterval: 24 * 3600000,
+                pointStart: Date.UTC(2006, 0, 1),
+                data: indicatorData2
+            },{
+                name: 'AAPL ' + indi1,
+                pointInterval: 24 * 3600000,
+                pointStart: Date.UTC(2006, 0, 1),
+                data: indicatorData3
+            }]
+        });
+
+    }
+
+    function loadXML(url) {
+        var xmlhttp, xmlDoc;
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        xmlhttp.open("GET", url, false);
+        xmlhttp.send();
+
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            xmlDoc = xmlhttp.responseText;
+            return xmlDoc;
+        } else {
+            alert("Please enter a valid symbol!");
+            exit();
+        }
+    }
+
+    function getAttributeByIndex(obj, index){
+        var i = 0;
+        for (var attr in obj){
+            if (index === i){
+                return obj[attr];
+            }
+            i++;
+        }
+        return null;
+    }
+
+    //document.getElementById("SMALink").addEventListener("click", showGraph1(inputBox.value, "SMA"));
 
 
 </script>

@@ -93,49 +93,7 @@
     <p id="mandText">* - Mandatory fields</p>
 </form>
 <div id="contentToShow">
-<!--    <table id="series">-->
-<!--        <tr>-->
-<!--            <th>Stock Ticker Symbol</th>-->
-<!--            <td>aaaa</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Close</th>-->
-<!--            <td>bbbb</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Open</th>-->
-<!--            <td>cccc</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Previous Close</th>-->
-<!--            <td>dddd</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Change</th>-->
-<!--            <td>5555</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Change Percent</th>-->
-<!--            <td>6666</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Day's Range</th>-->
-<!--            <td>7777</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Volume</th>-->
-<!--            <td>8888</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Timestamp</th>-->
-<!--            <td>9999</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <th>Indicators</th>-->
-<!--            <td>Price</td>-->
-<!--        </tr>-->
-<!---->
-<!--    </table>-->
+
 </div>
 
 <?php
