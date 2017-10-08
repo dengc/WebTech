@@ -71,6 +71,10 @@
         border: 1px solid #e0e0e0;
         padding: 5px;
     }
+    span{
+        color: blue;
+        cursor: pointer;
+    }
 </style>
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
 </head>
@@ -158,7 +162,7 @@
                         verticalAlign: \'top\',
                         layout: \'vertical\',
                         x: 10,
-                        y: 170
+                        y: 270
                     },
                 
                     series: [{
@@ -241,6 +245,19 @@
         $html .= "<tr><th>Timestamp</th><td>";
         $html .= key($obj1);
         $html .= "</td></tr>";
+
+        $html .= "<tr><th>Timestamp</th><td>";
+        $html .= "<span id='priceLink'>Price</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='SMALink'>SMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='EMALink'>EMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='STOCHLink'>STOCH</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='RSILink'>RSI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='ADXLink'>ADX</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='CCILink'>CCI</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='BBSNDSLink'>BBANDS</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "<span id='MACDLink'>MACD</span>&nbsp;&nbsp;&nbsp;&nbsp;";
+        $html .= "</td></tr>";
+
         $html .= "</table></div>";
         $html .= "<div id=\"toGraph\" style=\"width: 1319px; height: 600px; margin: 0 auto\"></div>";
 
