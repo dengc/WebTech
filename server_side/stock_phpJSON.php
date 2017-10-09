@@ -4,11 +4,10 @@
     <style>
         body,p{
             text-align: center;
-            margin: 0;
+            margin: 5px auto;
         }
         form{
             display: inline-block;
-            margin-top: 5px;
             margin-bottom: 20px;
             background-color: #f5f5f5;
             width: 630px;
@@ -75,6 +74,36 @@
             color: blue;
             cursor: pointer;
         }
+        #newsContent{
+            border: 1px solid #d8d8d8;
+            background-color: #fbfbfb;
+            height: auto;
+            width: 1319px;
+            display: none;
+            text-align: left;
+        }
+        a{
+            text-decoration: none;
+            color: blue;
+        }
+        ul {
+            list-style-type: none;
+        }
+        li{
+            margin: auto -39px;
+        }
+        .pubTime{
+            margin-left: 40px;
+            color: black;
+            cursor: default;
+        }
+        .liLine{
+            background-color: #e0e0e0;
+            display: inline-block;
+            height: 1px;
+            width: 1319px;
+            margin: 12px -40px;
+        }
     </style>
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
 </head>
@@ -82,9 +111,9 @@
 <body>
 
 <?php
-    $ticker = $_POST["ticker"];
-    $url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-    $apiLink = "&apikey=OE0QXT6U0BKFHVV8";
+$ticker = $_POST["ticker"];
+$url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+$apiLink = "&apikey=OE0QXT6U0BKFHVV8";
 ?>
 <form name="myForm" method="post" action="<?=$_SERVER['PHP_SELF'];?>">
     <p id="title">Stock Search</p>
@@ -112,8 +141,29 @@ if(isset($_POST['Search'])){
         $volumeArray = dayVolume($obj);
         $date = $obj['Meta Data']['3. Last Refreshed'];
         showPrice($closeArray, $volumeArray, $date, $ticker);
+        $xmlURL = "https://seekingalpha.com/api/sa/combined/".$ticker.".xml";
+        $xmlStr = simplexml_load_file($xmlURL);
+        $xmlJSON = json_encode($xmlStr);
+        $xmlArray = json_decode($xmlJSON,TRUE);
+        showNEWs($xmlArray);
+    }
+}
+function showNEWs($xmlArray){
+    $html = "<div id=\"newsContent\"><ul>";
+
+    for($i = 0; $i < 5; $i++){
+        $titleURL = $xmlArray["channel"]["item"][$i]["link"];
+        $pubTime = $xmlArray["channel"]["item"][$i]["pubDate"];
+        $html .= "<li><a target='_blank' href='". $titleURL ."'>".$xmlArray["channel"]["item"][$i]["title"]."</a>";
+        $html .="<span class='pubTime'>Publicated Time: " .substr( $pubTime, 0, -6 )."</span></li>";
+        if($i < 4){
+            $html .= "<div class='liLine'></div>";
+        }
     }
 
+
+    $html .= "</ul></div>";
+    echo $html;
 }
 function showPrice($closeArray, $volumeArray, $date, $ticker){
     echo '<script type="text/javascript">',
@@ -257,7 +307,8 @@ function showTable($obj, $ticker){
     $html .= "</td></tr>";
 
     $html .= "</table></div>";
-    $html .= "<div id=\"toGraph\" style=\"width: 1319px; height: 600px; margin: 0 auto\"></div>";
+    $html .= "<div id=\"toGraph\" style=\"width:1319px; height:600px; margin:0 auto;\"></div>";
+    $html .= "<div id=\"toNews\" style=\"width:1319px; margin:10px auto;\"><p id = \"newsIndicator\" style=\"color:grey; font-size: 20px;\">click to show stock news</p><img id='downArrow' src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Gray_Arrow_Down.png\" width='30' onclick='myFunction()'/></div>";
 
     if($ticker === ""){
         $html = "";
@@ -561,7 +612,28 @@ function getAttributeByIndex($obj, $index){
         return null;
     }
 
-    //document.getElementById("SMALink").addEventListener("click", showGraph1(inputBox.value, "SMA"));
+    function myFunction() {
+        var x = document.getElementById("newsContent");
+        if (x.style.display === "inline-block") {
+            x.style.display = "none";
+        } else {
+            x.style.display = "inline-block";
+        }
+        var y = document.getElementById("newsIndicator");
+        if (y.innerHTML === "click to show stock news") {
+            y.innerHTML = "click to hide stock news";
+        } else {
+            y.innerHTML = "click to show stock news";
+        }
+        var z = document.getElementById("downArrow");
+        if (z.src === "http://cs-server.usc.edu:45678/hw/hw6/images/Gray_Arrow_Up.png") {
+            z.src = "http://cs-server.usc.edu:45678/hw/hw6/images/Gray_Arrow_Down.png";
+        } else {
+            z.src = "http://cs-server.usc.edu:45678/hw/hw6/images/Gray_Arrow_Up.png";
+        }
+    }
+
+    //document.getElementById("downArrow").addEventListener("click", myFunction);
 
 
 </script>
