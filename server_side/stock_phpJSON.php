@@ -82,25 +82,23 @@
 <body>
 
 <?php
-$ticker = $_POST["ticker"];
-$url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-$apiLink = "&apikey=OE0QXT6U0BKFHVV8";
+    $ticker = $_POST["ticker"];
+    $url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+    $apiLink = "&apikey=OE0QXT6U0BKFHVV8";
 ?>
-<form name="myform" method="post" action="<?=$_SERVER['PHP_SELF'];?>">
+<form name="myForm" method="post" action="<?=$_SERVER['PHP_SELF'];?>">
     <p id="title">Stock Search</p>
     <p id="line"></p>
     <label for="tickerInput" id="tickerText">Enter Stock Ticker Symbol:*</label>
     <input type ="text" name ="ticker" id ="tickerInput" value="<?php echo $ticker;?>"/>
 
     <div id="btns">
-        <input id="btnSearch" type ="submit"  name="Search" value="Search" onclick="searchValue()"/>
+        <input id="btnSearch" type ="submit"  name="Search" value="Search" onclick="searchValue();"/>
         <input id="btnClear" type ="button" name="Clear" value ="Clear" onclick="clearInput();" />
     </div>
 
     <p id="mandText">* - Mandatory fields</p>
 </form>
-<!--<div id="contentToShow"></div>-->
-<!--<div id="container" style="width: 1300px; height: 400px; margin: 0 auto"></div>-->
 
 <?php
 
@@ -108,21 +106,17 @@ if(isset($_POST['Search'])){
     if($ticker !== "") {
         $json = file_get_contents($url . $ticker . $apiLink);
         $obj = json_decode($json, true);
-
         showTable($obj, $ticker);
-        //showGraph1($obj);
+
         $closeArray = dayClose($obj);
         $volumeArray = dayVolume($obj);
         $date = $obj['Meta Data']['3. Last Refreshed'];
-        //echo $date;
-        //print_r($closeArray);
-        showPrice($closeArray, $volumeArray, $date);
+        showPrice($closeArray, $volumeArray, $date, $ticker);
     }
 
 }
-function showPrice($closeArray, $volumeArray, $date){
+function showPrice($closeArray, $volumeArray, $date, $ticker){
     echo '<script type="text/javascript">',
-        //'document.getElementById("container").innerHTML = "sss";',
 
     'var closeArray = ',json_encode($closeArray),';',
     'closeArray = closeArray.map(Number);',
@@ -130,7 +124,8 @@ function showPrice($closeArray, $volumeArray, $date){
     'volumeArray = volumeArray.map(Number);',
     'var date = ',json_encode($date), ';',
     'var title = "Stock Price(" + date + ")";',
-        //'alert(volumeArray.toString());',
+    'var ticker = ',json_encode($ticker),';',
+
     'Highcharts.chart(\'toGraph\', {
                     chart: {
                         borderColor: \'#d8d8d8\',
@@ -171,7 +166,7 @@ function showPrice($closeArray, $volumeArray, $date){
                 
                     series: [{
                         type: \'area\',
-                        name: \'AAPL\',
+                        name: ticker,
                         color: \'#ff898c\',
                         pointInterval: 24 * 3600000,
                         pointStart: Date.UTC(2006, 0, 1),
@@ -179,7 +174,7 @@ function showPrice($closeArray, $volumeArray, $date){
                     }, {
                         type: \'column\',
                         yAxis: 1,
-                        name: \'AAPL Volume\',
+                        name: ticker + \' Volume\',
                         color: \'white\',
                         pointInterval: 24 * 3600000,
                         pointStart: Date.UTC(2006, 0, 1),
@@ -190,8 +185,8 @@ function showPrice($closeArray, $volumeArray, $date){
                     }]
                 });',
     '</script>';
-
 }
+
 function showTable($obj, $ticker){
     $obj1 = $obj['Time Series (Daily)'];
 
@@ -216,7 +211,6 @@ function showTable($obj, $ticker){
     $html .= "</td></tr>";
 
     $html .= "<tr><th>Change</th><td>";
-    //$change = 0;
     if ($close > $previous_close) {
         $change = $close - $previous_close;
         $html .= number_format($change, 2, '.', ',');
@@ -276,6 +270,7 @@ function showTable($obj, $ticker){
 
     echo $html;
 }
+
 function dayClose($obj){
     $obj1 = $obj['Time Series (Daily)'];
     $dataArray = array();
@@ -285,7 +280,6 @@ function dayClose($obj){
         $data = $day['4. close'];
         array_push($dataArray, $data);
     }
-    //print_r($dataArray);
     return $dataArray;
 }
 function dayVolume($obj){
@@ -297,7 +291,6 @@ function dayVolume($obj){
         $data = $day['5. volume'];
         array_push($dataArray, $data/1000000);
     }
-    //print_r($dataArray);
     return $dataArray;
 }
 function getAttributeByIndex($obj, $index){
@@ -319,7 +312,6 @@ function getAttributeByIndex($obj, $index){
     var apiLink = "&apikey=OE0QXT6U0BKFHVV8";
     function clearInput(){
         inputBox.value = "";
-        //inputBox.focus();
         document.getElementById("toTable").remove();
         document.getElementById("toGraph").remove();
     }
@@ -330,17 +322,6 @@ function getAttributeByIndex($obj, $index){
         if(!res){
             alert("Please enter a symbol");
         }
-        else {
-//            url += tickerInput;
-//            url += apiLink;
-//            var to_json = loadXML(url);
-//            var json = JSON.parse(to_json);
-            //alert( "<table><tr><th>Error</th><td>Error: No recored has been found, please enter a valid symbol</td></tr></table>");
-//            alert(re);
-//            return false;
-            //chart();
-
-        }
     }
 
     function showGraph1(symbol, indicator) {
@@ -348,16 +329,15 @@ function getAttributeByIndex($obj, $index){
         url += indicator;
         url += "&symbol=" + symbol;
         url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
-        //alert(url);
         var to_json = loadXML(url);
         var json = JSON.parse(to_json);
+
         var obj0 = json["Meta Data"];
         var indi = "Technical Analysis: " + indicator;
         var obj1 = json[indi];
-//        alert(obj0["3: Last Refreshed"]);
+
         var indicatorData = [];
         for(var i = 0; i < 100; i++){
-            //var indiData = ;
             indicatorData.push(getAttributeByIndex(obj1, i)[indicator]);
         }
         indicatorData = indicatorData.map(Number);
@@ -370,16 +350,12 @@ function getAttributeByIndex($obj, $index){
                 marginRight: 200,
                 type: 'line'
             },
-
-
             title: {
                 text: obj0["2: Indicator"]
             },
-
             subtitle: {
                 text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
             },
-
             yAxis: {
                 title: {
                     text: indicator
@@ -393,12 +369,11 @@ function getAttributeByIndex($obj, $index){
                 y: 270
             },
             xAxis : {
-                type: 'datetime',
+                type: 'datetime'
                 //minRange: 99 * 24 * 3600000 // fourteen days
             },
-
             series: [{
-                name: 'AAPL',
+                name: symbol,
                 color: 'red',
                 pointInterval: 24 * 3600000,
                 pointStart: Date.UTC(2006, 0, 1),
@@ -412,18 +387,16 @@ function getAttributeByIndex($obj, $index){
         url += indicator;
         url += "&symbol=" + symbol;
         url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
-        //alert(url);
         var to_json = loadXML(url);
         var json = JSON.parse(to_json);
+
         var obj0 = json["Meta Data"];
         var indi = "Technical Analysis: " + indicator;
         var obj1 = json[indi];
-//        alert(obj0["3: Last Refreshed"]);
+
         var indicatorDataD = [];
         var indicatorDataK = [];
         for(var i = 0; i < 100; i++){
-            //var indiData = ;
-//            console.log(indicator);
             indicatorDataD.push(getAttributeByIndex(obj1, i)["SlowD"]);
             indicatorDataK.push(getAttributeByIndex(obj1, i)["SlowK"]);
         }
@@ -438,16 +411,12 @@ function getAttributeByIndex($obj, $index){
                 marginRight: 200,
                 type: 'line'
             },
-
-
             title: {
                 text: obj0["2: Indicator"]
             },
-
             subtitle: {
                 text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
             },
-
             yAxis: {
                 title: {
                     text: indicator
@@ -461,37 +430,35 @@ function getAttributeByIndex($obj, $index){
                 y: 270
             },
             xAxis : {
-                type: 'datetime',
+                type: 'datetime'
                 //minRange: 99 * 24 * 3600000 // fourteen days
             },
-
             series: [{
-                name: 'AAPL SlowD',
+                name: symbol + ' SlowD',
                 color: 'red',
                 pointInterval: 24 * 3600000,
                 pointStart: Date.UTC(2006, 0, 1),
                 data: indicatorDataD
             },{
-                name: 'AAPL SlowK',
+                name: symbol + ' SlowK',
                 pointInterval: 24 * 3600000,
                 pointStart: Date.UTC(2006, 0, 1),
                 data: indicatorDataK
             }]
         });
-
     }
     function showGraph3(symbol, indicator) {
         var url = "https://www.alphavantage.co/query?function=";
         url += indicator;
         url += "&symbol=" + symbol;
         url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
-        //alert(url);
         var to_json = loadXML(url);
         var json = JSON.parse(to_json);
+
         var obj0 = json["Meta Data"];
         var indi = "Technical Analysis: " + indicator;
         var obj1 = json[indi];
-//        alert(obj0["3: Last Refreshed"]);
+
         var indicatorData1 = [];
         var indicatorData2 = [];
         var indicatorData3 = [];
@@ -505,8 +472,6 @@ function getAttributeByIndex($obj, $index){
             indi3 = "MACD";
         }
         for(var i = 0; i < 100; i++){
-            //var indiData = ;
-//            console.log(indicator);
             indicatorData1.push(getAttributeByIndex(obj1, i)[indi1]);
             indicatorData2.push(getAttributeByIndex(obj1, i)[indi2]);
             indicatorData3.push(getAttributeByIndex(obj1, i)[indi3]);
@@ -523,16 +488,12 @@ function getAttributeByIndex($obj, $index){
                 marginRight: 200,
                 type: 'line'
             },
-
-
             title: {
                 text: obj0["2: Indicator"]
             },
-
             subtitle: {
                 text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
             },
-
             yAxis: {
                 title: {
                     text: indicator
@@ -546,29 +507,27 @@ function getAttributeByIndex($obj, $index){
                 y: 270
             },
             xAxis : {
-                type: 'datetime',
+                type: 'datetime'
                 //minRange: 99 * 24 * 3600000 // fourteen days
             },
-
             series: [{
-                name: 'AAPL ' + indi1,
+                name: symbol + ' ' + indi1,
                 color: 'red',
                 pointInterval: 24 * 3600000,
                 pointStart: Date.UTC(2006, 0, 1),
                 data: indicatorData1
             },{
-                name: 'AAPL ' + indi2,
+                name: symbol + ' ' + indi2,
                 pointInterval: 24 * 3600000,
                 pointStart: Date.UTC(2006, 0, 1),
                 data: indicatorData2
             },{
-                name: 'AAPL ' + indi1,
+                name: symbol + ' ' + indi1,
                 pointInterval: 24 * 3600000,
                 pointStart: Date.UTC(2006, 0, 1),
                 data: indicatorData3
             }]
         });
-
     }
 
     function loadXML(url) {
