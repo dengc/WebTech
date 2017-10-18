@@ -196,7 +196,7 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
     'var title = "Stock Price (" + res + ")";',
     'var ticker = ',json_encode($ticker),';',
 
-    'var inputDate = Date.now() - 24 * 3600000 * 100;',
+    'var inputDate = Date.now() - 24 * 3600000 * 99;',
 
     'Highcharts.chart(\'toGraph\', {
                     chart: {
@@ -397,7 +397,7 @@ function getAttributeByIndex($obj, $index){
 <script type="text/javascript">
     var inputBox = document.getElementById('tickerInput');
     var apiLink = "&apikey=OE0QXT6U0BKFHVV8";
-    var inputDate = Date.now() - 24 * 3600000 * 180;
+    var inputDate = Date.now() - 24 * 3600000 * 179;
     // var inputDate = Date.now();
     function clearInput(){
         inputBox.value = "";
@@ -465,6 +465,7 @@ function getAttributeByIndex($obj, $index){
             },
             xAxis : {
                 type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
                 labels: {
                     format: '{value:%m/%d}'
                 }
@@ -473,6 +474,7 @@ function getAttributeByIndex($obj, $index){
             series: [{
                 name: symbol,
                 marker: {
+                    radius: 3,
                     enabled: true            
                 },
                 color: 'red',
@@ -537,6 +539,7 @@ function getAttributeByIndex($obj, $index){
             },
             xAxis : {
                 type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
                 labels: {
                     format: '{value:%m/%d}'
                 }
@@ -545,6 +548,7 @@ function getAttributeByIndex($obj, $index){
             series: [{
                 name: symbol + ' SlowD',
                 marker: {
+                    radius: 3,
                     enabled: true            
                 },
                 color: 'red',
@@ -554,6 +558,7 @@ function getAttributeByIndex($obj, $index){
             },{
                 name: symbol + ' SlowK',
                 marker: {
+                    radius: 3,
                     enabled: true            
                 },
                 pointInterval: 24 * 3600000,
@@ -629,6 +634,7 @@ function getAttributeByIndex($obj, $index){
             },
             xAxis : {
                 type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
                 labels: {
                     format: '{value:%m/%d}'
                 }
@@ -637,6 +643,7 @@ function getAttributeByIndex($obj, $index){
             series: [{
                 name: symbol + ' ' + indi1,
                 marker: {
+                    radius: 3,
                     enabled: true            
                 },
                 color: 'red',
@@ -646,6 +653,7 @@ function getAttributeByIndex($obj, $index){
             },{
                 name: symbol + ' ' + indi2,
                 marker: {
+                    radius: 3,
                     enabled: true            
                 },
                 pointInterval: 24 * 3600000,
@@ -654,6 +662,7 @@ function getAttributeByIndex($obj, $index){
             },{
                 name: symbol + ' ' + indi1,
                 marker: {
+                    radius: 3,
                     enabled: true            
                 },
                 pointInterval: 24 * 3600000,
