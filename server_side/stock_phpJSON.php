@@ -134,7 +134,7 @@ $apiLink = "&apikey=OE0QXT6U0BKFHVV8";
 
 <?php
 
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('US/Eastern');
 
 $arrContextOptions=array(
     "ssl"=>array(
@@ -397,7 +397,8 @@ function getAttributeByIndex($obj, $index){
 <script type="text/javascript">
     var inputBox = document.getElementById('tickerInput');
     var apiLink = "&apikey=OE0QXT6U0BKFHVV8";
-    var inputDate = Date.now() - 24 * 3600000 * 100;
+    var inputDate = Date.now() - 24 * 3600000 * 180;
+    // var inputDate = Date.now();
     function clearInput(){
         inputBox.value = "";
         document.getElementById("toTable").remove();
@@ -418,7 +419,7 @@ function getAttributeByIndex($obj, $index){
         var url = "https://www.alphavantage.co/query?function=";
         url += indicator;
         url += "&symbol=" + symbol;
-        url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
+        url += "&interval=daily&time_period=10&series_type=open&apikey=" + apiLink;
         var to_json = loadXML(url);
         var json = JSON.parse(to_json);
 
@@ -427,7 +428,7 @@ function getAttributeByIndex($obj, $index){
         var obj1 = json[indi];
 
         var indicatorData = [];
-        for(var i = 0; i < 100; i++){
+        for(var i = 0; i < 180; i++){
             indicatorData.push(getAttributeByIndex(obj1, i)[indicator]);
         }
         indicatorData = indicatorData.map(Number);
@@ -459,6 +460,9 @@ function getAttributeByIndex($obj, $index){
                 x: 10,
                 y: 270
             },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
             xAxis : {
                 type: 'datetime',
                 labels: {
@@ -468,6 +472,9 @@ function getAttributeByIndex($obj, $index){
             },
             series: [{
                 name: symbol,
+                marker: {
+                    enabled: true            
+                },
                 color: 'red',
                 pointInterval: 24 * 3600000,
                 pointStart: inputDate,
@@ -480,7 +487,7 @@ function getAttributeByIndex($obj, $index){
         var url = "https://www.alphavantage.co/query?function=";
         url += indicator;
         url += "&symbol=" + symbol;
-        url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
+        url += "&interval=daily&time_period=10&series_type=open&apikey=" + apiLink;
         var to_json = loadXML(url);
         var json = JSON.parse(to_json);
 
@@ -490,7 +497,7 @@ function getAttributeByIndex($obj, $index){
 
         var indicatorDataD = [];
         var indicatorDataK = [];
-        for(var i = 0; i < 100; i++){
+        for(var i = 0; i < 180; i++){
             indicatorDataD.push(getAttributeByIndex(obj1, i)["SlowD"]);
             indicatorDataK.push(getAttributeByIndex(obj1, i)["SlowK"]);
         }
@@ -525,6 +532,9 @@ function getAttributeByIndex($obj, $index){
                 x: 10,
                 y: 270
             },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
             xAxis : {
                 type: 'datetime',
                 labels: {
@@ -534,12 +544,18 @@ function getAttributeByIndex($obj, $index){
             },
             series: [{
                 name: symbol + ' SlowD',
+                marker: {
+                    enabled: true            
+                },
                 color: 'red',
                 pointInterval: 24 * 3600000,
                 pointStart: inputDate,
                 data: indicatorDataD
             },{
                 name: symbol + ' SlowK',
+                marker: {
+                    enabled: true            
+                },
                 pointInterval: 24 * 3600000,
                 pointStart: inputDate,
                 data: indicatorDataK
@@ -550,7 +566,7 @@ function getAttributeByIndex($obj, $index){
         var url = "https://www.alphavantage.co/query?function=";
         url += indicator;
         url += "&symbol=" + symbol;
-        url += "&interval=weekly&time_period=10&series_type=open&apikey=" + apiLink;
+        url += "&interval=daily&time_period=10&series_type=open&apikey=" + apiLink;
         var to_json = loadXML(url);
         var json = JSON.parse(to_json);
 
@@ -570,7 +586,7 @@ function getAttributeByIndex($obj, $index){
             indi2 = "MACD_Hist";
             indi3 = "MACD";
         }
-        for(var i = 0; i < 100; i++){
+        for(var i = 0; i < 180; i++){
             indicatorData1.push(getAttributeByIndex(obj1, i)[indi1]);
             indicatorData2.push(getAttributeByIndex(obj1, i)[indi2]);
             indicatorData3.push(getAttributeByIndex(obj1, i)[indi3]);
@@ -608,6 +624,9 @@ function getAttributeByIndex($obj, $index){
                 x: 10,
                 y: 270
             },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
             xAxis : {
                 type: 'datetime',
                 labels: {
@@ -617,17 +636,26 @@ function getAttributeByIndex($obj, $index){
             },
             series: [{
                 name: symbol + ' ' + indi1,
+                marker: {
+                    enabled: true            
+                },
                 color: 'red',
                 pointInterval: 24 * 3600000,
                 pointStart: inputDate,
                 data: indicatorData1
             },{
                 name: symbol + ' ' + indi2,
+                marker: {
+                    enabled: true            
+                },
                 pointInterval: 24 * 3600000,
                 pointStart: inputDate,
                 data: indicatorData2
             },{
                 name: symbol + ' ' + indi1,
+                marker: {
+                    enabled: true            
+                },
                 pointInterval: 24 * 3600000,
                 pointStart: inputDate,
                 data: indicatorData3
