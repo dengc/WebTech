@@ -186,8 +186,10 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
 
     'var closeArray = ',json_encode($closeArray),';',
     'closeArray = closeArray.map(Number);',
+    'closeArray.reverse();',
     'var volumeArray = ',json_encode($volumeArray),';',
     'volumeArray = volumeArray.map(Number);',
+    'volumeArray.reverse();',
     'var date = ',json_encode($date), ';',
     'var res = date.substring(5,7) + "/" + date.substring(8,10) + "/" + date.substring(0,4);',
 
@@ -429,6 +431,7 @@ function getAttributeByIndex($obj, $index){
             indicatorData.push(getAttributeByIndex(obj1, i)[indicator]);
         }
         indicatorData = indicatorData.map(Number);
+        indicatorData.reverse();
 
         Highcharts.chart('toGraph', {
 
@@ -493,6 +496,8 @@ function getAttributeByIndex($obj, $index){
         }
         indicatorDataD = indicatorDataD.map(Number);
         indicatorDataK = indicatorDataK.map(Number);
+        indicatorDataD.reverse();
+        indicatorDataK.reverse();
 
         Highcharts.chart('toGraph', {
 
@@ -573,6 +578,9 @@ function getAttributeByIndex($obj, $index){
         indicatorData1 = indicatorData1.map(Number);
         indicatorData2 = indicatorData2.map(Number);
         indicatorData3 = indicatorData3.map(Number);
+        indicatorData1.reverse();
+        indicatorData2.reverse();
+        indicatorData3.reverse();
 
         Highcharts.chart('toGraph', {
 
