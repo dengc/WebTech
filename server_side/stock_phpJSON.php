@@ -134,9 +134,18 @@ $apiLink = "&apikey=OE0QXT6U0BKFHVV8";
 
 <?php
 
+date_default_timezone_set('America/New_York');
+
+$arrContextOptions=array(
+    "ssl"=>array(
+        "verify_peer"=>false,
+        "verify_peer_name"=>false
+    )
+);  
+
 if(isset($_POST['Search'])){
     if($ticker !== "") {
-        $json = file_get_contents($url . $ticker . $apiLink);
+        $json = file_get_contents($url . $ticker . $apiLink, FALSE, stream_context_create($arrContextOptions));
         $obj = json_decode($json, true);
         showTable($obj, $ticker);
 
@@ -145,7 +154,8 @@ if(isset($_POST['Search'])){
         $date = $obj['Meta Data']['3. Last Refreshed'];
         showPrice($closeArray, $volumeArray, $date, $ticker);
         $xmlURL = "https://seekingalpha.com/api/sa/combined/".$ticker.".xml";
-        $xmlStr = simplexml_load_file($xmlURL);
+        $xmlURL = file_get_contents($xmlURL, FALSE, stream_context_create($arrContextOptions));
+        $xmlStr = simplexml_load_string($xmlURL);
         $xmlJSON = json_encode($xmlStr);
         $xmlArray = json_decode($xmlJSON,TRUE);
         showNEWs($xmlArray);
