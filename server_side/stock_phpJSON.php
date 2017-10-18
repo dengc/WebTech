@@ -192,6 +192,10 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
                     subtitle: {
                         text: \'<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>\'
                     },
+                    tooltip:{
+                        valueDecimals: 2,
+                        xDateFormat: \'%m/%d\',
+                    },
                     xAxis: [{
                         type: \'datetime\',
                         labels: {
@@ -228,6 +232,7 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
                         name: ticker,
                         color: \'#ff898c\',
                         pointInterval: 24 * 3600000,
+                        lineColor: \'red\',
                         pointStart: inputDate,
                         data: closeArray
                     }, {
@@ -370,6 +375,7 @@ function getAttributeByIndex($obj, $index){
 <script type="text/javascript">
     var inputBox = document.getElementById('tickerInput');
     var apiLink = "&apikey=OE0QXT6U0BKFHVV8";
+    var inputDate = Date.now() - 24 * 3600000 * 100;
     function clearInput(){
         inputBox.value = "";
         document.getElementById("toTable").remove();
@@ -429,14 +435,17 @@ function getAttributeByIndex($obj, $index){
                 y: 270
             },
             xAxis : {
-                type: 'datetime'
+                type: 'datetime',
+                labels: {
+                    format: '{value:%m/%d}'
+                }
                 //minRange: 99 * 24 * 3600000 // fourteen days
             },
             series: [{
                 name: symbol,
                 color: 'red',
                 pointInterval: 24 * 3600000,
-                pointStart: Date.UTC(2006, 0, 1),
+                pointStart: inputDate,
                 data: indicatorData
             }]
         });
@@ -490,19 +499,22 @@ function getAttributeByIndex($obj, $index){
                 y: 270
             },
             xAxis : {
-                type: 'datetime'
+                type: 'datetime',
+                labels: {
+                    format: '{value:%m/%d}'
+                }
                 //minRange: 99 * 24 * 3600000 // fourteen days
             },
             series: [{
                 name: symbol + ' SlowD',
                 color: 'red',
                 pointInterval: 24 * 3600000,
-                pointStart: Date.UTC(2006, 0, 1),
+                pointStart: inputDate,
                 data: indicatorDataD
             },{
                 name: symbol + ' SlowK',
                 pointInterval: 24 * 3600000,
-                pointStart: Date.UTC(2006, 0, 1),
+                pointStart: inputDate,
                 data: indicatorDataK
             }]
         });
@@ -567,24 +579,27 @@ function getAttributeByIndex($obj, $index){
                 y: 270
             },
             xAxis : {
-                type: 'datetime'
+                type: 'datetime',
+                labels: {
+                    format: '{value:%m/%d}'
+                }
                 //minRange: 99 * 24 * 3600000 // fourteen days
             },
             series: [{
                 name: symbol + ' ' + indi1,
                 color: 'red',
                 pointInterval: 24 * 3600000,
-                pointStart: Date.UTC(2006, 0, 1),
+                pointStart: inputDate,
                 data: indicatorData1
             },{
                 name: symbol + ' ' + indi2,
                 pointInterval: 24 * 3600000,
-                pointStart: Date.UTC(2006, 0, 1),
+                pointStart: inputDate,
                 data: indicatorData2
             },{
                 name: symbol + ' ' + indi1,
                 pointInterval: 24 * 3600000,
-                pointStart: Date.UTC(2006, 0, 1),
+                pointStart: inputDate,
                 data: indicatorData3
             }]
         });
