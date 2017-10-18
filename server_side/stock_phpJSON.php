@@ -390,6 +390,8 @@ function getAttributeByIndex($obj, $index){
         inputBox.value = "";
         document.getElementById("toTable").remove();
         document.getElementById("toGraph").remove();
+        document.getElementById("toNews").remove();
+        document.getElementById("newsContent").remove();
     }
     function searchValue(){
         var tickerInput = inputBox.value;
