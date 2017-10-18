@@ -173,8 +173,12 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
     'var volumeArray = ',json_encode($volumeArray),';',
     'volumeArray = volumeArray.map(Number);',
     'var date = ',json_encode($date), ';',
-    'var title = "Stock Price(" + date + ")";',
+    'var res = date.substring(5,7) + "/" + date.substring(8,10) + "/" + date.substring(0,4);',
+
+    'var title = "Stock Price (" + res + ")";',
     'var ticker = ',json_encode($ticker),';',
+
+    'var inputDate = Date.now() - 24 * 3600000 * 100;',
 
     'Highcharts.chart(\'toGraph\', {
                     chart: {
@@ -189,22 +193,27 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
                         text: \'<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>\'
                     },
                     xAxis: [{
-                        type: \'datetime\'
+                        type: \'datetime\',
+                        labels: {
+                            format: \'{value:%m/%d}\'
+                        }
                     }],
                     yAxis: [{
                         title: {
                             text: \'Stock Price\'
-                        }
+                        },
+                        min: Math.min( ...closeArray ) - 15,
+                        tickInterval: 15
                     }, {
                         labels: {
-                            format: \'{value}M\',
+                            format: \'{value}M\'
                 
                         },
                         title: {
                             text: \'Volume\'
                         },
-                        opposite: true
-                
+                        opposite: true,
+                        tickInterval: 50
                     }],
                     legend: {
                         align: \'right\',
@@ -219,7 +228,7 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
                         name: ticker,
                         color: \'#ff898c\',
                         pointInterval: 24 * 3600000,
-                        pointStart: Date.UTC(2006, 0, 1),
+                        pointStart: inputDate,
                         data: closeArray
                     }, {
                         type: \'column\',
@@ -227,7 +236,7 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
                         name: ticker + \' Volume\',
                         color: \'white\',
                         pointInterval: 24 * 3600000,
-                        pointStart: Date.UTC(2006, 0, 1),
+                        pointStart: inputDate,
                         data: volumeArray,
                         tooltip: {
                             valueSuffix: \'M\'
@@ -294,7 +303,7 @@ function showTable($obj, $ticker){
     $html .= key($obj1);
     $html .= "</td></tr>";
 
-    $html .= "<tr><th>Timestamp</th><td>";
+    $html .= "<tr><th>Indicators</th><td>";
     $html .= "<span id='priceLink' onclick=\"document.getElementById('btnSearch').click()\">Price</span>&nbsp;&nbsp;&nbsp;&nbsp;";
     $html .= "<span id='SMALink' onclick=\"showGraph1(inputBox.value,'SMA')\">SMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
     $html .= "<span id='EMALink' onclick=\"showGraph1(inputBox.value,'EMA')\">EMA</span>&nbsp;&nbsp;&nbsp;&nbsp;";
