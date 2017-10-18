@@ -141,7 +141,9 @@ $arrContextOptions=array(
         "verify_peer"=>false,
         "verify_peer_name"=>false
     )
-);  
+);
+
+ini_set( "display_errors", 0); 
 
 if(isset($_POST['Search'])){
     if($ticker !== "") {
