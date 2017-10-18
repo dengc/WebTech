@@ -1,3 +1,6 @@
+<!-- Author: Chufan Deng
+Stock show -->
+
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -150,18 +153,21 @@ if(isset($_POST['Search'])){
 }
 function showNEWs($xmlArray){
     $html = "<div id=\"newsContent\"><ul>";
-
-    for($i = 0; $i < 5; $i++){
+    $count = 0;
+    for($i = 0; $i < 1000; $i++){
         $titleURL = $xmlArray["channel"]["item"][$i]["link"];
-        $pubTime = $xmlArray["channel"]["item"][$i]["pubDate"];
-        $html .= "<li><a target='_blank' href='". $titleURL ."'>".$xmlArray["channel"]["item"][$i]["title"]."</a>";
-        $html .="<span class='pubTime'>Publicated Time: " .substr( $pubTime, 0, -6 )."</span></li>";
-        if($i < 4){
-            $html .= "<div class='liLine'></div>";
-        }
+        if(strpos($titleURL, 'article') !== false){
+            $count++;
+            $pubTime = $xmlArray["channel"]["item"][$i]["pubDate"];
+            $html .= "<li><a target='_blank' href='". $titleURL ."'>".$xmlArray["channel"]["item"][$i]["title"]."</a>";
+            $html .="<span class='pubTime'>Publicated Time: " .substr( $pubTime, 0, -6 )."</span></li>";
+            if($count < 5){
+                $html .= "<div class='liLine'></div>";
+            }else{
+                break;
+            }
+        }        
     }
-
-
     $html .= "</ul></div>";
     echo $html;
 }
@@ -206,8 +212,8 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
                         title: {
                             text: \'Stock Price\'
                         },
-                        min: Math.min( ...closeArray ) - 15,
-                        tickInterval: 15
+                        min: Math.min( ...closeArray ) - 5,
+                        tickInterval: 5
                     }, {
                         labels: {
                             format: \'{value}M\'
@@ -233,6 +239,10 @@ function showPrice($closeArray, $volumeArray, $date, $ticker){
                         color: \'#ff898c\',
                         pointInterval: 24 * 3600000,
                         lineColor: \'red\',
+                        marker: {
+                            enabled: false,
+                            fillColor: \'red\'
+                        },
                         pointStart: inputDate,
                         data: closeArray
                     }, {
