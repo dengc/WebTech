@@ -114,7 +114,7 @@ Stock show -->
 <body>
 
 <?php
-$ticker = $_POST["ticker"];
+$ticker = empty($_POST['ticker']) ? '' : $_POST['ticker'];
 $url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
 $apiLink = "&apikey=OE0QXT6U0BKFHVV8";
 ?>
