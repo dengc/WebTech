@@ -17,12 +17,13 @@
 
 // [START app]
 var express = require('express');
-
 var app = express();
+// app.set('view engine', 'html');
 
 app.get('/', function(req, res){
-  res.status(200).send('Hello Jerry Nodejs!').end();
+    res.status(200).sendfile('./index.html');
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 8081;
