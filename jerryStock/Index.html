@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
     <!--css style-->
     <style>
         body, p{
@@ -17,46 +18,68 @@
         body{
             background-color: darkblue;
         }
-        #search_form{
+        #search_form, #result_form{
             background-color: white;
             margin-top:10px;
             border-radius: 5px;
         }
-        h3{
+        h4{
             text-align: center;
+            margin-top: 25px;
         }
         .required_mark{
             color: red;
         }
-
+        #input_div{
+            margin-bottom: 25px;
+        }
         input.ng-touched.ng-empty {
             border: 2px solid red;
         }
         #btn_clear{
             margin-left: 10px;
         }
+        .line{
+            padding: 0;
+        }
+        #symbol_list{
+            cursor:pointer;
+        }
+        #symbol_list:hover
+        {
+            background-color:#f9f9f9;
+        }
     </style>
 </head>
-<body ng-app="">
+<body ng-app="myapp" ng-controller="usercontroller" background="http://cs-server.usc.edu:45678/hw/hw8/images/background.png">
 
 <div class="container" id="search_form">
-    <h3>Stock Market Search</h3>
-    <form class="form-horizontal" name="myForm" novalidate>
-        <div class="form-group">
+    <h4>Stock Market Search</h4>
+    <form class="form-horizontal" id="myForm" name="myForm" method="post" novalidate>
+        <div class="form-group" >
             <label class="col-sm-3" for="symbol" id="symbol_label">Enter Stock Ticker Symbol: <span class="required_mark">*</span></label>
-            <div class="col-md-6">
-
-                <input class="form-control" id="symbol" placeholder="e.g. AAPL" name="symbol" ng-model="symbol" required>
+            <div class="col-md-6" id="input_div"  >
+                <input class="form-control" id="symbol" placeholder="e.g. AAPL" name="symbol" ng-model="symbol" required ng-keyup="complete(symbol)">
+                <ul class="list-group" ng-model="hidethis" ng-hide="hidethis">
+                    <li class="list-group-item" id="symbol_list" ng-repeat="symboldata in filterSymbol" ng-click="fillTextbox(symboldata)">{{symboldata}}</li>
+                </ul>
                 <p id="error_message" ng-show="myForm.symbol.$touched && myForm.symbol.$invalid">Please enter a stock ticker symbol.</p>
             </div>
             <div class="col-md-3">
-                <button type="submit" class="btn btn-primary pull-left"  ng-disabled="myForm.symbol.$invalid"><span class="glyphicon glyphicon-search"></span> Get Quote</button>
+                <button  class="btn btn-primary pull-left" id="btn_search" ng-disabled="myForm.symbol.$invalid"><span class="glyphicon glyphicon-search"></span> Get Quote</button>
                 <button class="btn btn-default" id="btn_clear" data-ng-click="clearSearch()"><span class="glyphicon glyphicon-refresh"></span> Clear</button>
             </div>
-
         </div>
     </form>
 </div>
+<div class="container line">
+    <hr/>
+</div>
+
+<div class="container" id="result_form">
+
+</div>
+
 
 </body>
 <script>
@@ -66,6 +89,91 @@
         });
 
     });
+    var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+    var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
+    var myForm = $('#myForm');
+    $('#btn_search').click(function(){
+        var symbol = $("#symbol").val();
+        $.ajax({
+            'url': url_stock + symbol+ myAPI_stock,
+            'type': "GET",
+            'success': function(data) {
+                console.log(url_stock + symbol+ myAPI_stock);
+                console.log(JSON.stringify(data["Meta Data"]["1. Information"]));
+
+//                $("#result_form").html(JSON.parse(data));
+            }
+        })
+    });
+
+    var app = angular.module("myapp",[]);
+    app.controller("usercontroller", function($scope){
+        $scope.symbolList = [];
+
+        $scope.$watch('symbol', function() {
+            var url_auto = "http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=" + $scope.symbol;
+            $.ajax({
+                'url': url_auto,
+                'type': "GET",
+                crossDomain: true,
+                dataType: 'jsonp',
+                'success': function(data) {
+                    $scope.symbolList = [];
+                    for(var i = 0; i < data.length; i++){
+                        var str = JSON.stringify(data[i]["Symbol"]) + " - " + JSON.stringify(data[i]["Name"]) + " (" + JSON.stringify(data[i]["Exchange"]) + ")";
+                        str = str.split('"').join('');
+                        $scope.symbolList.push(str);
+                    }
+                }
+            });
+        });
+        $scope.$watch('symbol', function() {
+            $scope.complete = function(string){
+                $scope.hidethis = false;
+                var output = [];
+                angular.forEach($scope.symbolList, function(symbol){
+                    if(symbol.toLowerCase().indexOf(string.toLowerCase()) >= 0)
+                    {
+                        output.push(symbol);
+                    }
+                });
+                $scope.filterSymbol = output;
+            };
+            $scope.fillTextbox = function(string){
+                //$scope.symbol = string;
+                $scope.hidethis = true;
+            };
+        });
+
+    });
+
+
+
+    //    angular.module('plunker', ['ui.bootstrap']);
+//    function TypeaheadCtrl($scope) {
+//        $scope.stock = [{"Symbol":"AAPL","Name":"Apple Inc","Exchange":"NASDAQ"},{"Symbol":"APLE","Name":"","Exchange":"NYSE"},{"Symbol":"APLE","Name":"Apple Hospitality REIT Inc","Exchange":"BATS Trading Inc"},{"Symbol":"VXAPL","Name":"CBOE Apple VIX Index","Exchange":"Market Data Express"}]
+//
+//    }
+
+
+//    myForm.submit(function () {
+//        alert(symbol);
+//
+//        $.ajax({
+//            type: myForm.attr('method'),
+//            url: ,
+//            data: frm.serialize(),
+//            success: function (data) {
+//                console.log('Submission was successful.');
+//                console.log(data);
+//            },
+//            error: function (data) {
+//                console.log('An error occurred.');
+//                console.log(data);
+//            }
+//        });
+//    });
+
 //    if($("#symbol").attr("class").includes("ng-touched") && $("#symbol").attr("class").includes("ng-empty")){
 //        $("#symbol").css("border","2px solid red");
 //    }
