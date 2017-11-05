@@ -6,12 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--bootstrap, angular, jQuery-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+
     <!--css style-->
     <style>
         body, p{
@@ -20,7 +23,7 @@
         body{
             background-color: darkblue;
         }
-        #search_form, #result_form{
+        #search_form, #result_form, #stockDetail{
             background-color: white;
             margin-top:10px;
             border-radius: 5px;
@@ -52,7 +55,7 @@
         {
             background-color:#f9f9f9;
         }
-        #fa_list{
+        #fa_list, #detail_panel, #stock_table, #cs_right_chart{
             margin-top: 25px;
         }
         #list_title{
@@ -69,6 +72,34 @@
         }
         #fa_content{
             margin-top: 20px;
+        }
+        #cs_left{
+            width: 55%;
+            margin-right: -40px;
+        }
+        #detail_title{
+            font-weight: bold;
+            margin-left: 40%;
+        }
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+            padding-top:20px;
+            padding-bottom: 20px;
+        }
+        #left_title{
+            margin-left: 25px;
+            font-weight: bold;
+        }
+        #star{
+            height: 40px;
+            width: 44px;
+            margin-left: 47%;
+        }
+        #fb{
+            height: 40px;
+            width: 44px;
+        }
+        #cs_right, #cs_right_chart{
+            width: 48%;
         }
     </style>
 </head>
@@ -100,10 +131,10 @@
 <div class="container" id="result_form">
     <div class="panel panel-default" id="fa_list">
         <div class="panel-heading">
-            <span  id="list_title">Favorite List</span>
+            <span id="list_title">Favorite List</span>
             <span id="right_cor">
                 <span  id="refresh">Automatic Refresh: </span>
-                <input type="checkbox" data-toggle="toggle">
+                <input type="checkbox" data-toggle="toggle"/>
                 <button class="btn btn-default" id="btn_refresh"><span class="glyphicon glyphicon-refresh"></span></button>
                 <button class="btn btn-default" id="btn_next"><span class="glyphicon glyphicon-chevron-right"></span></button>
             </span>
@@ -144,6 +175,43 @@
     </div>
 </div>
 
+<div class="container" id="stockDetail">
+    <div class="panel panel-default" id="detail_panel">
+        <div class="panel-heading">
+            <span id="left_cor">
+                <button class="btn btn-default" id="btn_last"><span class="glyphicon glyphicon-chevron-left"></span></button>
+            </span>
+            <span id="detail_title">Stock Details</span>
+        </div>
+        <div class="panel-body">
+            <ul class="nav nav-pills">
+                <li class="active detail_pill"><a href=""><span class="glyphicon glyphicon-time"></span>&nbsp Current Stock</a></li>
+                <li class="detail_pill"><a href=""><span class="glyphicon glyphicon-stats"></span>&nbsp Historical Charts</a></li>
+                <li class="detail_pill"><a href=""><span class="glyphicon glyphicon-link"></span>&nbsp News Feeds</a></li>
+            </ul>
+            <hr/>
+            <div id="cur_stock">
+                <div id="cs_left" class="pull-left">
+                    <p id="left_title">Stock Details
+                    <button class="btn btn-default" id="star">
+                        <i class="fa fa-star-o" id="fa_icon" style="font-size:20px"></i>
+                    </button>
+                    <button class="btn btn-default" id="fb">
+                        <img src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" height="25" width="25"/>
+                    </button>
+                    </p>
+                    <div id="stock_table">
+                    </div>
+                </div>
+                <div id="cs_right" class="pull-right">
+                </div>
+                <div id="cs_right_chart" class="pull-right">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 </body>
 <script>
@@ -161,22 +229,481 @@
             $("#orderSelect").css("background-color","#efefef");
         }
     });
+
+    $('ul.nav.nav-pills li a').click(function() {
+        $(this).parent().addClass('active').siblings().removeClass('active');
+    });
+    $("#star").click(function(){
+        if($("#fa_icon").hasClass("fa-star-o")){
+            $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+        }else {
+            $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+        }
+    });
     var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
     var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
-//    var myForm = $('#myForm');
+    var inputDate = Date.now() - 24 * 3600000 * 179;
+
+    //    var myForm = $('#myForm');
     $('#btn_search').click(function(){
         var symbol = $("#symbol").val();
+        var url = url_stock + symbol+ myAPI_stock;
         $.ajax({
-            'url': url_stock + symbol+ myAPI_stock,
+            'url': url,
             'type': "GET",
             'success': function(data) {
-                console.log(url_stock + symbol+ myAPI_stock);
-                console.log(JSON.stringify(data["Meta Data"]["1. Information"]));
-//                $("#result_form").html(JSON.parse(data));
+                searchValue(data,symbol);
+                draw(data,symbol);
             }
-        })
+        });
     });
+    function searchValue(data,symbol) {
+        //var obj0 = data["Meta Data"];
+        var obj1 = data["Time Series (Daily)"];
+        var recentDay = getAttributeByIndex(obj1, 0);
+        var previousDay = getAttributeByIndex(obj1, 1);
+        var previous_close = previousDay["4. close"];
+        previous_close = Number(previous_close).toFixed(2);
 
+        var html = "<table class=\"table table-striped\" style='width:85%'><tr><th class=\"col-md-6\">Stock Ticker Symbol</th><td>";
+        html += symbol;
+        html += "</td></tr>";
+
+        html += "<tr><th>Last Price</th><td>";
+        var close = recentDay["4. close"];
+        close = Number(close).toFixed(2);
+        html += close;
+        html += "</td></tr>";
+
+        html += "<tr><th>Change (Change Percent)</th><td>";
+        var change = 0;
+        if(close > previous_close){
+            change = close - previous_close;
+            var percent = 100 * change / previous_close;
+            html += change.toFixed(2);
+            html += " (" + percent.toFixed(2) + "%)";
+            html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
+        }else {
+            change = previous_close - close;
+            var percent = 100 * change / previous_close;
+            html += change.toFixed(2);
+            html += " (" + percent.toFixed(2) + "%)";
+            html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
+        }
+        html += "</td></tr>";
+
+        html += "<tr><th>Timestamp</th><td>";
+        html += Object.keys(obj1)[0] + " " + "16:00:00 EDT";
+        html += "</td></tr>";
+
+        html += "<tr><th>Open</th><td>";
+        html += Number(recentDay["1. open"]).toFixed(2);
+        html += "</td></tr>";
+
+        html += "<tr><th>Close</th><td>";
+        html += previous_close;
+        html += "</td></tr>";
+
+        html += "<tr><th>Day's Range</th><td>";
+        var low = recentDay["3. low"];
+        low = Number(low).toFixed(2);
+        var high = recentDay["2. high"];
+        high = Number(high).toFixed(2);
+        html += low + " - " + high;
+        html += "</td></tr>";
+
+        html += "<tr><th>volume</th><td>";
+        html += formatNumber(Number(recentDay["5. volume"]));
+        html += "</td></tr>";
+
+        $("#stock_table").html(html);
+
+        html ="<ul class=\"nav nav-tabs\"><li class=\"active\"><a>Price</a></li>";
+        html += "<li><a id='SMA'>SMA</a></li>";
+        html += "<li><a id='EMA'>EMA</a></li>";
+        html += "<li><a id='STOCH'>STOCH</a></li>";
+        html += "<li><a id='RSI'>RSI</a></li>";
+        html += "<li><a id='ADX'>ADX</a></li>";
+        html += "<li><a id='CCI'>CCI</a></li>";
+        html += "<li><a id='BBANDS'>BBANDS</a></li>";
+        html += "<li><a id='MACD'>MACD</a></li></ul>";
+        $("#cs_right").html(html);
+
+        $("#SMA").click(function () {
+           showGraph1(symbol,"SMA");
+        });
+        $("#EMA").click(function () {
+            showGraph1(symbol,"EMA");
+        });
+        $("#STOCH").click(function () {
+            showGraph2(symbol,"STOCH");
+        });
+        $("#RSI").click(function () {
+            showGraph1(symbol,"RSI");
+        });
+        $("#ADX").click(function () {
+            showGraph1(symbol,"ADX");
+        });
+        $("#CCI").click(function () {
+            showGraph1(symbol,"CCI");
+        });
+        $("#BBANDS").click(function () {
+            showGraph3(symbol,"BBANDS");
+        });
+        $("#MACD").click(function () {
+            showGraph3(symbol,"MACD");
+        });
+    }
+
+    function draw(data, symbol) {
+        var inputDatePrice = Date.now() - 24 * 3600000 * 99;
+
+        var obj1 = data['Time Series (Daily)'];
+        var closeArray = [];
+        var volumeArray = [];
+        for(var i = 0; i < 100; i++){
+            closeArray.push(getAttributeByIndex(obj1,i)['4. close']);
+            volumeArray.push(Number(getAttributeByIndex(obj1,i)['5. volume'])/1000000);
+        }
+
+        closeArray = closeArray.map(Number);
+        volumeArray = volumeArray.map(Number);
+        closeArray.reverse();
+        volumeArray.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1
+            },
+            title: {
+                text: symbol + " Stock Price and Volume"
+            },
+            subtitle: {
+                text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
+            },
+            tooltip:{
+                valueDecimals: 2,
+                xDateFormat: '%m/%d'
+            },
+            xAxis : [{
+                type: 'datetime',
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+            }],
+            yAxis: [{
+                title: {
+                    text: 'Stock Price'
+                },
+
+                tickInterval: 50
+            },{
+                labels: {
+                    format: '{value}M'
+                },
+                title: {
+                    text: 'Volume'
+                },
+                opposite: true,
+                tickInterval: 20
+            }],
+
+
+
+            series: [{
+                type: 'area',
+                name: 'Price',
+                pointInterval: 24 * 3600000,
+                lineColor: 'blue',
+                marker: {
+                    enabled: false,
+                    fillColor: 'blue'
+                },
+                pointStart: inputDatePrice,
+                    data: closeArray
+            }, {
+                type: 'column',
+                yAxis: 1,
+                name: 'Volume',
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDatePrice,
+                data: volumeArray,
+                tooltip: {
+                    valueSuffix: 'M'
+                }
+            }]
+        });
+    }
+
+    function showGraph1(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
+
+        $.ajax({
+            'url': url,
+            'type': "GET",
+            'success': function(data) {
+                draw1(data,symbol,indicator);
+            }
+        });
+    }
+    function showGraph2(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
+
+        $.ajax({
+            'url': url,
+            'type': "GET",
+            'success': function(data) {
+                draw2(data,symbol,indicator);
+            }
+        });
+    }
+    function showGraph3(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
+
+        $.ajax({
+            'url': url,
+            'type': "GET",
+            'success': function(data) {
+                draw3(data,symbol,indicator);
+            }
+        });
+    }
+
+    function draw1(data, symbol, indicator) {
+        var obj0 = data["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = data[indi];
+
+        var indicatorData = [];
+        for(var i = 0; i < 180; i++){
+            indicatorData.push(getAttributeByIndex(obj1, i)[indicator]);
+        }
+        indicatorData = indicatorData.map(Number);
+        indicatorData.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                type: 'line'
+            },
+            title: {
+                text: obj0["2: Indicator"]
+            },
+            subtitle: {
+                text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
+            },
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
+            xAxis : {
+                type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+            series: [{
+                name: symbol,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData
+            }]
+        });
+    }
+    function draw2(data, symbol, indicator) {
+        var obj0 = data["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = data[indi];
+
+        var indicatorDataD = [];
+        var indicatorDataK = [];
+        for(var i = 0; i < 180; i++){
+            indicatorDataD.push(getAttributeByIndex(obj1, i)["SlowD"]);
+            indicatorDataK.push(getAttributeByIndex(obj1, i)["SlowK"]);
+        }
+        indicatorDataD = indicatorDataD.map(Number);
+        indicatorDataK = indicatorDataK.map(Number);
+        indicatorDataD.reverse();
+        indicatorDataK.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                type: 'line'
+            },
+            title: {
+                text: obj0["2: Indicator"]
+            },
+            subtitle: {
+                text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
+            },
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
+            xAxis : {
+                type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+            series: [{
+                name: symbol + ' SlowD',
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorDataD
+            },{
+                name: symbol + ' SlowK',
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorDataK
+            }]
+        });
+    }
+    function draw3(data, symbol, indicator) {
+        var obj0 = data["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = data[indi];
+
+        var indicatorData1 = [];
+        var indicatorData2 = [];
+        var indicatorData3 = [];
+        if(indicator === "BBANDS"){
+            var indi1 = "Real Upper Band";
+            var indi2 = "Real Middle Band";
+            var indi3 = "Real Lower Band";
+        } else {
+            indi1 = "MACD_Signal";
+            indi2 = "MACD_Hist";
+            indi3 = "MACD";
+        }
+        for(var i = 0; i < 180; i++){
+            indicatorData1.push(getAttributeByIndex(obj1, i)[indi1]);
+            indicatorData2.push(getAttributeByIndex(obj1, i)[indi2]);
+            indicatorData3.push(getAttributeByIndex(obj1, i)[indi3]);
+        }
+        indicatorData1 = indicatorData1.map(Number);
+        indicatorData2 = indicatorData2.map(Number);
+        indicatorData3 = indicatorData3.map(Number);
+        indicatorData1.reverse();
+        indicatorData2.reverse();
+        indicatorData3.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                type: 'line'
+            },
+            title: {
+                text: obj0["2: Indicator"]
+            },
+            subtitle: {
+                text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
+            },
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
+            xAxis : {
+                type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+            series: [{
+                name: symbol + ' ' + indi1,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData1
+            },{
+                name: symbol + ' ' + indi2,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData2
+            },{
+                name: symbol + ' ' + indi1,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData3
+            }]
+        });
+    }
+
+    function getAttributeByIndex(obj, index){
+        var i = 0;
+        for (var attr in obj){
+            if (index === i){
+                return obj[attr];
+            }
+            i++;
+        }
+        return null;
+    }
+    function formatNumber (num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    }
     var app = angular.module("myapp",[]);
     app.controller("usercontroller", function($scope){
         $scope.symbolList = [];
