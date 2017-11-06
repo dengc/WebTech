@@ -13,7 +13,8 @@
 
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
 
     <!--css style-->
     <style>
@@ -101,6 +102,9 @@
         #cs_right, #cs_right_chart{
             width: 48%;
         }
+        #stockDetail{
+            display: none;
+        }
     </style>
 </head>
 <body ng-app="myapp" ng-controller="usercontroller" background="http://cs-server.usc.edu:45678/hw/hw8/images/background.png">
@@ -185,9 +189,9 @@
         </div>
         <div class="panel-body">
             <ul class="nav nav-pills">
-                <li class="active detail_pill"><a href=""><span class="glyphicon glyphicon-time"></span>&nbsp Current Stock</a></li>
-                <li class="detail_pill"><a href=""><span class="glyphicon glyphicon-stats"></span>&nbsp Historical Charts</a></li>
-                <li class="detail_pill"><a href=""><span class="glyphicon glyphicon-link"></span>&nbsp News Feeds</a></li>
+                <li class="active detail_pill"><a href="" id="c_stock"><span class="glyphicon glyphicon-time"></span>&nbsp Current Stock</a></li>
+                <li class="detail_pill"><a href="" id="h_charts"><span class="glyphicon glyphicon-stats"></span>&nbsp Historical Charts</a></li>
+                <li class="detail_pill"><a href="" id="n_feeds"><span class="glyphicon glyphicon-link"></span>&nbsp News Feeds</a></li>
             </ul>
             <hr/>
             <div id="cur_stock">
@@ -233,6 +237,7 @@
     $('ul.nav.nav-pills li a').click(function() {
         $(this).parent().addClass('active').siblings().removeClass('active');
     });
+
     $("#star").click(function(){
         if($("#fa_icon").hasClass("fa-star-o")){
             $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
@@ -240,12 +245,38 @@
             $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
         }
     });
+
+
+    $("#btn_next").click(function () {
+        $("#result_form").hide();
+        $("#stockDetail").css("display", "block");
+    });
+    $("#btn_last").click(function () {
+        $("#stockDetail").hide();
+        $("#result_form").css("display", "block");
+    });
+
+
+    $("#c_stock").click(function () {
+        showStock();
+        $("#btn_search").click();
+    });
+    $("#h_charts").click(function () {
+        var symbol = $("#symbol").val();
+        showStockChart(symbol);
+    });
+
+    $("#n_feeds").click(function () {
+        var symbol = $("#symbol").val();
+        showFeeds(symbol);
+    });
     var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
     var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
     var inputDate = Date.now() - 24 * 3600000 * 179;
 
-    //    var myForm = $('#myForm');
     $('#btn_search').click(function(){
+        $("#result_form").hide();
+        $("#stockDetail").css("display", "block");
         var symbol = $("#symbol").val();
         var url = url_stock + symbol+ myAPI_stock;
         $.ajax({
@@ -318,7 +349,7 @@
 
         $("#stock_table").html(html);
 
-        html ="<ul class=\"nav nav-tabs\"><li class=\"active\"><a>Price</a></li>";
+        html ="<ul class=\"nav nav-tabs\"><li class=\"active\"><a id='price'>Price</a></li>";
         html += "<li><a id='SMA'>SMA</a></li>";
         html += "<li><a id='EMA'>EMA</a></li>";
         html += "<li><a id='STOCH'>STOCH</a></li>";
@@ -329,6 +360,9 @@
         html += "<li><a id='MACD'>MACD</a></li></ul>";
         $("#cs_right").html(html);
 
+        $("#price").click(function () {
+            showGraph(symbol);
+        });
         $("#SMA").click(function () {
            showGraph1(symbol,"SMA");
         });
@@ -352,6 +386,9 @@
         });
         $("#MACD").click(function () {
             showGraph3(symbol,"MACD");
+        });
+        $('ul.nav.nav-tabs li a').click(function() {
+            $(this).parent().addClass('active').siblings().removeClass('active');
         });
     }
 
@@ -437,7 +474,16 @@
             }]
         });
     }
-
+    function showGraph(symbol) {
+        var url = url_stock + symbol+ myAPI_stock;
+        $.ajax({
+            'url': url,
+            'type': "GET",
+            'success': function(data) {
+                draw(data,symbol);
+            }
+        });
+    }
     function showGraph1(symbol, indicator) {
         var url = "https://www.alphavantage.co/query?function=";
         url += indicator;
@@ -480,7 +526,6 @@
             }
         });
     }
-
     function draw1(data, symbol, indicator) {
         var obj0 = data["Meta Data"];
         var indi = "Technical Analysis: " + indicator;
@@ -691,6 +736,101 @@
         });
     }
 
+    function showStock() {
+        var html = "<div id=\"cs_left\" class=\"pull-left\">";
+        html += "<p id=\"left_title\">Stock Details";
+        html += "<button class=\"btn btn-default\" id=\"star\">";
+        html += "<i class=\"fa fa-star-o\" id=\"fa_icon\" style=\"font-size:20px\"></i></button>";
+        html += "<button class=\"btn btn-default\" id=\"fb\">";
+        html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png\" height=\"25\" width=\"25\"/></button></p>";
+        html += "<div id=\"stock_table\"></div></div>";
+        html += "<div id=\"cs_right\" class=\"pull-right\"></div>";
+        html += "<div id=\"cs_right_chart\" class=\"pull-right\"></div>";
+        $("#cur_stock").html(html);
+        $("#star").click(function(){
+            if($("#fa_icon").hasClass("fa-star-o")){
+                $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+            }else {
+                $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+            }
+        });
+    }
+    function showStockChart(symbol) {
+        $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename='+symbol+'-c.json&callback=?', function (data) {
+
+            // Create the chart
+            Highcharts.stockChart('cur_stock', {
+
+                rangeSelector: {
+                    selected: 1
+                },
+
+                title: {
+                    text: symbol + ' Stock Price'
+                },
+
+                series: [{
+                    name: symbol + ' Stock Price',
+                    data: data,
+                    type: 'area',
+                    threshold: null,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    }
+                }]
+            });
+        });
+    }
+    function showFeeds(symbol) {
+        var xmlURL = "https://seekingalpha.com/api/sa/combined/" + symbol +".xml";
+//        var xhttp = new XMLHttpRequest();
+//        xhttp.open("GET", xmlURL);
+//
+//        xhttp.onreadystatechange = function() {
+//            if (this.readyState == 4 && this.status == 200) {
+//                var xmlDoc = this.responseText;
+//                alert(xmlDoc);
+//            }
+//        };
+//        xhttp.send();
+
+
+        $.ajax({
+            type: "get",
+            url: xmlURL,
+            //dataType: "jsonp",
+            //contentType: "application/javascript",
+//            data:{
+//              "appid":"b1b15e88fa797225412429c1c50c122a1"
+//            },
+            success: function(data) {
+                var xmlDoc = $.parseXML( data );
+                $("#cur_stock").html(xmlDoc);
+            },
+            error: function(xhr, status) {
+                alert(JSON.stringify(xhr));
+            }
+        });
+
+//        $.getJSON("https://seekingalpha.com/api/sa/combined/" + symbol + '.json?callback=?', {format: "json"}, function(json) {
+//                $("#cur_stock").html(JSON.stringify(json));
+//
+//        });
+        $("#cur_stock").html("sss");
+    }
+    
     function getAttributeByIndex(obj, index){
         var i = 0;
         for (var attr in obj){
