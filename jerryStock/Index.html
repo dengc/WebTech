@@ -166,12 +166,13 @@
             </div>
 
             <table id="fa_content" class="table table-striped">
-                <tbody>
+                <tbody class="tbody1">
                 <tr>
-                    <th class="col-md-1">Symbol</th>
-                    <th class="col-md-1">Stock Price</th>
+                    <th class="col-sm-1">Symbol</th>
+                    <th class="col-sm-1">Stock Price</th>
                     <th class="col-md-2">Change (Change Percent)</th>
-                    <th class="col-md-2">Volume</th>
+                    <th class="col-sm-1">Volume</th>
+                    <th class="col-sm-1"></th>
                 </tr>
                 </tbody>
             </table>
@@ -238,15 +239,6 @@
         $(this).parent().addClass('active').siblings().removeClass('active');
     });
 
-    $("#star").click(function(){
-        if($("#fa_icon").hasClass("fa-star-o")){
-            $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
-        }else {
-            $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
-        }
-    });
-
-
     $("#btn_next").click(function () {
         $("#result_form").hide();
         $("#stockDetail").css("display", "block");
@@ -270,9 +262,40 @@
         var symbol = $("#symbol").val();
         showFeeds(symbol);
     });
+
+    function clickStar(){
+        $("#star").click(function(){
+            var symbol = $("#symbol").val();
+            var lastPrice = $("#last_price").text();
+            var change = $("#change").text();
+            var volume = $("#volume").text();
+            if($("#fa_icon").hasClass("fa-star-o")){
+                $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+                var html = "<tr><td>" + symbol + "</td>";
+                html += "<td>"+ lastPrice +"</td>";
+                html += "<td>"+ change;
+                if(change.substring(0,1) !== "-"){
+                    html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>" +"</td>";
+                }else {
+                    html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>" +"</td>";
+                }
+                html += "<td>"+ volume +"</td>";
+                html += "<td class='col-md-1'><button class=\"btn btn-default trash\">";
+                html += "<i class=\"fa fa-trash-o\" style=\"font-size:20px\"></i></button></td></tr>";
+
+
+                $(".tbody1").append(html);
+            }else {
+                $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+            }
+        });
+    }
+
     var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
     var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
     var inputDate = Date.now() - 24 * 3600000 * 179;
+    clickStar();
+
 
     $('#btn_search').click(function(){
         $("#result_form").hide();
@@ -300,13 +323,13 @@
         html += symbol;
         html += "</td></tr>";
 
-        html += "<tr><th>Last Price</th><td>";
+        html += "<tr><th>Last Price</th><td id='last_price'>";
         var close = recentDay["4. close"];
         close = Number(close).toFixed(2);
         html += close;
         html += "</td></tr>";
 
-        html += "<tr><th>Change (Change Percent)</th><td>";
+        html += "<tr><th>Change (Change Percent)</th><td id='change'>";
         var change = 0;
         if(close > previous_close){
             change = close - previous_close;
@@ -343,7 +366,7 @@
         html += low + " - " + high;
         html += "</td></tr>";
 
-        html += "<tr><th>volume</th><td>";
+        html += "<tr><th>volume</th><td id='volume'>";
         html += formatNumber(Number(recentDay["5. volume"]));
         html += "</td></tr>";
 
@@ -747,13 +770,7 @@
         html += "<div id=\"cs_right\" class=\"pull-right\"></div>";
         html += "<div id=\"cs_right_chart\" class=\"pull-right\"></div>";
         $("#cur_stock").html(html);
-        $("#star").click(function(){
-            if($("#fa_icon").hasClass("fa-star-o")){
-                $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
-            }else {
-                $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
-            }
-        });
+        clickStar();
     }
     function showStockChart(symbol) {
         $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename='+symbol+'-c.json&callback=?', function (data) {
