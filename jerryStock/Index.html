@@ -242,10 +242,14 @@
     $("#btn_next").click(function () {
         $("#result_form").hide();
         $("#stockDetail").css("display", "block");
+        showStar();
     });
     $("#btn_last").click(function () {
         $("#stockDetail").hide();
         $("#result_form").css("display", "block");
+        $(".trash").click(function () {
+            $(this).parents('tr').first().remove();
+        });
     });
 
 
@@ -263,6 +267,21 @@
         showFeeds(symbol);
     });
 
+    function showStar() {
+        var symbol = $("#symbol").val();
+        var star = 0;
+        for (var i = 0; i < $(".fa_symbol").length; i++) {
+            var s = $(".fa_symbol")[i].innerText;
+            if(s === symbol){
+                $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+                star = 1;
+            }
+        }
+        if(star === 0){
+            $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+        }
+    }
+
     function clickStar(){
         $("#star").click(function(){
             var symbol = $("#symbol").val();
@@ -271,7 +290,7 @@
             var volume = $("#volume").text();
             if($("#fa_icon").hasClass("fa-star-o")){
                 $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
-                var html = "<tr><td>" + symbol + "</td>";
+                var html = "<tr><td class='fa_symbol'>" + symbol + "</td>";
                 html += "<td>"+ lastPrice +"</td>";
                 html += "<td>"+ change;
                 if(change.substring(0,1) !== "-"){
@@ -287,6 +306,7 @@
                 $(".tbody1").append(html);
             }else {
                 $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+                $("#fa_content tr:last").remove();
             }
         });
     }
@@ -302,6 +322,7 @@
         $("#stockDetail").css("display", "block");
         var symbol = $("#symbol").val();
         var url = url_stock + symbol+ myAPI_stock;
+        showStar();
         $.ajax({
             'url': url,
             'type': "GET",
@@ -469,9 +490,6 @@
                 opposite: true,
                 tickInterval: 20
             }],
-
-
-
             series: [{
                 type: 'area',
                 name: 'Price',
@@ -783,28 +801,19 @@
                 },
 
                 title: {
-                    text: symbol + ' Stock Price'
+                    text: symbol + ' Stock Value'
                 },
-
+                tooltip: {
+                    crosshairs: [false,false],
+                    split: false
+                },
                 series: [{
-                    name: symbol + ' Stock Price',
+                    name: symbol,
                     data: data,
                     type: 'area',
                     threshold: null,
                     tooltip: {
                         valueDecimals: 2
-                    },
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
                     }
                 }]
             });
