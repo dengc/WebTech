@@ -105,6 +105,11 @@
         #stockDetail{
             display: none;
         }
+        .fa_symbol{
+            text-decoration: underline;
+            cursor: pointer;
+            color: blue;
+        }
     </style>
 </head>
 <body ng-app="myapp" ng-controller="usercontroller" background="http://cs-server.usc.edu:45678/hw/hw8/images/background.png">
@@ -234,6 +239,21 @@
             $("#orderSelect").css("background-color","#efefef");
         }
     });
+    $('#btn_search').click(function(){
+        $("#result_form").hide();
+        $("#stockDetail").css("display", "block");
+        var symbol = $("#symbol").val();
+        var url = url_stock + symbol+ myAPI_stock;
+        showStar();
+        $.ajax({
+            'url': url,
+            'type': "GET",
+            'success': function(data) {
+                searchValue(data,symbol);
+                draw(data,symbol);
+            }
+        });
+    });
 
     $('ul.nav.nav-pills li a').click(function() {
         $(this).parent().addClass('active').siblings().removeClass('active');
@@ -250,20 +270,35 @@
         $(".trash").click(function () {
             $(this).parents('tr').first().remove();
         });
+        $(".fa_symbol").click(function () {
+            var s = $(this).text();
+            $("#result_form").hide();
+            $("#stockDetail").css("display", "block");
+            $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+            var url = url_stock + s+ myAPI_stock;
+            $.ajax({
+                'url': url,
+                'type': "GET",
+                'success': function(data) {
+                    searchValue(data,s);
+                    draw(data,s);
+                }
+            });
+        });
     });
-
 
     $("#c_stock").click(function () {
         showStock();
+//        var symbol = $(".highcharts-title").text().substr(0, $(".highcharts-title").text().indexOf(' '));
         $("#btn_search").click();
     });
     $("#h_charts").click(function () {
-        var symbol = $("#symbol").val();
+        var symbol = $("#s_ticker").text();
         showStockChart(symbol);
     });
 
     $("#n_feeds").click(function () {
-        var symbol = $("#symbol").val();
+        var symbol = $("#s_ticker").text();
         showFeeds(symbol);
     });
 
@@ -284,13 +319,14 @@
 
     function clickStar(){
         $("#star").click(function(){
-            var symbol = $("#symbol").val();
+            var symbol = $("#s_ticker").text();
             var lastPrice = $("#last_price").text();
             var change = $("#change").text();
             var volume = $("#volume").text();
+            var faID = "newFA" + symbol;
             if($("#fa_icon").hasClass("fa-star-o")){
                 $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
-                var html = "<tr><td class='fa_symbol'>" + symbol + "</td>";
+                var html = "<tr id='"+faID+"'><td class='fa_symbol'>" + symbol + "</td>";
                 html += "<td>"+ lastPrice +"</td>";
                 html += "<td>"+ change;
                 if(change.substring(0,1) !== "-"){
@@ -302,11 +338,11 @@
                 html += "<td class='col-md-1'><button class=\"btn btn-default trash\">";
                 html += "<i class=\"fa fa-trash-o\" style=\"font-size:20px\"></i></button></td></tr>";
 
-
                 $(".tbody1").append(html);
             }else {
                 $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
-                $("#fa_content tr:last").remove();
+                $("#" + faID).remove();
+                //$("#fa_content tr:last").remove();
             }
         });
     }
@@ -314,24 +350,9 @@
     var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
     var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
     var inputDate = Date.now() - 24 * 3600000 * 179;
+    var symbol = $("#symbol").val();
     clickStar();
 
-
-    $('#btn_search').click(function(){
-        $("#result_form").hide();
-        $("#stockDetail").css("display", "block");
-        var symbol = $("#symbol").val();
-        var url = url_stock + symbol+ myAPI_stock;
-        showStar();
-        $.ajax({
-            'url': url,
-            'type': "GET",
-            'success': function(data) {
-                searchValue(data,symbol);
-                draw(data,symbol);
-            }
-        });
-    });
     function searchValue(data,symbol) {
         //var obj0 = data["Meta Data"];
         var obj1 = data["Time Series (Daily)"];
@@ -340,7 +361,7 @@
         var previous_close = previousDay["4. close"];
         previous_close = Number(previous_close).toFixed(2);
 
-        var html = "<table class=\"table table-striped\" style='width:85%'><tr><th class=\"col-md-6\">Stock Ticker Symbol</th><td>";
+        var html = "<table class=\"table table-striped\" style='width:85%'><tr><th class=\"col-md-6\">Stock Ticker Symbol</th><td id='s_ticker'>";
         html += symbol;
         html += "</td></tr>";
 
