@@ -5,9 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--bootstrap, angular, jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 
@@ -102,7 +104,7 @@
         #cs_right, #cs_right_chart{
             width: 48%;
         }
-        #stockDetail{
+        #detail_panel{
             display: none;
         }
         .fa_symbol{
@@ -243,7 +245,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -252,8 +253,8 @@
     $(document).ready(function(){
         $('#btn_clear').click(function(){
             $("#symbol").val('');
-            $("#result_form").show();
-            $("#stockDetail").css("display", "none");
+            $("#detail_panel").css("display", "none");
+            $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
         });
     });
     $("#sortSelect").change(function() {
@@ -325,8 +326,8 @@
     });
 
     $('#btn_search').click(function(){
-        $("#result_form").hide();
-        $("#stockDetail").css("display", "block");
+        $("#fa_list").css("display", "none");
+        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
         $("#cur_stock2").css("display", "none");
         $("#cur_stock").show();
         $("#c_stock").parent().addClass('active').siblings().removeClass('active');
@@ -349,20 +350,20 @@
     });
 
     $("#btn_next").click(function () {
-        $("#result_form").hide();
-        $("#stockDetail").css("display", "block");
+        $("#fa_list").css("display", "none");
+        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
         showStar();
     });
     $("#btn_last").click(function () {
-        $("#stockDetail").hide();
-        $("#result_form").css("display", "block");
+        $("#detail_panel").css("display", "none");
+        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
         $(".trash").click(function () {
             $(this).parents('tr').first().remove();
         });
         $(".fa_symbol").click(function () {
             var s = $(this).text();
-            $("#result_form").hide();
-            $("#stockDetail").css("display", "block");
+            $("#fa_list").css("display", "none");
+            $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
             $("#cur_stock2").css("display", "none");
             $("#cur_stock").show();
             $("#c_stock").parent().addClass('active').siblings().removeClass('active');
