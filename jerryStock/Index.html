@@ -258,6 +258,12 @@
                 }else{
                     descSortPercent();
                 }
+            } else if(this.value === "Volume"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortVolume();
+                }else{
+                    descSortVolume();
+                }
             }
         }else {
             $("#orderSelect").attr("disabled",true);
@@ -274,6 +280,8 @@
                 ascSortChange();
             } else if($("#sortSelect").val() === "Change Percent"){
                 ascSortPercent();
+            } else if($("#sortSelect").val() === "Volume"){
+                ascSortVolume();
             }
         }else {
             if($("#sortSelect").val() === "Symbol"){
@@ -284,6 +292,8 @@
                 descSortChange();
             } else if($("#sortSelect").val() === "Change Percent"){
                 descSortPercent();
+            } else if($("#sortSelect").val() === "Volume"){
+                descSortVolume();
             }
         }
     });
@@ -557,6 +567,65 @@
                 a = a.substring(a.indexOf('(') + 1, a.indexOf('%'));
                 var b = y.innerHTML;
                 b = b.substring(b.indexOf('(') + 1, b.indexOf('%'));
+                if (Number(a) < Number(b)) {
+
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortVolume() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[3];
+                y = rows[i + 1].getElementsByTagName("TD")[3];
+
+                var a = x.innerHTML;
+                a = Number(a.split(",").join(""));
+                var b = y.innerHTML;
+                b = Number(b.split(",").join(""));
+
+                if (Number(a) > Number(b)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortVolume() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[3];
+                y = rows[i + 1].getElementsByTagName("TD")[3];
+
+                var a = x.innerHTML;
+                a = Number(a.split(",").join(""));
+                var b = y.innerHTML;
+                b = Number(b.split(",").join(""));
                 if (Number(a) < Number(b)) {
 
                     shouldSwitch= true;
