@@ -400,6 +400,52 @@
         showFeeds(symbol);
     });
 
+    $("#btn_refresh").click(function () {
+        for (var i = 0; i < $(".fa_symbol").length; i++) {
+            var s = $(".fa_symbol")[i].innerText;
+            var url = url_stock + s+ myAPI_stock;
+            $.ajax({
+                'url': url,
+                'type': "GET",
+                'success': function(data){
+                    var obj0 = data["Meta Data"];
+                    var obj1 = data["Time Series (Daily)"];
+                    var symbol = obj0["2. Symbol"];
+                    var recentDay = getAttributeByIndex(obj1, 0);
+                    var close = recentDay["4. close"];
+                    close = Number(close).toFixed(2);
+                    var volume = formatNumber(Number(recentDay["5. volume"]));
+                    var previousDay = getAttributeByIndex(obj1, 1);
+                    var previous_close = previousDay["4. close"];
+                    previous_close = Number(previous_close).toFixed(2);
+
+                    for(var j = 0; j < $(".fa_symbol").length; j++){
+                        if(symbol === $(".fa_symbol")[j].innerText){
+                            $(".fa_price")[j].innerText = close;
+                            $(".fa_volume")[j].innerText = volume;
+//                            console.log(j+ " " + symbol + " " + volume);
+                            var change, html;
+                            if(close > previous_close){
+                                change = close - previous_close;
+                                var percent = 100 * change / previous_close;
+                                html = change.toFixed(2);
+                                html += " (" + percent.toFixed(2) + "%)";
+                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
+                            }else {
+                                change = previous_close - close;
+                                var percent = 100 * change / previous_close;
+                                html = change.toFixed(2);
+                                html += " (" + percent.toFixed(2) + "%)";
+                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
+                            }
+                            $(".fa_change")[j].innerHTML = html;
+                        }
+                    }
+                }
+            });
+        }
+    });
+
 //    var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
     function ascSortSymbol() {
         var table, rows, switching, i, x, y, shouldSwitch;
@@ -703,14 +749,14 @@
             if($("#fa_icon").hasClass("fa-star-o")){
                 $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
                 var html = "<tr id='"+faID+"'><td class='fa_symbol'>" + symbol + "</td>";
-                html += "<td>"+ lastPrice +"</td>";
-                html += "<td>"+ change;
+                html += "<td class='fa_price'>"+ lastPrice +"</td>";
+                html += "<td class='fa_change'>"+ change;
                 if(change.substring(0,1) !== "-"){
                     html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>" +"</td>";
                 }else {
                     html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>" +"</td>";
                 }
-                html += "<td>"+ volume +"</td>";
+                html += "<td class='fa_volume'>"+ volume +"</td>";
                 html += "<td class='col-md-1'><button class=\"btn btn-default trash\">";
                 html += "<i class=\"fa fa-trash-o\" style=\"font-size:20px\"></i></button></td></tr>";
 
