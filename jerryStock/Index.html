@@ -234,11 +234,60 @@
         if(this.value !== "Default"){
             $("#orderSelect").removeAttr("disabled");
             $("#orderSelect").css("background-color","white");
+            if(this.value === "Symbol"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortSymbol();
+                }else{
+                    descSortSymbol();
+                }
+            } else if(this.value === "Price"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortPrice();
+                }else{
+                    descSortPrice();
+                }
+            } else if(this.value === "Change"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortChange();
+                }else{
+                    descSortChange();
+                }
+            } else if(this.value === "Change Percent"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortPercent();
+                }else{
+                    descSortPercent();
+                }
+            }
         }else {
             $("#orderSelect").attr("disabled",true);
             $("#orderSelect").css("background-color","#efefef");
         }
     });
+    $("#orderSelect").change(function() {
+        if(this.value === "Ascending"){
+            if($("#sortSelect").val() === "Symbol"){
+                ascSortSymbol();
+            } else if($("#sortSelect").val() === "Price"){
+                ascSortPrice();
+            } else if($("#sortSelect").val() === "Change"){
+                ascSortChange();
+            } else if($("#sortSelect").val() === "Change Percent"){
+                ascSortPercent();
+            }
+        }else {
+            if($("#sortSelect").val() === "Symbol"){
+                descSortSymbol();
+            } else if($("#sortSelect").val() === "Price"){
+                descSortPrice();
+            } else if($("#sortSelect").val() === "Change"){
+                descSortChange();
+            } else if($("#sortSelect").val() === "Change Percent"){
+                descSortPercent();
+            }
+        }
+    });
+
     $('#btn_search').click(function(){
         $("#result_form").hide();
         $("#stockDetail").css("display", "block");
@@ -302,6 +351,225 @@
         showFeeds(symbol);
     });
 
+    function ascSortSymbol() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[0];
+                y = rows[i + 1].getElementsByTagName("TD")[0];
+
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortSymbol() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[0];
+                y = rows[i + 1].getElementsByTagName("TD")[0];
+
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortPrice() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[1];
+                y = rows[i + 1].getElementsByTagName("TD")[1];
+
+                if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortPrice() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[1];
+                y = rows[i + 1].getElementsByTagName("TD")[1];
+
+                if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortChange() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substr(0, a.indexOf(' '));
+                var b = y.innerHTML;
+                b = b.substr(0, b.indexOf(' '));
+
+                if (Number(a) > Number(b)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortChange() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substr(0, a.indexOf(' '));
+                var b = y.innerHTML;
+                b = b.substr(0, b.indexOf(' '));
+
+                if (Number(a) < Number(b)) {
+
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortPercent() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substring(a.indexOf('(') + 1, a.indexOf('%'));
+                var b = y.innerHTML;
+                b = b.substring(b.indexOf('(') + 1, b.indexOf('%'));
+
+                if (Number(a) > Number(b)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortPercent() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substring(a.indexOf('(') + 1, a.indexOf('%'));
+                var b = y.innerHTML;
+                b = b.substring(b.indexOf('(') + 1, b.indexOf('%'));
+                if (Number(a) < Number(b)) {
+
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+
     function showStar() {
         var symbol = $("#symbol").val();
         var star = 0;
@@ -316,7 +584,6 @@
             $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
         }
     }
-
     function clickStar(){
         $("#star").click(function(){
             var symbol = $("#s_ticker").text();
