@@ -211,11 +211,35 @@
                     </button>
                     </p>
                     <div id="stock_table">
+                        <div class="progress" style="width: 80%;">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="cs_right" class="pull-right">
+                    <ul class="nav nav-tabs"><li class="active"><a id='price'>Price</a></li>
+                    <li><a id='SMA'>SMA</a></li>
+                    <li><a id='EMA'>EMA</a></li>
+                    <li><a id='STOCH'>STOCH</a></li>
+                    <li><a id='RSI'>RSI</a></li>
+                    <li><a id='ADX'>ADX</a></li>
+                    <li><a id='CCI'>CCI</a></li>
+                    <li><a id='BBANDS'>BBANDS</a></li>
+                    <li><a id='MACD'>MACD</a></li></ul>
                 </div>
                 <div id="cs_right_chart" class="pull-right">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cur_stock2" style="display: none;">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -228,6 +252,8 @@
     $(document).ready(function(){
         $('#btn_clear').click(function(){
             $("#symbol").val('');
+            $("#result_form").show();
+            $("#stockDetail").css("display", "none");
         });
     });
     $("#sortSelect").change(function() {
@@ -301,6 +327,10 @@
     $('#btn_search').click(function(){
         $("#result_form").hide();
         $("#stockDetail").css("display", "block");
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock").show();
+        $("#c_stock").parent().addClass('active').siblings().removeClass('active');
+        $("#price").parent().addClass('active').siblings().removeClass('active');
         var symbol = $("#symbol").val();
         var url = url_stock + symbol+ myAPI_stock;
         showStar();
@@ -333,6 +363,10 @@
             var s = $(this).text();
             $("#result_form").hide();
             $("#stockDetail").css("display", "block");
+            $("#cur_stock2").css("display", "none");
+            $("#cur_stock").show();
+            $("#c_stock").parent().addClass('active').siblings().removeClass('active');
+            $("#price").parent().addClass('active').siblings().removeClass('active');
             $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
             var url = url_stock + s+ myAPI_stock;
             $.ajax({
@@ -347,11 +381,15 @@
     });
 
     $("#c_stock").click(function () {
-        showStock();
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock").show();
+        //showStock();
 //        var symbol = $(".highcharts-title").text().substr(0, $(".highcharts-title").text().indexOf(' '));
-        $("#btn_search").click();
+        //$("#btn_search").click();
     });
     $("#h_charts").click(function () {
+        $("#cur_stock").hide();
+        $("#cur_stock2").css("display", "block");
         var symbol = $("#s_ticker").text();
         showStockChart(symbol);
     });
@@ -361,6 +399,7 @@
         showFeeds(symbol);
     });
 
+//    var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
     function ascSortSymbol() {
         var table, rows, switching, i, x, y, shouldSwitch;
         table = document.getElementById("fa_content");
@@ -750,42 +789,49 @@
 
         $("#stock_table").html(html);
 
-        html ="<ul class=\"nav nav-tabs\"><li class=\"active\"><a id='price'>Price</a></li>";
-        html += "<li><a id='SMA'>SMA</a></li>";
-        html += "<li><a id='EMA'>EMA</a></li>";
-        html += "<li><a id='STOCH'>STOCH</a></li>";
-        html += "<li><a id='RSI'>RSI</a></li>";
-        html += "<li><a id='ADX'>ADX</a></li>";
-        html += "<li><a id='CCI'>CCI</a></li>";
-        html += "<li><a id='BBANDS'>BBANDS</a></li>";
-        html += "<li><a id='MACD'>MACD</a></li></ul>";
-        $("#cs_right").html(html);
-
         $("#price").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph(symbol);
         });
         $("#SMA").click(function () {
-           showGraph1(symbol,"SMA");
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
+            showGraph1(symbol,"SMA");
         });
         $("#EMA").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph1(symbol,"EMA");
         });
         $("#STOCH").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph2(symbol,"STOCH");
         });
         $("#RSI").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph1(symbol,"RSI");
         });
         $("#ADX").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph1(symbol,"ADX");
         });
         $("#CCI").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph1(symbol,"CCI");
         });
         $("#BBANDS").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph3(symbol,"BBANDS");
         });
         $("#MACD").click(function () {
+            var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#cs_right_chart").html(html);
             showGraph3(symbol,"MACD");
         });
         $('ul.nav.nav-tabs li a').click(function() {
@@ -1134,29 +1180,26 @@
         });
     }
 
-    function showStock() {
-        var html = "<div id=\"cs_left\" class=\"pull-left\">";
-        html += "<p id=\"left_title\">Stock Details";
-        html += "<button class=\"btn btn-default\" id=\"star\">";
-        html += "<i class=\"fa fa-star-o\" id=\"fa_icon\" style=\"font-size:20px\"></i></button>";
-        html += "<button class=\"btn btn-default\" id=\"fb\">";
-        html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png\" height=\"25\" width=\"25\"/></button></p>";
-        html += "<div id=\"stock_table\"></div></div>";
-        html += "<div id=\"cs_right\" class=\"pull-right\"></div>";
-        html += "<div id=\"cs_right_chart\" class=\"pull-right\"></div>";
-        $("#cur_stock").html(html);
-        clickStar();
-    }
+//    function showStock() {
+//        var html = "<div id=\"cs_left\" class=\"pull-left\">";
+//        html += "<p id=\"left_title\">Stock Details";
+//        html += "<button class=\"btn btn-default\" id=\"star\">";
+//        html += "<i class=\"fa fa-star-o\" id=\"fa_icon\" style=\"font-size:20px\"></i></button>";
+//        html += "<button class=\"btn btn-default\" id=\"fb\">";
+//        html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png\" height=\"25\" width=\"25\"/></button></p>";
+//        html += "<div id=\"stock_table\"></div></div>";
+//        html += "<div id=\"cs_right\" class=\"pull-right\"></div>";
+//        html += "<div id=\"cs_right_chart\" class=\"pull-right\"></div>";
+//        $("#cur_stock").html(html);
+//        clickStar();
+//    }
     function showStockChart(symbol) {
         $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename='+symbol+'-c.json&callback=?', function (data) {
-
-            // Create the chart
-            Highcharts.stockChart('cur_stock', {
+            Highcharts.stockChart('cur_stock2', {
 
                 rangeSelector: {
                     selected: 1
                 },
-
                 title: {
                     text: symbol + ' Stock Value'
                 },
