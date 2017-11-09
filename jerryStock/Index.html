@@ -332,6 +332,12 @@
         $("#cur_stock").show();
         $("#c_stock").parent().addClass('active').siblings().removeClass('active');
         $("#price").parent().addClass('active').siblings().removeClass('active');
+
+        var html1 = "<div class=\"progress\" style='width: 80%;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#stock_table").html(html1);
+        $("#cs_right_chart").html(html2);
+
         var symbol = $("#symbol").val();
         var url = url_stock + symbol+ myAPI_stock;
         showStar();
@@ -439,6 +445,11 @@
             $(this).parents('tr').first().remove();
         });
         $(".fa_symbol").click(function () {
+            var html1 = "<div class=\"progress\" style='width: 80%;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#stock_table").html(html1);
+            $("#cs_right_chart").html(html2);
+            
             var s = $(this).text();
             $("#fa_list").css("display", "none");
             $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
