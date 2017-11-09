@@ -330,11 +330,6 @@
             $("#cs_right_chart").removeClass("pull-right");
             $(".fa_type").attr('class', 'fa_type');
         }
-        $('#btn_clear').click(function(){
-            $("#symbol").val('');
-            $("#detail_panel").css("display", "none");
-            $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
-        });
         setInterval(function(){
             if($("#s_ticker").text() !== ""){
                 $("#star").removeAttr("disabled");
@@ -346,8 +341,38 @@
             }else {
                 $("#fb").attr("disabled",true);
             }
+            if($("#cs_right_chart").children().attr("class") === "progress"){
+                $("#btn_next").attr("disabled",true);
+            } else {
+                $("#btn_next").removeAttr("disabled");
+            }
         }, 1500);
+        setInterval(function(){
+            if($("#cs_right_chart").children().attr("class") === "progress"){
+                $("#btn_next").attr("disabled",true);
+            } else {
+                $("#btn_next").removeAttr("disabled");
+            }
+        }, 500);
+        setInterval(function(){
+            if($("#symbol").val() === ""){
+                $("#btn_search").attr("disabled",true);
+            } else {
+                $("#btn_search").removeAttr("disabled");
+            }
+        }, 100);
     });
+    $('#btn_clear').click(function(){
+        $("#symbol").val('');
+        $("#btn_search").attr("ng-disabled", "myForm.symbol.$invalid");
+        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#stock_table").html(html1);
+        $("#cs_right_chart").html(html2);
+        $("#detail_panel").css("display", "none");
+        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
+    });
+
     $("#sortSelect").change(function() {
         if(this.value !== "Default"){
             $("#orderSelect").removeAttr("disabled");
