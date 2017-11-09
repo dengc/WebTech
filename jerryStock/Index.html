@@ -17,6 +17,7 @@
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="https://code.highcharts.com/stock/highstock.js"></script>
     <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
 
     <!--css style-->
     <style>
@@ -264,7 +265,7 @@
                 $("#star").attr("disabled",true);
                 $("#fb").attr("disabled",true);
             }
-        }, 1000);
+        }, 500);
     });
     $("#sortSelect").change(function() {
         if(this.value !== "Default"){
@@ -489,13 +490,14 @@
     $("#h_charts").click(function () {
         $("#cur_stock").hide();
         $("#cur_stock2").css("display", "block");
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cur_stock2").html(html);
         var symbol = $("#s_ticker").text();
         if(symbol === ""){
             var message = errorMessage("Error! Failed to get historical charts data.", "");
             $("#cur_stock2").html(message);
         }
-        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-        $("#cur_stock2").html(html);
+
         showStockChart(symbol);
     });
 
@@ -557,6 +559,26 @@
             $("#btn_refresh").click();
         }
     }
+
+    $("#fb").click(function () {
+        var obj = {}, chart;
+        chart = $('#cs_right_chart').highcharts();
+        obj.svg = chart.getSVG();
+        obj.type = 'image/png';
+        obj.async = true;
+
+        $.ajax({
+            type: 'post',
+            url: chart.options.exporting.url,
+            data: obj,
+            success: function (data) {
+                var exportUrl = this.url + data;
+                var input = 'https://www.facebook.com/sharer/sharer.php?u=';
+                input += exportUrl;
+                window.open(input, 'fbshare', 'width=640,height=320');
+            }
+        });
+    });
 
     function errorMessage(message, style){
         var html = "<div class=\"alert alert-danger\" style='" + style +"'>";
@@ -988,6 +1010,10 @@
                 valueDecimals: 2,
                 xDateFormat: '%m/%d'
             },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
+            },
             xAxis : [{
                 type: 'datetime',
                 labels: {
@@ -1120,6 +1146,10 @@
             tooltip:{
                 xDateFormat: '%m/%d'
             },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
+            },
             xAxis : {
                 type: 'datetime',
                 tickInterval: 24 * 3600000 * 7,
@@ -1176,6 +1206,10 @@
             },
             tooltip:{
                 xDateFormat: '%m/%d'
+            },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
             },
             xAxis : {
                 type: 'datetime',
@@ -1256,6 +1290,10 @@
             },
             tooltip:{
                 xDateFormat: '%m/%d'
+            },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
             },
             xAxis : {
                 type: 'datetime',
