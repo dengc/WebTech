@@ -205,10 +205,10 @@
             <div id="cur_stock">
                 <div id="cs_left" class="pull-left">
                     <p id="left_title">Stock Details
-                    <button class="btn btn-default" id="star">
+                    <button class="btn btn-default" id="star" disabled="true">
                         <i class="fa fa-star-o" id="fa_icon" style="font-size:20px"></i>
                     </button>
-                    <button class="btn btn-default" id="fb">
+                    <button class="btn btn-default" id="fb" disabled="true">
                         <img src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" height="25" width="25"/>
                     </button>
                     </p>
@@ -256,6 +256,15 @@
             $("#detail_panel").css("display", "none");
             $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
         });
+        setInterval(function(){
+            if($("#s_ticker").text() !== ""){
+                $("#star").removeAttr("disabled");
+                $("#fb").removeAttr("disabled");
+            }else {
+                $("#star").attr("disabled",true);
+                $("#fb").attr("disabled",true);
+            }
+        }, 1000);
     });
     $("#sortSelect").change(function() {
         if(this.value !== "Default"){
@@ -333,7 +342,7 @@
         $("#c_stock").parent().addClass('active').siblings().removeClass('active');
         $("#price").parent().addClass('active').siblings().removeClass('active');
 
-        var html1 = "<div class=\"progress\" style='width: 80%;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
         var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
         $("#stock_table").html(html1);
         $("#cs_right_chart").html(html2);
@@ -445,11 +454,11 @@
             $(this).parents('tr').first().remove();
         });
         $(".fa_symbol").click(function () {
-            var html1 = "<div class=\"progress\" style='width: 80%;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
             var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
             $("#stock_table").html(html1);
             $("#cs_right_chart").html(html2);
-            
+
             var s = $(this).text();
             $("#fa_list").css("display", "none");
             $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
@@ -1415,6 +1424,9 @@
                 $scope.hidethis = true;
             };
         });
+//        $scope.$watch('s_ticker', function() {
+//            alert($("#s_ticker").text());
+//        });
 
     });
 
