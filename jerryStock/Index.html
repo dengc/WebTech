@@ -113,6 +113,55 @@
             cursor: pointer;
             color: blue;
         }
+        #order_span{
+            margin-left: 70px;
+        }
+        /*responsive*/
+        @media only screen and (max-width:500px) {
+            body{
+                padding: 10px;
+            }
+            #refresh {
+                display: none;
+            }
+            #right_cor{
+                margin-left: 16%;
+            }
+            #sortSelect, #orderSelect{
+                margin: 10px auto 10px 20px;
+                width: 85%;
+                display: block;
+            }
+            #order_span{
+                margin-left: 20px;
+            }
+            #detail_title{
+                margin-left: 25%;
+            }
+            #cs_left{
+                width: 120%;
+            }
+            #star{
+                margin-left: 10%;
+            }
+            #cs_right{
+                width: 77%;
+            }
+            #cs_right_chart{
+                width: 96%;
+            }
+            #changeScroll{
+                min-width: 190px;
+            }
+            #forScroll{
+                width: 100%;
+                overflow-x: auto;
+            }
+            .fa_type{
+                min-width: 93px;
+                padding: 0;
+            }
+        }
     </style>
 </head>
 <body ng-app="myapp" ng-controller="usercontroller" background="http://cs-server.usc.edu:45678/hw/hw8/images/background.png">
@@ -164,7 +213,7 @@
                         <option>Volume</option>
                     </select>
                 </span>
-                <span style="margin-left: 70px;"><b>Order</b></span>
+                <span id="order_span"><b>Order</b></span>
                 <span>
                     <select disabled="true" id="orderSelect" style="background-color: #efefef;">
                         <option>Ascending</option>
@@ -172,18 +221,19 @@
                     </select>
                 </span>
             </div>
-
-            <table id="fa_content" class="table table-striped">
-                <tbody class="tbody1">
-                <tr>
-                    <th class="col-sm-1">Symbol</th>
-                    <th class="col-sm-1">Stock Price</th>
-                    <th class="col-md-2">Change (Change Percent)</th>
-                    <th class="col-sm-1">Volume</th>
-                    <th class="col-sm-1"></th>
-                </tr>
-                </tbody>
-            </table>
+            <div id="forScroll">
+                <table id="fa_content" class="table table-striped">
+                    <tbody class="tbody1">
+                    <tr>
+                        <th class="col-sm-1 fa_type">Symbol</th>
+                        <th class="col-sm-1 fa_type">Stock Price</th>
+                        <th class="col-md-2 fa_type" id="changeScroll">Change (Change Percent)</th>
+                        <th class="col-sm-1 fa_type">Volume</th>
+                        <th class="col-sm-1 fa_type"></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -244,14 +294,42 @@
                         </div>
                     </div>
                 </div>
-            </div>
+
         </div>
     </div>
 </div>
 
 </body>
 <script>
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone",
+            "SymbianOS", "Windows Phone",
+            "iPad", "iPod"
+        ];
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+
     $(document).ready(function(){
+        if(!IsPC()){
+            var html = "<span class=\"glyphicon glyphicon-time\"></span> Stock";
+            $("#c_stock").html(html);
+            html = "<span class=\"glyphicon glyphicon-stats\"></span> Charts";
+            $("#h_charts").html(html);
+            html = "<span class=\"glyphicon glyphicon-link\"></span> News";
+            $("#n_feeds").html(html);
+            $("#cs_left").removeClass("pull-left");
+            $("#cs_right").removeClass("pull-right");
+            $("#cs_right_chart").removeClass("pull-right");
+            $(".fa_type").attr('class', 'fa_type');
+        }
         $('#btn_clear').click(function(){
             $("#symbol").val('');
             $("#detail_panel").css("display", "none");
@@ -260,12 +338,15 @@
         setInterval(function(){
             if($("#s_ticker").text() !== ""){
                 $("#star").removeAttr("disabled");
-                $("#fb").removeAttr("disabled");
             }else {
                 $("#star").attr("disabled",true);
+            }
+            if($("#cs_right_chart").children().attr("class") === "highcharts-container "){
+                $("#fb").removeAttr("disabled");
+            }else {
                 $("#fb").attr("disabled",true);
             }
-        }, 500);
+        }, 1500);
     });
     $("#sortSelect").change(function() {
         if(this.value !== "Default"){
@@ -1335,19 +1416,6 @@
         });
     }
 
-//    function showStock() {
-//        var html = "<div id=\"cs_left\" class=\"pull-left\">";
-//        html += "<p id=\"left_title\">Stock Details";
-//        html += "<button class=\"btn btn-default\" id=\"star\">";
-//        html += "<i class=\"fa fa-star-o\" id=\"fa_icon\" style=\"font-size:20px\"></i></button>";
-//        html += "<button class=\"btn btn-default\" id=\"fb\">";
-//        html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png\" height=\"25\" width=\"25\"/></button></p>";
-//        html += "<div id=\"stock_table\"></div></div>";
-//        html += "<div id=\"cs_right\" class=\"pull-right\"></div>";
-//        html += "<div id=\"cs_right_chart\" class=\"pull-right\"></div>";
-//        $("#cur_stock").html(html);
-//        clickStar();
-//    }
     function showStockChart(symbol) {
         $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename='+symbol+'-c.json&callback=?', function (data) {
             Highcharts.stockChart('cur_stock2', {
@@ -1356,6 +1424,9 @@
                 },
                 title: {
                     text: symbol + ' Stock Value'
+                },
+                subtitle: {
+                    text: '<a href="https://www.alphavantage.co/" style="color: blue">Source: Alpha Vantag</a>'
                 },
                 tooltip: {
                     crosshairs: [false,false],
@@ -1374,7 +1445,7 @@
         });
     }
     function showFeeds(symbol) {
-        var xmlURL = "https://seekingalpha.com/api/sa/combined/" + symbol +".xml";
+//        var xmlURL = "https://seekingalpha.com/api/sa/combined/" + symbol +".xml";
 //        var xhttp = new XMLHttpRequest();
 //        xhttp.open("GET", xmlURL);
 //
@@ -1387,22 +1458,22 @@
 //        xhttp.send();
 
 
-        $.ajax({
-            type: "get",
-            url: xmlURL,
-            //dataType: "jsonp",
-            //contentType: "application/javascript",
-//            data:{
-//              "appid":"b1b15e88fa797225412429c1c50c122a1"
+//        $.ajax({
+//            type: "get",
+//            url: xmlURL,
+//            //dataType: "jsonp",
+//            //contentType: "application/javascript",
+////            data:{
+////              "appid":"b1b15e88fa797225412429c1c50c122a1"
+////            },
+//            success: function(data) {
+//                var xmlDoc = $.parseXML( data );
+//                $("#cur_stock").html(xmlDoc);
 //            },
-            success: function(data) {
-                var xmlDoc = $.parseXML( data );
-                $("#cur_stock").html(xmlDoc);
-            },
-            error: function(xhr, status) {
-                alert(JSON.stringify(xhr));
-            }
-        });
+//            error: function(xhr, status) {
+//                alert(JSON.stringify(xhr));
+//            }
+//        });
 
 //        $.getJSON("https://seekingalpha.com/api/sa/combined/" + symbol + '.json?callback=?', {format: "json"}, function(json) {
 //                $("#cur_stock").html(JSON.stringify(json));
@@ -1468,47 +1539,5 @@
 
     });
 
-
-
-    //    angular.module('plunker', ['ui.bootstrap']);
-//    function TypeaheadCtrl($scope) {
-//        $scope.stock = [{"Symbol":"AAPL","Name":"Apple Inc","Exchange":"NASDAQ"},{"Symbol":"APLE","Name":"","Exchange":"NYSE"},{"Symbol":"APLE","Name":"Apple Hospitality REIT Inc","Exchange":"BATS Trading Inc"},{"Symbol":"VXAPL","Name":"CBOE Apple VIX Index","Exchange":"Market Data Express"}]
-//
-//    }
-
-
-//    myForm.submit(function () {
-//        alert(symbol);
-//
-//        $.ajax({
-//            type: myForm.attr('method'),
-//            url: ,
-//            data: frm.serialize(),
-//            success: function (data) {
-//                console.log('Submission was successful.');
-//                console.log(data);
-//            },
-//            error: function (data) {
-//                console.log('An error occurred.');
-//                console.log(data);
-//            }
-//        });
-//    });
-
-//    if($("#symbol").attr("class").includes("ng-touched") && $("#symbol").attr("class").includes("ng-empty")){
-//        $("#symbol").css("border","2px solid red");
-//    }
-
-//    var myApp = angular.module('myApp', []);
-////    myApp.controller("myCtrl", ["$scope", function($scope) {
-////
-////    }]);
-//    myApp.controller("myCtrl", function ($scope) {
-//
-//        $scope.clearSearch = function () {
-//            $scope.symbol = "";
-//        };
-//    });
 </script>
-
 </html>
