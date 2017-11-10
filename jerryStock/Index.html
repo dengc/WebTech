@@ -585,10 +585,14 @@
             $("#price").parent().addClass('active').siblings().removeClass('active');
             $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
             var url = url_stock + s+ myAPI_stock;
+
             $.ajax({
-                'url': url,
+                'url': 'http://localhost:8082/',
                 'type': "GET",
+                'data': {"symbol": s},
                 'success': function(data) {
+                    data = JSON.parse(data);
+
                     searchValue(data,s);
                     draw(data,s);
                 }
@@ -628,10 +632,14 @@
         for (var i = 0; i < $(".fa_symbol").length; i++) {
             var s = $(".fa_symbol")[i].innerText;
             var url = url_stock + s+ myAPI_stock;
+
             $.ajax({
-                'url': url,
+                'url': 'http://localhost:8082/',
                 'type': "GET",
+                'data': {"symbol": s},
                 'success': function(data){
+                    data = JSON.parse(data);
+
                     var obj0 = data["Meta Data"];
                     var obj1 = data["Time Series (Daily)"];
                     var symbol = obj0["2. Symbol"];
@@ -1182,10 +1190,14 @@
     }
     function showGraph(symbol) {
         var url = url_stock + symbol+ myAPI_stock;
+
         $.ajax({
-            'url': url,
+            'url': 'http://localhost:8082/',
             'type': "GET",
+            'data': {"symbol": symbol},
             'success': function(data) {
+                data = JSON.parse(data);
+
                 draw(data,symbol);
             }
         });
@@ -1196,10 +1208,14 @@
         url += "&symbol=" + symbol;
         url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
 
+
         $.ajax({
-            'url': url,
+            'url': 'http://localhost:8082/',
             'type': "GET",
+            'data': {"symbol": symbol},
             'success': function(data) {
+                data = JSON.parse(data);
+
                 draw1(data,symbol,indicator);
             }
         });
@@ -1211,9 +1227,12 @@
         url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
 
         $.ajax({
-            'url': url,
+            'url': 'http://localhost:8082/',
             'type': "GET",
+            'data': {"symbol": symbol},
             'success': function(data) {
+                data = JSON.parse(data);
+
                 draw2(data,symbol,indicator);
             }
         });
@@ -1225,9 +1244,12 @@
         url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
 
         $.ajax({
-            'url': url,
+            'url': 'http://localhost:8082/',
             'type': "GET",
+            'data': {"symbol": symbol},
             'success': function(data) {
+                data = JSON.parse(data);
+
                 draw3(data,symbol,indicator);
             }
         });
@@ -1545,6 +1567,7 @@
 
         $scope.$watch('symbol', function() {
             var url_auto = "http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=" + $scope.symbol;
+
             $.ajax({
                 'url': url_auto,
                 'type': "GET",
@@ -1577,22 +1600,7 @@
                 $scope.hidethis = true;
             };
         });
-//        $scope.$watch('s_ticker', function() {
-//            alert($("#s_ticker").text());
-//        });
 
-    });
-
-    $.ajax({
-        type: "GET",
-        url: 'http://localhost:8082/',
-        data: {"symbol":"AMZN"},
-        //dataType: "json",
-        success: function(data) {
-            data = JSON.parse(data);
-            //var x = res.getElementsByTagName("channel");
-            console.log(data["Meta Data"]);
-        }
     });
 
 </script>

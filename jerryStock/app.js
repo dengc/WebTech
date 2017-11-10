@@ -32,14 +32,6 @@ var url = require("url");
 
 app.get('/', function(req, res){
     res.status(200).sendfile('./index.html');
-    // console.log(req.params);
-    //
-    // var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
-    // var params = url.parse(req.url,true).query;
-    // symbol = params.symbol;
-    //   // console.log(symbol);
-    // url_stock = url_stock + symbol + myAPI_stock;
-
 });
 
 app2.get('/', function(req, res) {
