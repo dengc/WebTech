@@ -294,6 +294,12 @@
                         </div>
                     </div>
                 </div>
+            <div id="cur_stock3" style="display: none;">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                    </div>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -364,7 +370,6 @@
     });
     $('#btn_clear').click(function(){
         $("#symbol").val('');
-        $("#btn_search").attr("ng-disabled", "myForm.symbol.$invalid");
         var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
         var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
         $("#stock_table").html(html1);
@@ -445,6 +450,7 @@
         $("#fa_list").css("display", "none");
         $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
         $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "none");
         $("#cur_stock").show();
         $("#c_stock").parent().addClass('active').siblings().removeClass('active');
         $("#price").parent().addClass('active').siblings().removeClass('active');
@@ -570,6 +576,7 @@
             $("#fa_list").css("display", "none");
             $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
             $("#cur_stock2").css("display", "none");
+            $("#cur_stock3").css("display", "none");
             $("#cur_stock").show();
             $("#c_stock").parent().addClass('active').siblings().removeClass('active');
             $("#price").parent().addClass('active').siblings().removeClass('active');
@@ -588,6 +595,7 @@
 
     $("#c_stock").click(function () {
         $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "none");
         $("#cur_stock").show();
         //showStock();
 //        var symbol = $(".highcharts-title").text().substr(0, $(".highcharts-title").text().indexOf(' '));
@@ -596,6 +604,7 @@
     $("#h_charts").click(function () {
         $("#cur_stock").hide();
         $("#cur_stock2").css("display", "block");
+        $("#cur_stock3").css("display", "none");
         var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
         $("#cur_stock2").html(html);
         var symbol = $("#s_ticker").text();
@@ -1509,7 +1518,9 @@
 //                $("#cur_stock").html(JSON.stringify(json));
 //
 //        });
-        $("#cur_stock").html("sss");
+        $("#cur_stock").hide();
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "block");
     }
     
     function getAttributeByIndex(obj, index){
@@ -1567,6 +1578,18 @@
 //            alert($("#s_ticker").text());
 //        });
 
+    });
+
+    $.ajax({
+        type: "GET",
+        url: 'http://localhost:8081/',
+        data: {"symbol":"GOOG"},
+        dataType: "json",
+        success: function(res) {
+//            res = JSON.parse(res);
+            //var x = res.getElementsByTagName("channel");
+            console.log(res);
+        }
     });
 
 </script>
