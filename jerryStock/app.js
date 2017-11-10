@@ -48,7 +48,7 @@ app2.get('/', function(req, res) {
 
     var url_indicator = "https://www.alphavantage.co/query?function=";
     var indicator = params.function;
-    console.log(JSON.stringify(indicator));
+    // console.log(JSON.stringify(indicator));
     url_indicator += indicator;
     url_indicator += "&symbol=" + symbol;
     url_indicator += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
@@ -63,6 +63,21 @@ app2.get('/', function(req, res) {
             res.send(body);
         });
     }
+
+    var news_url = "https://seekingalpha.com/api/sa/combined/";
+    news_url += symbol;
+});
+app2.get('/:symbol', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    var symbol = req.params.symbol;
+    var news_url = "https://seekingalpha.com/api/sa/combined/";
+    news_url += symbol;
+    request(news_url, function(error, response, body) {
+        parseString(body, function (err, result) {
+            res.send(result);
+        });
+    });
 });
 
 // Start the server

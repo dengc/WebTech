@@ -161,6 +161,10 @@
                 min-width: 93px;
                 padding: 0;
             }
+            .news_list{
+                background-color: #efefef;
+                margin-top: 25px;
+            }
         }
     </style>
 </head>
@@ -1509,43 +1513,37 @@
         });
     }
     function showFeeds(symbol) {
-//        var xmlURL = "https://seekingalpha.com/api/sa/combined/" + symbol +".xml";
-//        var xhttp = new XMLHttpRequest();
-//        xhttp.open("GET", xmlURL);
-//
-//        xhttp.onreadystatechange = function() {
-//            if (this.readyState == 4 && this.status == 200) {
-//                var xmlDoc = this.responseText;
-//                alert(xmlDoc);
-//            }
-//        };
-//        xhttp.send();
-
-
-//        $.ajax({
-//            type: "get",
-//            url: xmlURL,
-//            //dataType: "jsonp",
-//            //contentType: "application/javascript",
-////            data:{
-////              "appid":"b1b15e88fa797225412429c1c50c122a1"
-////            },
-//            success: function(data) {
-//                var xmlDoc = $.parseXML( data );
-//                $("#cur_stock").html(xmlDoc);
-//            },
-//            error: function(xhr, status) {
-//                alert(JSON.stringify(xhr));
-//            }
-//        });
-
-//        $.getJSON("https://seekingalpha.com/api/sa/combined/" + symbol + '.json?callback=?', {format: "json"}, function(json) {
-//                $("#cur_stock").html(JSON.stringify(json));
-//
-//        });
         $("#cur_stock").hide();
         $("#cur_stock2").css("display", "none");
         $("#cur_stock3").css("display", "block");
+
+        $.ajax({
+            'url': 'http://localhost:8082/' + symbol,
+            'type': "GET",
+            'success': function(data) {
+                var count = 0;
+                var html = "";
+                var obj = data["rss"]["channel"][0]["item"];
+                for(var i = 0; i < 100; i++){
+                    var link = obj[i]["link"][0];
+                    if(link.indexOf("article") > -1){
+                        count++;
+                        var title = obj[i]["title"][0];
+                        var pubTime = obj[i]["pubDate"][0];
+                        pubTime = pubTime.replace("-0500","EDT");
+                        var author = obj[i]["sa:author_name"][0];
+                        html += "<div class='container news_list' style='background-color: #efefef; margin-top: 25px; padding:25px 15px; width:95%;'>";
+                        html += "<a class='news_title' style='font-size: 1.4em;' target='_blank' href='" + link +"'>" + title + "</a>";
+                        html += "<p class ='news_author' style='margin: 20px auto 15px auto; font-weight: bold'>Author:" + author + "</p>";
+                        html += "<p class ='news_date' style='font-weight: bold'>Date:" + pubTime + "</p></div>";
+                        $("#cur_stock3").html(html);
+                    }
+                    if(count > 4){
+                        break;
+                    }
+                }
+            }
+        });
     }
     
     function getAttributeByIndex(obj, index){
