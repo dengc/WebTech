@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Stock</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--bootstrap, angular, jQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    <!--css style-->
+    <style>
+        body, p{
+            margin: 0;
+        }
+        body{
+            background-color: darkblue;
+        }
+        #search_form, #result_form, #stockDetail{
+            background-color: white;
+            margin-top:10px;
+            border-radius: 5px;
+        }
+        h4{
+            text-align: center;
+            margin-top: 25px;
+        }
+        .required_mark{
+            color: red;
+        }
+        #input_div{
+            margin-bottom: 25px;
+        }
+        input.ng-touched.ng-empty {
+            border: 2px solid red;
+        }
+        #btn_clear{
+            margin-left: 10px;
+        }
+        .line{
+            padding: 0;
+        }
+        #symbol_list{
+            cursor:pointer;
+            border: none;
+        }
+        #symbol_list:hover
+        {
+            background-color:#f9f9f9;
+        }
+        #fa_list, #detail_panel, #stock_table, #cs_right_chart{
+            margin-top: 25px;
+        }
+        #list_title{
+            font-weight: bold;
+        }
+        #right_cor{
+            margin-left: 66%;
+        }
+        #sortSelect, #orderSelect{
+            background-color: white;
+            margin-left:30px;
+            height: 30px;
+            width:18%;
+        }
+        #fa_content{
+            margin-top: 20px;
+        }
+        #cs_left{
+            width: 55%;
+            margin-right: -40px;
+        }
+        #detail_title{
+            font-weight: bold;
+            margin-left: 40%;
+        }
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+            padding-top:20px;
+            padding-bottom: 20px;
+        }
+        #left_title{
+            margin-left: 25px;
+            font-weight: bold;
+        }
+        #star{
+            height: 40px;
+            width: 44px;
+            margin-left: 47%;
+        }
+        #fb{
+            height: 40px;
+            width: 44px;
+        }
+        #cs_right, #cs_right_chart{
+            width: 48%;
+        }
+        #detail_panel{
+            display: none;
+        }
+        .fa_symbol{
+            text-decoration: underline;
+            cursor: pointer;
+            color: blue;
+        }
+        #order_span{
+            margin-left: 70px;
+        }
+        /*responsive*/
+        @media only screen and (max-width:500px) {
+            body{
+                padding: 10px;
+            }
+            #refresh {
+                display: none;
+            }
+            #right_cor{
+                margin-left: 16%;
+            }
+            #sortSelect, #orderSelect{
+                margin: 10px auto 10px 20px;
+                width: 85%;
+                display: block;
+            }
+            #order_span{
+                margin-left: 20px;
+            }
+            #detail_title{
+                margin-left: 25%;
+            }
+            #cs_left{
+                width: 120%;
+            }
+            #star{
+                margin-left: 10%;
+            }
+            #cs_right{
+                width: 77%;
+            }
+            #cs_right_chart{
+                width: 96%;
+            }
+            #changeScroll{
+                min-width: 190px;
+            }
+            #forScroll{
+                width: 100%;
+                overflow-x: auto;
+            }
+            .fa_type{
+                min-width: 93px;
+                padding: 0;
+            }
+            .news_list{
+                background-color: #efefef;
+                margin-top: 25px;
+            }
+        }
+    </style>
+</head>
+<body ng-app="myapp" ng-controller="usercontroller" background="http://cs-server.usc.edu:45678/hw/hw8/images/background.png">
+
+<div class="container" id="search_form">
+    <h4>Stock Market Search</h4>
+    <form class="form-horizontal" id="myForm" name="myForm" method="post" novalidate>
+        <div class="form-group" >
+            <label class="col-sm-3" for="symbol" id="symbol_label">Enter Stock Ticker Symbol: <span class="required_mark">*</span></label>
+            <div class="col-md-6" id="input_div"  >
+                <input class="form-control" id="symbol" placeholder="e.g. AAPL" name="symbol" ng-model="symbol" required ng-keyup="complete(symbol)">
+                <ul class="list-group" ng-model="hidethis" ng-hide="hidethis">
+                    <li class="list-group-item" id="symbol_list" ng-repeat="symboldata in filterSymbol" ng-click="fillTextbox(symboldata)">{{symboldata}}</li>
+                </ul>
+                <p id="error_message" ng-show="myForm.symbol.$touched && myForm.symbol.$invalid">Please enter a stock ticker symbol.</p>
+            </div>
+            <div class="col-md-3">
+                <button  class="btn btn-primary pull-left" id="btn_search" ng-disabled="myForm.symbol.$invalid"><span class="glyphicon glyphicon-search"></span> Get Quote</button>
+                <button class="btn btn-default" id="btn_clear" data-ng-click="clearSearch()"><span class="glyphicon glyphicon-refresh"></span> Clear</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container line">
+    <hr/>
+</div>
+
+<div class="container" id="result_form">
+    <div class="panel panel-default" id="fa_list">
+        <div class="panel-heading">
+            <span id="list_title">Favorite List</span>
+            <span id="right_cor">
+                <span  id="refresh">Automatic Refresh: </span>
+                <input type="checkbox" id="auto_ref" data-toggle="toggle"/>
+                <button class="btn btn-default" id="btn_refresh"><span class="glyphicon glyphicon-refresh"></span></button>
+                <button class="btn btn-default" id="btn_next"><span class="glyphicon glyphicon-chevron-right"></span></button>
+            </span>
+        </div>
+        <div class="panel-body">
+            <div id="sort">
+                <span style="margin-left: 20px;"><b>Sort by</b></span>
+                <span>
+                    <select id="sortSelect">
+                        <option>Default</option>
+                        <option>Symbol</option>
+                        <option>Price</option>
+                        <option>Change</option>
+                        <option>Change Percent</option>
+                        <option>Volume</option>
+                    </select>
+                </span>
+                <span id="order_span"><b>Order</b></span>
+                <span>
+                    <select disabled="true" id="orderSelect" style="background-color: #efefef;">
+                        <option>Ascending</option>
+                        <option>Descending</option>
+                    </select>
+                </span>
+            </div>
+            <div id="forScroll">
+                <table id="fa_content" class="table table-striped">
+                    <tbody class="tbody1">
+                    <tr>
+                        <th class="col-sm-1 fa_type">Symbol</th>
+                        <th class="col-sm-1 fa_type">Stock Price</th>
+                        <th class="col-md-2 fa_type" id="changeScroll">Change (Change Percent)</th>
+                        <th class="col-sm-1 fa_type">Volume</th>
+                        <th class="col-sm-1 fa_type"></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="stockDetail">
+    <div class="panel panel-default" id="detail_panel">
+        <div class="panel-heading">
+            <span id="left_cor">
+                <button class="btn btn-default" id="btn_last"><span class="glyphicon glyphicon-chevron-left"></span></button>
+            </span>
+            <span id="detail_title">Stock Details</span>
+        </div>
+        <div class="panel-body">
+            <ul class="nav nav-pills">
+                <li class="active detail_pill"><a href="" id="c_stock"><span class="glyphicon glyphicon-time"></span>&nbsp Current Stock</a></li>
+                <li class="detail_pill"><a href="" id="h_charts"><span class="glyphicon glyphicon-stats"></span>&nbsp Historical Charts</a></li>
+                <li class="detail_pill"><a href="" id="n_feeds"><span class="glyphicon glyphicon-link"></span>&nbsp News Feeds</a></li>
+            </ul>
+            <hr/>
+            <div id="cur_stock">
+                <div id="cs_left" class="pull-left">
+                    <p id="left_title">Stock Details
+                    <button class="btn btn-default" id="star" disabled="true">
+                        <i class="fa fa-star-o" id="fa_icon" style="font-size:20px"></i>
+                    </button>
+                    <button class="btn btn-default" id="fb" disabled="true">
+                        <img src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" height="25" width="25"/>
+                    </button>
+                    </p>
+                    <div id="stock_table">
+                        <div class="progress" style="width: 80%;">
+                            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="cs_right" class="pull-right">
+                    <ul class="nav nav-tabs"><li class="active"><a class="stock_list" id='price'>Price</a></li>
+                    <li><a class="stock_list" id='SMA'>SMA</a></li>
+                    <li><a class="stock_list" id='EMA'>EMA</a></li>
+                    <li><a class="stock_list" id='STOCH'>STOCH</a></li>
+                    <li><a class="stock_list" id='RSI'>RSI</a></li>
+                    <li><a class="stock_list" id='ADX'>ADX</a></li>
+                    <li><a class="stock_list" id='CCI'>CCI</a></li>
+                    <li><a class="stock_list" id='BBANDS'>BBANDS</a></li>
+                    <li><a class="stock_list" id='MACD'>MACD</a></li></ul>
+                </div>
+                <div id="cs_right_chart" class="pull-right">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cur_stock2" style="display: none;">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                        </div>
+                    </div>
+                </div>
+            <div id="cur_stock3" style="display: none;">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone",
+            "SymbianOS", "Windows Phone",
+            "iPad", "iPod"
+        ];
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    $(document).ready(function(){
+        if(!IsPC()){
+            var html = "<span class=\"glyphicon glyphicon-time\"></span> Stock";
+            $("#c_stock").html(html);
+            html = "<span class=\"glyphicon glyphicon-stats\"></span> Charts";
+            $("#h_charts").html(html);
+            html = "<span class=\"glyphicon glyphicon-link\"></span> News";
+            $("#n_feeds").html(html);
+            $("#cs_left").removeClass("pull-left");
+            $("#cs_right").removeClass("pull-right");
+            $("#cs_right_chart").removeClass("pull-right");
+            $(".fa_type").attr('class', 'fa_type');
+        }
+        setInterval(function(){
+            if($("#s_ticker").text() !== ""){
+                $("#star").removeAttr("disabled");
+            }else {
+                $("#star").attr("disabled",true);
+            }
+            if($("#cs_right_chart").children().attr("class") === "highcharts-container "){
+                $("#fb").removeAttr("disabled");
+            }else {
+                $("#fb").attr("disabled",true);
+            }
+            if($("#cs_right_chart").children().attr("class") === "progress"){
+                $("#btn_next").attr("disabled",true);
+            } else {
+                $("#btn_next").removeAttr("disabled");
+            }
+        }, 1500);
+        setInterval(function(){
+            if($("#cs_right_chart").children().attr("class") === "progress"){
+                $("#btn_next").attr("disabled",true);
+            } else {
+                $("#btn_next").removeAttr("disabled");
+            }
+        }, 500);
+        setInterval(function(){
+            if($("#symbol").val() === ""){
+                $("#btn_search").attr("disabled",true);
+            } else {
+                $("#btn_search").removeAttr("disabled");
+            }
+        }, 100);
+    });
+    $('#btn_clear').click(function(){
+        $("#symbol").val('');
+        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#stock_table").html(html1);
+        $("#cs_right_chart").html(html2);
+        $("#detail_panel").css("display", "none");
+        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
+    });
+
+    $("#sortSelect").change(function() {
+        if(this.value !== "Default"){
+            $("#orderSelect").removeAttr("disabled");
+            $("#orderSelect").css("background-color","white");
+            if(this.value === "Symbol"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortSymbol();
+                }else{
+                    descSortSymbol();
+                }
+            } else if(this.value === "Price"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortPrice();
+                }else{
+                    descSortPrice();
+                }
+            } else if(this.value === "Change"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortChange();
+                }else{
+                    descSortChange();
+                }
+            } else if(this.value === "Change Percent"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortPercent();
+                }else{
+                    descSortPercent();
+                }
+            } else if(this.value === "Volume"){
+                if($("#orderSelect").val() === "Ascending"){
+                    ascSortVolume();
+                }else{
+                    descSortVolume();
+                }
+            }
+        }else {
+            $("#orderSelect").attr("disabled",true);
+            $("#orderSelect").css("background-color","#efefef");
+        }
+    });
+    $("#orderSelect").change(function() {
+        if(this.value === "Ascending"){
+            if($("#sortSelect").val() === "Symbol"){
+                ascSortSymbol();
+            } else if($("#sortSelect").val() === "Price"){
+                ascSortPrice();
+            } else if($("#sortSelect").val() === "Change"){
+                ascSortChange();
+            } else if($("#sortSelect").val() === "Change Percent"){
+                ascSortPercent();
+            } else if($("#sortSelect").val() === "Volume"){
+                ascSortVolume();
+            }
+        }else {
+            if($("#sortSelect").val() === "Symbol"){
+                descSortSymbol();
+            } else if($("#sortSelect").val() === "Price"){
+                descSortPrice();
+            } else if($("#sortSelect").val() === "Change"){
+                descSortChange();
+            } else if($("#sortSelect").val() === "Change Percent"){
+                descSortPercent();
+            } else if($("#sortSelect").val() === "Volume"){
+                descSortVolume();
+            }
+        }
+    });
+
+    $('#btn_search').click(function(){
+        $("#fa_list").css("display", "none");
+        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "none");
+        $("#cur_stock").show();
+        $("#c_stock").parent().addClass('active').siblings().removeClass('active');
+        $("#price").parent().addClass('active').siblings().removeClass('active');
+
+        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#stock_table").html(html1);
+        $("#cs_right_chart").html(html2);
+
+        var symbol = $("#symbol").val();
+        var url = url_stock + symbol+ myAPI_stock;
+        showStar();
+
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/',
+            'type': "GET",
+            'data': {"symbol": symbol},
+            'success': function(data) {
+                data = JSON.parse(data);
+                if(data["Error Message"]){
+                    var message1 = errorMessage("Error! Failed to get current stock data.", "width:80%; margin-top:66px;");
+                    var message2 = errorMessage("Error! Failed to get Price data.", "width:90%;");
+                    $("#stock_table").html(message1);
+                    $("#cs_right_chart").html(message2);
+                }
+                searchValue(data,symbol);
+                draw(data,symbol);
+            },
+            'error': function(xhr, status) {
+                var message1 = errorMessage("Error! Failed to get current stock data.", "width:80%; margin-top:66px;");
+                var message2 = errorMessage("Error! Failed to get Price data.", "width:90%;");
+                $("#stock_table").html(message1);
+                $("#cs_right_chart").html(message2);
+            }
+        });
+    });
+
+    $("#price").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph(symbol);
+    });
+    $("#SMA").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph1(symbol,"SMA");
+    });
+    $("#EMA").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph1(symbol,"EMA");
+    });
+    $("#STOCH").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph2(symbol,"STOCH");
+    });
+    $("#RSI").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph1(symbol,"RSI");
+    });
+    $("#ADX").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph1(symbol,"ADX");
+    });
+    $("#CCI").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph1(symbol,"CCI");
+    });
+    $("#BBANDS").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph3(symbol,"BBANDS");
+    });
+    $("#MACD").click(function () {
+        var symbol = $("#s_ticker").text();
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cs_right_chart").html(html);
+        showGraph3(symbol,"MACD");
+    });
+    $('ul.nav.nav-tabs li a').click(function() {
+        $(this).parent().addClass('active').siblings().removeClass('active');
+    });
+    $(".stock_list").click(function () {
+        var symbol = $("#s_ticker").text();
+        var message = errorMessage("Error! Failed to get data.", "width:90%;");
+        if(symbol === ""){
+            $("#cs_right_chart").html(message);
+        }
+    });
+
+
+    $('ul.nav.nav-pills li a').click(function() {
+        $(this).parent().addClass('active').siblings().removeClass('active');
+    });
+
+    $("#btn_next").click(function () {
+        $("#fa_list").css("display", "none");
+        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
+        showStar();
+    });
+    $("#btn_last").click(function () {
+        $("#detail_panel").css("display", "none");
+        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
+        $(".trash").click(function () {
+            $(this).parents('tr').first().remove();
+        });
+        $(".fa_symbol").click(function () {
+            var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#stock_table").html(html1);
+            $("#cs_right_chart").html(html2);
+
+            var s = $(this).text();
+            $("#fa_list").css("display", "none");
+            $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
+            $("#cur_stock2").css("display", "none");
+            $("#cur_stock3").css("display", "none");
+            $("#cur_stock").show();
+            $("#c_stock").parent().addClass('active').siblings().removeClass('active');
+            $("#price").parent().addClass('active').siblings().removeClass('active');
+            $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+            var url = url_stock + s+ myAPI_stock;
+
+            $.ajax({
+                'url': 'https://jerrystock-08.appspot.com/',
+                'type': "GET",
+                'data': {"symbol": s},
+                'success': function(data) {
+                    data = JSON.parse(data);
+
+                    searchValue(data,s);
+                    draw(data,s);
+                }
+            });
+        });
+    });
+
+    $("#c_stock").click(function () {
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "none");
+        $("#cur_stock").show();
+        //showStock();
+//        var symbol = $(".highcharts-title").text().substr(0, $(".highcharts-title").text().indexOf(' '));
+        //$("#btn_search").click();
+    });
+    $("#h_charts").click(function () {
+        $("#cur_stock").hide();
+        $("#cur_stock2").css("display", "block");
+        $("#cur_stock3").css("display", "none");
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cur_stock2").html(html);
+        var symbol = $("#s_ticker").text();
+        if(symbol === ""){
+            var message = errorMessage("Error! Failed to get historical charts data.", "");
+            $("#cur_stock2").html(message);
+        }
+
+        showStockChart(symbol);
+    });
+
+    $("#n_feeds").click(function () {
+        var symbol = $("#s_ticker").text();
+        showFeeds(symbol);
+    });
+
+    $("#btn_refresh").click(function () {
+        for (var i = 0; i < $(".fa_symbol").length; i++) {
+            var s = $(".fa_symbol")[i].innerText;
+            var url = url_stock + s+ myAPI_stock;
+
+            $.ajax({
+                'url': 'https://jerrystock-08.appspot.com/',
+                'type': "GET",
+                'data': {"symbol": s},
+                'success': function(data){
+                    data = JSON.parse(data);
+
+                    var obj0 = data["Meta Data"];
+                    var obj1 = data["Time Series (Daily)"];
+                    var symbol = obj0["2. Symbol"];
+                    var recentDay = getAttributeByIndex(obj1, 0);
+                    var close = recentDay["4. close"];
+                    close = Number(close).toFixed(2);
+                    var volume = formatNumber(Number(recentDay["5. volume"]));
+                    var previousDay = getAttributeByIndex(obj1, 1);
+                    var previous_close = previousDay["4. close"];
+                    previous_close = Number(previous_close).toFixed(2);
+
+                    for(var j = 0; j < $(".fa_symbol").length; j++){
+                        if(symbol === $(".fa_symbol")[j].innerText){
+                            $(".fa_price")[j].innerText = close;
+                            $(".fa_volume")[j].innerText = volume;
+//                            console.log(j+ " " + symbol + " " + volume);
+                            var change, html;
+                            if(close > previous_close){
+                                change = close - previous_close;
+                                var percent = 100 * change / previous_close;
+                                html = change.toFixed(2);
+                                html += " (" + percent.toFixed(2) + "%)";
+                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
+                            }else {
+                                change = previous_close - close;
+                                var percent = 100 * change / previous_close;
+                                html = change.toFixed(2);
+                                html += " (" + percent.toFixed(2) + "%)";
+                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
+                            }
+                            $(".fa_change")[j].innerHTML = html;
+                        }
+                    }
+                }
+            });
+        }
+    });
+    $('#auto_ref').on('change', function () {
+        setInterval(function(){ refresh() }, 5000);
+    });
+    function refresh() {
+        if($('#auto_ref').is(':checked')){
+            $("#btn_refresh").click();
+        }
+    }
+
+    $("#fb").click(function () {
+        var obj = {}, chart;
+        chart = $('#cs_right_chart').highcharts();
+        obj.svg = chart.getSVG();
+        obj.type = 'image/png';
+        obj.async = true;
+
+        $.ajax({
+            type: 'post',
+            url: chart.options.exporting.url,
+            data: obj,
+            success: function (data) {
+                var exportUrl = this.url + data;
+                var input = 'https://www.facebook.com/sharer/sharer.php?u=';
+                input += exportUrl;
+                window.open(input, 'fbshare', 'width=640,height=320');
+            }
+        });
+    });
+
+    function errorMessage(message, style){
+        var html = "<div class=\"alert alert-danger\" style='" + style +"'>";
+        html += message;
+        html += "</div>";
+        return html
+    }
+
+//    var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+    function ascSortSymbol() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[0];
+                y = rows[i + 1].getElementsByTagName("TD")[0];
+
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortSymbol() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[0];
+                y = rows[i + 1].getElementsByTagName("TD")[0];
+
+                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortPrice() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[1];
+                y = rows[i + 1].getElementsByTagName("TD")[1];
+
+                if (Number(x.innerHTML) > Number(y.innerHTML)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortPrice() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[1];
+                y = rows[i + 1].getElementsByTagName("TD")[1];
+
+                if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortChange() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substr(0, a.indexOf(' '));
+                var b = y.innerHTML;
+                b = b.substr(0, b.indexOf(' '));
+
+                if (Number(a) > Number(b)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortChange() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substr(0, a.indexOf(' '));
+                var b = y.innerHTML;
+                b = b.substr(0, b.indexOf(' '));
+
+                if (Number(a) < Number(b)) {
+
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortPercent() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substring(a.indexOf('(') + 1, a.indexOf('%'));
+                var b = y.innerHTML;
+                b = b.substring(b.indexOf('(') + 1, b.indexOf('%'));
+
+                if (Number(a) > Number(b)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortPercent() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[2];
+                y = rows[i + 1].getElementsByTagName("TD")[2];
+
+                var a = x.innerHTML;
+                a = a.substring(a.indexOf('(') + 1, a.indexOf('%'));
+                var b = y.innerHTML;
+                b = b.substring(b.indexOf('(') + 1, b.indexOf('%'));
+                if (Number(a) < Number(b)) {
+
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function ascSortVolume() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[3];
+                y = rows[i + 1].getElementsByTagName("TD")[3];
+
+                var a = x.innerHTML;
+                a = Number(a.split(",").join(""));
+                var b = y.innerHTML;
+                b = Number(b.split(",").join(""));
+
+                if (Number(a) > Number(b)) {
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+    function descSortVolume() {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("fa_content");
+        switching = true;
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("TR");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[3];
+                y = rows[i + 1].getElementsByTagName("TD")[3];
+
+                var a = x.innerHTML;
+                a = Number(a.split(",").join(""));
+                var b = y.innerHTML;
+                b = Number(b.split(",").join(""));
+                if (Number(a) < Number(b)) {
+
+                    shouldSwitch= true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+
+    function showStar() {
+        var symbol = $("#symbol").val();
+        var star = 0;
+        for (var i = 0; i < $(".fa_symbol").length; i++) {
+            var s = $(".fa_symbol")[i].innerText;
+            if(s === symbol){
+                $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+                star = 1;
+            }
+        }
+        if(star === 0){
+            $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+        }
+    }
+    function clickStar(){
+        $("#star").click(function(){
+            var symbol = $("#s_ticker").text();
+            var lastPrice = $("#last_price").text();
+            var change = $("#change").text();
+            var volume = $("#volume").text();
+            var faID = "newFA" + symbol;
+            if($("#fa_icon").hasClass("fa-star-o")){
+                $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+                var html = "<tr id='"+faID+"'><td class='fa_symbol'>" + symbol + "</td>";
+                html += "<td class='fa_price'>"+ lastPrice +"</td>";
+                html += "<td class='fa_change'>"+ change;
+                if(change.substring(0,1) !== "-"){
+                    html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>" +"</td>";
+                }else {
+                    html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>" +"</td>";
+                }
+                html += "<td class='fa_volume'>"+ volume +"</td>";
+                html += "<td class='col-md-1'><button class=\"btn btn-default trash\">";
+                html += "<i class=\"fa fa-trash-o\" style=\"font-size:20px\"></i></button></td></tr>";
+
+                $(".tbody1").append(html);
+            }else {
+                $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+                $("#" + faID).remove();
+                //$("#fa_content tr:last").remove();
+            }
+        });
+    }
+
+    var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+    var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
+    var inputDate = Date.now() - 24 * 3600000 * 179;
+//    var symbol = $("#symbol").val();
+    clickStar();
+
+    function searchValue(data,symbol) {
+        //var obj0 = data["Meta Data"];
+        var obj1 = data["Time Series (Daily)"];
+        var recentDay = getAttributeByIndex(obj1, 0);
+        var previousDay = getAttributeByIndex(obj1, 1);
+        var previous_close = previousDay["4. close"];
+        previous_close = Number(previous_close).toFixed(2);
+
+        var html = "<table class=\"table table-striped\" style='width:85%'><tr><th class=\"col-md-6\">Stock Ticker Symbol</th><td id='s_ticker'>";
+        html += symbol;
+        html += "</td></tr>";
+
+        html += "<tr><th>Last Price</th><td id='last_price'>";
+        var close = recentDay["4. close"];
+        close = Number(close).toFixed(2);
+        html += close;
+        html += "</td></tr>";
+
+        html += "<tr><th>Change (Change Percent)</th><td id='change'>";
+        var change = 0;
+        if(close > previous_close){
+            change = close - previous_close;
+            var percent = 100 * change / previous_close;
+            html += change.toFixed(2);
+            html += " (" + percent.toFixed(2) + "%)";
+            html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
+        }else {
+            change = previous_close - close;
+            var percent = 100 * change / previous_close;
+            html += change.toFixed(2);
+            html += " (" + percent.toFixed(2) + "%)";
+            html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
+        }
+        html += "</td></tr>";
+
+        html += "<tr><th>Timestamp</th><td>";
+        html += Object.keys(obj1)[0] + " " + "16:00:00 EDT";
+        html += "</td></tr>";
+
+        html += "<tr><th>Open</th><td>";
+        html += Number(recentDay["1. open"]).toFixed(2);
+        html += "</td></tr>";
+
+        html += "<tr><th>Close</th><td>";
+        html += previous_close;
+        html += "</td></tr>";
+
+        html += "<tr><th>Day's Range</th><td>";
+        var low = recentDay["3. low"];
+        low = Number(low).toFixed(2);
+        var high = recentDay["2. high"];
+        high = Number(high).toFixed(2);
+        html += low + " - " + high;
+        html += "</td></tr>";
+
+        html += "<tr><th>volume</th><td id='volume'>";
+        html += formatNumber(Number(recentDay["5. volume"]));
+        html += "</td></tr>";
+
+        $("#stock_table").html(html);
+    }
+
+    function draw(data, symbol) {
+        var inputDatePrice = Date.now() - 24 * 3600000 * 99;
+
+        var obj1 = data['Time Series (Daily)'];
+        var closeArray = [];
+        var volumeArray = [];
+        for(var i = 0; i < 100; i++){
+            closeArray.push(getAttributeByIndex(obj1,i)['4. close']);
+            volumeArray.push(Number(getAttributeByIndex(obj1,i)['5. volume'])/1000000);
+        }
+
+        closeArray = closeArray.map(Number);
+        volumeArray = volumeArray.map(Number);
+        closeArray.reverse();
+        volumeArray.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1
+            },
+            title: {
+                text: symbol + " Stock Price and Volume"
+            },
+            subtitle: {
+                useHTML: true,
+                text: '<a href="https://www.alphavantage.co/" style="color: blue" target="_blank">Source: Alpha Vantage</a>'
+            },
+            tooltip:{
+                valueDecimals: 2,
+                xDateFormat: '%m/%d'
+            },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
+            },
+            xAxis : [{
+                type: 'datetime',
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+            }],
+            yAxis: [{
+                title: {
+                    text: 'Stock Price'
+                },
+
+                tickInterval: 50
+            },{
+                labels: {
+                    format: '{value}M'
+                },
+                title: {
+                    text: 'Volume'
+                },
+                opposite: true,
+                tickInterval: 20
+            }],
+            series: [{
+                type: 'area',
+                name: 'Price',
+                pointInterval: 24 * 3600000,
+                lineColor: 'blue',
+                marker: {
+                    enabled: false,
+                    fillColor: 'blue'
+                },
+                pointStart: inputDatePrice,
+                    data: closeArray
+            }, {
+                type: 'column',
+                yAxis: 1,
+                name: 'Volume',
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDatePrice,
+                data: volumeArray,
+                tooltip: {
+                    valueSuffix: 'M'
+                }
+            }]
+        });
+    }
+    function showGraph(symbol) {
+        var url = url_stock + symbol+ myAPI_stock;
+
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/',
+            'type': "GET",
+            'data': {"symbol": symbol},
+            'success': function(data) {
+                data = JSON.parse(data);
+
+                draw(data,symbol);
+            }
+        });
+    }
+    function showGraph1(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
+
+
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/',
+            'type': "GET",
+            'data': {"symbol": symbol, "function": indicator},
+            'success': function(data) {
+                data = JSON.parse(data);
+
+                draw1(data,symbol,indicator);
+            }
+        });
+    }
+    function showGraph2(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
+
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/',
+            'type': "GET",
+            'data': {"symbol": symbol, "function": indicator},
+            'success': function(data) {
+                data = JSON.parse(data);
+
+                draw2(data,symbol,indicator);
+            }
+        });
+    }
+    function showGraph3(symbol, indicator) {
+        var url = "https://www.alphavantage.co/query?function=";
+        url += indicator;
+        url += "&symbol=" + symbol;
+        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
+
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/',
+            'type': "GET",
+            'data': {"symbol": symbol, "function": indicator},
+            'success': function(data) {
+                data = JSON.parse(data);
+
+                draw3(data,symbol,indicator);
+            }
+        });
+    }
+    function draw1(data, symbol, indicator) {
+        var obj0 = data["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = data[indi];
+
+        var indicatorData = [];
+        for(var i = 0; i < 180; i++){
+            indicatorData.push(getAttributeByIndex(obj1, i)[indicator]);
+        }
+        indicatorData = indicatorData.map(Number);
+        indicatorData.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                type: 'line'
+            },
+            title: {
+                text: obj0["2: Indicator"]
+            },
+            subtitle: {
+                useHTML: true,
+                text: '<a href="https://www.alphavantage.co/" style="color: blue" target="_blank">Source: Alpha Vantage</a>'
+            },
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
+            },
+            xAxis : {
+                type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+            series: [{
+                name: symbol,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData
+            }]
+        });
+    }
+    function draw2(data, symbol, indicator) {
+        var obj0 = data["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = data[indi];
+
+        var indicatorDataD = [];
+        var indicatorDataK = [];
+        for(var i = 0; i < 180; i++){
+            indicatorDataD.push(getAttributeByIndex(obj1, i)["SlowD"]);
+            indicatorDataK.push(getAttributeByIndex(obj1, i)["SlowK"]);
+        }
+        indicatorDataD = indicatorDataD.map(Number);
+        indicatorDataK = indicatorDataK.map(Number);
+        indicatorDataD.reverse();
+        indicatorDataK.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                type: 'line'
+            },
+            title: {
+                text: obj0["2: Indicator"]
+            },
+            subtitle: {
+                useHTML: true,
+                text: '<a href="https://www.alphavantage.co/" style="color: blue" target="_blank">Source: Alpha Vantage</a>'
+            },
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
+            },
+            xAxis : {
+                type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+            series: [{
+                name: symbol + ' SlowD',
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorDataD
+            },{
+                name: symbol + ' SlowK',
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorDataK
+            }]
+        });
+    }
+    function draw3(data, symbol, indicator) {
+        var obj0 = data["Meta Data"];
+        var indi = "Technical Analysis: " + indicator;
+        var obj1 = data[indi];
+
+        var indicatorData1 = [];
+        var indicatorData2 = [];
+        var indicatorData3 = [];
+        if(indicator === "BBANDS"){
+            var indi1 = "Real Upper Band";
+            var indi2 = "Real Middle Band";
+            var indi3 = "Real Lower Band";
+        } else {
+            indi1 = "MACD_Signal";
+            indi2 = "MACD_Hist";
+            indi3 = "MACD";
+        }
+        for(var i = 0; i < 180; i++){
+            indicatorData1.push(getAttributeByIndex(obj1, i)[indi1]);
+            indicatorData2.push(getAttributeByIndex(obj1, i)[indi2]);
+            indicatorData3.push(getAttributeByIndex(obj1, i)[indi3]);
+        }
+        indicatorData1 = indicatorData1.map(Number);
+        indicatorData2 = indicatorData2.map(Number);
+        indicatorData3 = indicatorData3.map(Number);
+        indicatorData1.reverse();
+        indicatorData2.reverse();
+        indicatorData3.reverse();
+
+        Highcharts.chart('cs_right_chart', {
+
+            chart: {
+                borderColor: '#d8d8d8',
+                borderWidth: 1,
+                type: 'line'
+            },
+            title: {
+                text: obj0["2: Indicator"]
+            },
+            subtitle: {
+                useHTML: true,
+                text: '<a href="https://www.alphavantage.co/" style="color: blue" target="_blank">Source: Alpha Vantage</a>'
+            },
+            yAxis: {
+                title: {
+                    text: indicator
+                }
+            },
+            tooltip:{
+                xDateFormat: '%m/%d'
+            },
+            exporting: {
+                url: 'http://export.highcharts.com/',
+                enabled: false
+            },
+            xAxis : {
+                type: 'datetime',
+                tickInterval: 24 * 3600000 * 7,
+                labels: {
+                    format: '{value:%m/%d}'
+                }
+                //minRange: 99 * 24 * 3600000 // fourteen days
+            },
+            series: [{
+                name: symbol + ' ' + indi1,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                color: 'red',
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData1
+            },{
+                name: symbol + ' ' + indi2,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData2
+            },{
+                name: symbol + ' ' + indi1,
+                marker: {
+                    radius: 3,
+                    enabled: true
+                },
+                pointInterval: 24 * 3600000,
+                pointStart: inputDate,
+                data: indicatorData3
+            }]
+        });
+    }
+
+    function showStockChart(symbol) {
+        $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename='+symbol+'-c.json&callback=?', function (data) {
+            Highcharts.stockChart('cur_stock2', {
+                rangeSelector: {
+                    selected: 1
+                },
+                title: {
+                    text: symbol + ' Stock Value'
+                },
+                subtitle: {
+                    useHTML: true,
+                    text: '<a href="https://www.alphavantage.co/" style="color: blue" target="_blank">Source: Alpha Vantage</a>'
+                },
+                tooltip: {
+                    crosshairs: [false,false],
+                    split: false
+                },
+                series: [{
+                    name: symbol,
+                    data: data,
+                    type: 'area',
+                    threshold: null,
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                }]
+            });
+        });
+    }
+    function showFeeds(symbol) {
+        $("#cur_stock").hide();
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "block");
+
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/' + symbol,
+            'type': "GET",
+            'success': function(data) {
+                var count = 0;
+                var html = "";
+                var obj = data["rss"]["channel"][0]["item"];
+                for(var i = 0; i < 100; i++){
+                    var link = obj[i]["link"][0];
+                    if(link.indexOf("article") > -1){
+                        count++;
+                        var title = obj[i]["title"][0];
+                        var pubTime = obj[i]["pubDate"][0];
+                        pubTime = pubTime.replace("-0500","EDT");
+                        var author = obj[i]["sa:author_name"][0];
+                        html += "<div class='container news_list' style='background-color: #efefef; margin-top: 25px; padding:25px 15px; width:95%;'>";
+                        html += "<a class='news_title' style='font-size: 1.4em;' target='_blank' href='" + link +"'>" + title + "</a>";
+                        html += "<p class ='news_author' style='margin: 20px auto 15px auto; font-weight: bold'>Author:" + author + "</p>";
+                        html += "<p class ='news_date' style='font-weight: bold'>Date:" + pubTime + "</p></div>";
+                        $("#cur_stock3").html(html);
+                    }
+                    if(count > 4){
+                        break;
+                    }
+                }
+            }
+        });
+    }
+    
+    function getAttributeByIndex(obj, index){
+        var i = 0;
+        for (var attr in obj){
+            if (index === i){
+                return obj[attr];
+            }
+            i++;
+        }
+        return null;
+    }
+    function formatNumber (num) {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+    }
+    var app = angular.module("myapp",[]);
+    app.controller("usercontroller", function($scope){
+        $scope.symbolList = [];
+
+        $scope.$watch('symbol', function() {
+            var url_auto = "http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=" + $scope.symbol;
+
+            $.ajax({
+                'url': url_auto,
+                'type': "GET",
+                crossDomain: true,
+                dataType: 'jsonp',
+                'success': function(data) {
+                    $scope.symbolList = [];
+                    for(var i = 0; i < data.length; i++){
+                        var str = JSON.stringify(data[i]["Symbol"]) + " - " + JSON.stringify(data[i]["Name"]) + " (" + JSON.stringify(data[i]["Exchange"]) + ")";
+                        str = str.split('"').join('');
+                        $scope.symbolList.push(str);
+                    }
+                }
+            });
+        });
+        $scope.$watch('symbol', function() {
+            $scope.complete = function(string){
+                $scope.hidethis = false;
+                var output = [];
+                angular.forEach($scope.symbolList, function(symbol){
+                    if(symbol.toLowerCase().indexOf(string.toLowerCase()) >= 0)
+                    {
+                        output.push(symbol);
+                    }
+                });
+                $scope.filterSymbol = output;
+            };
+            $scope.fillTextbox = function(string){
+                //$scope.symbol = string;
+                $scope.hidethis = true;
+            };
+        });
+
+    });
+
+</script>
+</html>

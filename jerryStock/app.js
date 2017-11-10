@@ -22,7 +22,6 @@ var app2 = express();
 var request = require('request');
 
 var parseString = require('xml2js').parseString;
-var cors = require('cors');
 var url = require("url");
 // app.set('view engine', 'html');
 // app.use(cors());
@@ -63,9 +62,6 @@ app2.get('/', function(req, res) {
             res.send(body);
         });
     }
-
-    var news_url = "https://seekingalpha.com/api/sa/combined/";
-    news_url += symbol;
 });
 app2.get('/:symbol', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");

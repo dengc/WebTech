@@ -1,17 +1,15 @@
 {
-  "name": "appengine-hello-world",
-  "description": "Simple Hello World Node.js sample for Google App Engine Flexible Environment.",
-  "version": "0.0.1",
-  "private": true,
-  "license": "Apache-2.0",
-  "author": "Google Inc.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+  "name": "jerry-stock",
+  "version": "1.0.0",
+  "description": "stock",
+  "main": "app.js",
+  "dependencies": {
+    "request": "^2.83.0",
+    "url": "^0.11.0",
+    "xml2js": "^0.4.19",
+    "express": "4.15.4"
   },
-  "engines": {
-    "node": ">=4.3.2"
-  },
+  "devDependencies": {},
   "scripts": {
     "deploy": "gcloud app deploy",
     "start": "node app.js",
@@ -21,19 +19,9 @@
     "test": "npm run system-test",
     "e2e-test": "samples test deploy"
   },
-  "dependencies": {
-    "express": "4.15.4"
-  },
-  "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "1.4.17"
-  },
-  "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "Hello, world!"
-      }
-    },
-    "requiresKeyFile": true,
-    "requiresProjectId": true
-  }
+  "keywords": [
+    "stock"
+  ],
+  "author": "chufan",
+  "license": "ISC"
 }
