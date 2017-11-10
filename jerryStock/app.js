@@ -39,15 +39,30 @@ app2.get('/', function(req, res) {
     var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
     var params = url.parse(req.url,true).query;
     var symbol = params.symbol;
+
     url_stock = url_stock + symbol + myAPI_stock;
-    console.log(symbol);
-    console.log(url_stock);
+    // console.log(symbol);
+    // console.log(url_stock);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-    request(url_stock, function(error, response, body) {
-        res.json(body);
-    });
+    var url_indicator = "https://www.alphavantage.co/query?function=";
+    var indicator = params.function;
+    console.log(JSON.stringify(indicator));
+    url_indicator += indicator;
+    url_indicator += "&symbol=" + symbol;
+    url_indicator += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
+
+    if(!JSON.stringify(indicator)){
+        request(url_stock, function(error, response, body) {
+            res.send(body);
+        });
+    }
+    else {
+        request(url_indicator, function(error, response, body) {
+            res.send(body);
+        });
+    }
 });
 
 // Start the server

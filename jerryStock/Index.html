@@ -1212,7 +1212,7 @@
         $.ajax({
             'url': 'http://localhost:8082/',
             'type': "GET",
-            'data': {"symbol": symbol},
+            'data': {"symbol": symbol, "function": indicator},
             'success': function(data) {
                 data = JSON.parse(data);
 
@@ -1229,7 +1229,7 @@
         $.ajax({
             'url': 'http://localhost:8082/',
             'type': "GET",
-            'data': {"symbol": symbol},
+            'data': {"symbol": symbol, "function": indicator},
             'success': function(data) {
                 data = JSON.parse(data);
 
@@ -1246,7 +1246,7 @@
         $.ajax({
             'url': 'http://localhost:8082/',
             'type': "GET",
-            'data': {"symbol": symbol},
+            'data': {"symbol": symbol, "function": indicator},
             'success': function(data) {
                 data = JSON.parse(data);
 
