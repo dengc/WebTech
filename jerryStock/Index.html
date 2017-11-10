@@ -463,10 +463,13 @@
         var symbol = $("#symbol").val();
         var url = url_stock + symbol+ myAPI_stock;
         showStar();
+
         $.ajax({
-            'url': url,
+            'url': 'http://localhost:8082/',
             'type': "GET",
+            'data': {"symbol": symbol},
             'success': function(data) {
+                data = JSON.parse(data);
                 if(data["Error Message"]){
                     var message1 = errorMessage("Error! Failed to get current stock data.", "width:80%; margin-top:66px;");
                     var message2 = errorMessage("Error! Failed to get Price data.", "width:90%;");
@@ -1582,13 +1585,13 @@
 
     $.ajax({
         type: "GET",
-        url: 'http://localhost:8081/',
-        data: {"symbol":"GOOG"},
-        dataType: "json",
-        success: function(res) {
-//            res = JSON.parse(res);
+        url: 'http://localhost:8082/',
+        data: {"symbol":"AMZN"},
+        //dataType: "json",
+        success: function(data) {
+            data = JSON.parse(data);
             //var x = res.getElementsByTagName("channel");
-            console.log(res);
+            console.log(data["Meta Data"]);
         }
     });
 

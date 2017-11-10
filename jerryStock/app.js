@@ -18,41 +18,52 @@
 // [START app]
 var express = require('express');
 var app = express();
+var app2 = express();
 var request = require('request');
 
 var parseString = require('xml2js').parseString;
 var cors = require('cors');
 var url = require("url");
 // app.set('view engine', 'html');
-app.use(cors());
-var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-var symbol;
+// app.use(cors());
+//app.use('/?symbol=', stock);
+// var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+// var symbol;
 
 app.get('/', function(req, res){
     res.status(200).sendfile('./index.html');
-
-    var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
-    var params = url.parse(req.url,true).query;
-    symbol = params.symbol;
-     // console.log(symbol);
-    url_stock = url_stock + symbol + myAPI_stock;
-
-});
-app.get('/s', function(req, res) {
-
+    // console.log(req.params);
+    //
+    // var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
     // var params = url.parse(req.url,true).query;
     // symbol = params.symbol;
+    //   // console.log(symbol);
+    // url_stock = url_stock + symbol + myAPI_stock;
+
+});
+
+app2.get('/', function(req, res) {
+    var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
+    var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
+    var params = url.parse(req.url,true).query;
+    var symbol = params.symbol;
+    url_stock = url_stock + symbol + myAPI_stock;
     console.log(symbol);
     console.log(url_stock);
-    request(url_stock, function(error, response, body) {
-        res.send(body);
-    });
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
+    request(url_stock, function(error, response, body) {
+        res.json(body);
+    });
 });
 
 // Start the server
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, function() {
   console.log('http://localhost:8081/');
+});
+app2.listen("8082", function() {
+    console.log('http://localhost:8082/');
 });
 // [END app]
