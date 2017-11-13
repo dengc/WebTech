@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="https://code.highcharts.com/stock/highstock.js"></script>
@@ -183,8 +183,8 @@
                 <p id="error_message" ng-show="myForm.symbol.$touched && myForm.symbol.$invalid">Please enter a stock ticker symbol.</p>
             </div>
             <div class="col-md-3">
-                <button  class="btn btn-primary pull-left" id="btn_search" ng-disabled="myForm.symbol.$invalid"><span class="glyphicon glyphicon-search"></span> Get Quote</button>
-                <button class="btn btn-default" id="btn_clear" data-ng-click="clearSearch()"><span class="glyphicon glyphicon-refresh"></span> Clear</button>
+                <button  class="btn btn-primary pull-left" id="btn_search" ng-disabled="myForm.symbol.$invalid" ng-click="myFunc_search()"><span class="glyphicon glyphicon-search"></span> Get Quote</button>
+                <button class="btn btn-default" id="btn_clear" ng-click="myFunc_clear()"><span class="glyphicon glyphicon-refresh"></span> Clear</button>
             </div>
         </div>
     </form>
@@ -200,8 +200,8 @@
             <span id="right_cor">
                 <span  id="refresh">Automatic Refresh: </span>
                 <input type="checkbox" id="auto_ref" data-toggle="toggle"/>
-                <button class="btn btn-default" id="btn_refresh"><span class="glyphicon glyphicon-refresh"></span></button>
-                <button class="btn btn-default" id="btn_next"><span class="glyphicon glyphicon-chevron-right"></span></button>
+                <button class="btn btn-default" id="btn_refresh" ng-click="myFunc_refresh()"><span class="glyphicon glyphicon-refresh"></span></button>
+                <button class="btn btn-default" id="btn_next" ng-click="myFunc_next()"><span class="glyphicon glyphicon-chevron-right"></span></button>
             </span>
         </div>
         <div class="panel-body">
@@ -246,24 +246,24 @@
     <div class="panel panel-default" id="detail_panel">
         <div class="panel-heading">
             <span id="left_cor">
-                <button class="btn btn-default" id="btn_last"><span class="glyphicon glyphicon-chevron-left"></span></button>
+                <button class="btn btn-default" id="btn_last" ng-click="myFunc_last()"><span class="glyphicon glyphicon-chevron-left"></span></button>
             </span>
             <span id="detail_title">Stock Details</span>
         </div>
         <div class="panel-body">
             <ul class="nav nav-pills">
-                <li class="active detail_pill"><a href="" id="c_stock"><span class="glyphicon glyphicon-time"></span>&nbsp Current Stock</a></li>
-                <li class="detail_pill"><a href="" id="h_charts"><span class="glyphicon glyphicon-stats"></span>&nbsp Historical Charts</a></li>
-                <li class="detail_pill"><a href="" id="n_feeds"><span class="glyphicon glyphicon-link"></span>&nbsp News Feeds</a></li>
+                <li class="active detail_pill"><a href="" id="c_stock" ng-click="myFunc_c_stock()"><span class="glyphicon glyphicon-time"></span>&nbsp Current Stock</a></li>
+                <li class="detail_pill"><a href="" id="h_charts" ng-click="myFunc_h_charts()"><span class="glyphicon glyphicon-stats"></span>&nbsp Historical Charts</a></li>
+                <li class="detail_pill"><a href="" id="n_feeds" ng-click="myFunc_n_feeds()"><span class="glyphicon glyphicon-link"></span>&nbsp News Feeds</a></li>
             </ul>
             <hr/>
             <div id="cur_stock">
                 <div id="cs_left" class="pull-left">
                     <p id="left_title">Stock Details
-                    <button class="btn btn-default" id="star" disabled="true">
+                    <button class="btn btn-default" id="star" disabled="true" ng-click="myFunc_star()">
                         <i class="fa fa-star-o" id="fa_icon" style="font-size:20px"></i>
                     </button>
-                    <button class="btn btn-default" id="fb" disabled="true">
+                    <button class="btn btn-default" id="fb" disabled="true" ng-click="myFunc_fb()">
                         <img src="http://cs-server.usc.edu:45678/hw/hw8/images/facebook.png" height="25" width="25"/>
                     </button>
                     </p>
@@ -311,6 +311,80 @@
 
 </body>
 <script>
+    var app = angular.module("myapp",[]);
+    app.controller("usercontroller", function($scope){
+
+        $scope.myFunc_search = function() {
+            search_btn();
+        };
+        $scope.myFunc_clear = function() {
+            clear_btn();
+        };
+        $scope.myFunc_refresh = function() {
+            refresh_btn();
+        };
+        $scope.myFunc_next = function() {
+            next_btn();
+        };
+        $scope.myFunc_last = function() {
+            last_btn();
+        };
+        $scope.myFunc_star = function() {
+            star_btn();
+        };
+        $scope.myFunc_fb = function() {
+            fb_btn();
+        };
+        $scope.myFunc_c_stock = function() {
+            c_stock_btn();
+        };
+        $scope.myFunc_h_charts = function() {
+            h_charts_btn();
+        };
+        $scope.myFunc_n_feeds = function() {
+            n_feeds_btn();
+        };
+
+        $scope.symbolList = [];
+
+        $scope.$watch('symbol', function() {
+            var url_auto = "http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=" + $scope.symbol;
+
+            $.ajax({
+                'url': url_auto,
+                'type': "GET",
+                crossDomain: true,
+                dataType: 'jsonp',
+                'success': function(data) {
+                    $scope.symbolList = [];
+                    for(var i = 0; i < data.length; i++){
+                        var str = JSON.stringify(data[i]["Symbol"]) + " - " + JSON.stringify(data[i]["Name"]) + " (" + JSON.stringify(data[i]["Exchange"]) + ")";
+                        str = str.split('"').join('');
+                        $scope.symbolList.push(str);
+                    }
+                }
+            });
+        });
+        $scope.$watch('symbol', function() {
+            $scope.complete = function(string){
+                $scope.hidethis = false;
+                var output = [];
+                angular.forEach($scope.symbolList, function(symbol){
+                    if(symbol.toLowerCase().indexOf(string.toLowerCase()) >= 0)
+                    {
+                        output.push(symbol);
+                    }
+                });
+                $scope.filterSymbol = output;
+            };
+            $scope.fillTextbox = function(string){
+                $scope.symbol = string.substring(0, string.indexOf(" "));
+                $scope.hidethis = true;
+            };
+        });
+
+    });
+
     function IsPC() {
         var userAgentInfo = navigator.userAgent;
         var Agents = ["Android", "iPhone",
@@ -371,15 +445,6 @@
                 $("#btn_search").removeAttr("disabled");
             }
         }, 100);
-    });
-    $('#btn_clear').click(function(){
-        $("#symbol").val('');
-        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-        $("#stock_table").html(html1);
-        $("#cs_right_chart").html(html2);
-        $("#detail_panel").css("display", "none");
-        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
     });
 
     $("#sortSelect").change(function() {
@@ -450,48 +515,6 @@
         }
     });
 
-    $('#btn_search').click(function(){
-        $("#fa_list").css("display", "none");
-        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
-        $("#cur_stock2").css("display", "none");
-        $("#cur_stock3").css("display", "none");
-        $("#cur_stock").show();
-        $("#c_stock").parent().addClass('active').siblings().removeClass('active');
-        $("#price").parent().addClass('active').siblings().removeClass('active');
-
-        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-        $("#stock_table").html(html1);
-        $("#cs_right_chart").html(html2);
-
-        var symbol = $("#symbol").val();
-        var url = url_stock + symbol+ myAPI_stock;
-        showStar();
-
-        $.ajax({
-            'url': 'https://jerrystock-08.appspot.com/',
-            'type': "GET",
-            'data': {"symbol": symbol},
-            'success': function(data) {
-                data = JSON.parse(data);
-                if(data["Error Message"]){
-                    var message1 = errorMessage("Error! Failed to get current stock data.", "width:80%; margin-top:66px;");
-                    var message2 = errorMessage("Error! Failed to get Price data.", "width:90%;");
-                    $("#stock_table").html(message1);
-                    $("#cs_right_chart").html(message2);
-                }
-                searchValue(data,symbol);
-                draw(data,symbol);
-            },
-            'error': function(xhr, status) {
-                var message1 = errorMessage("Error! Failed to get current stock data.", "width:80%; margin-top:66px;");
-                var message2 = errorMessage("Error! Failed to get Price data.", "width:90%;");
-                $("#stock_table").html(message1);
-                $("#cs_right_chart").html(message2);
-            }
-        });
-    });
-
     $("#price").click(function () {
         var symbol = $("#s_ticker").text();
         var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
@@ -556,131 +579,10 @@
             $("#cs_right_chart").html(message);
         }
     });
-
-
     $('ul.nav.nav-pills li a').click(function() {
         $(this).parent().addClass('active').siblings().removeClass('active');
     });
 
-    $("#btn_next").click(function () {
-        $("#fa_list").css("display", "none");
-        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
-        showStar();
-    });
-    $("#btn_last").click(function () {
-        $("#detail_panel").css("display", "none");
-        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
-        $(".trash").click(function () {
-            $(this).parents('tr').first().remove();
-        });
-        $(".fa_symbol").click(function () {
-            var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-            var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-            $("#stock_table").html(html1);
-            $("#cs_right_chart").html(html2);
-
-            var s = $(this).text();
-            $("#fa_list").css("display", "none");
-            $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
-            $("#cur_stock2").css("display", "none");
-            $("#cur_stock3").css("display", "none");
-            $("#cur_stock").show();
-            $("#c_stock").parent().addClass('active').siblings().removeClass('active');
-            $("#price").parent().addClass('active').siblings().removeClass('active');
-            $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
-            var url = url_stock + s+ myAPI_stock;
-
-            $.ajax({
-                'url': 'https://jerrystock-08.appspot.com/',
-                'type': "GET",
-                'data': {"symbol": s},
-                'success': function(data) {
-                    data = JSON.parse(data);
-
-                    searchValue(data,s);
-                    draw(data,s);
-                }
-            });
-        });
-    });
-
-    $("#c_stock").click(function () {
-        $("#cur_stock2").css("display", "none");
-        $("#cur_stock3").css("display", "none");
-        $("#cur_stock").show();
-        //showStock();
-//        var symbol = $(".highcharts-title").text().substr(0, $(".highcharts-title").text().indexOf(' '));
-        //$("#btn_search").click();
-    });
-    $("#h_charts").click(function () {
-        $("#cur_stock").hide();
-        $("#cur_stock2").css("display", "block");
-        $("#cur_stock3").css("display", "none");
-        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
-        $("#cur_stock2").html(html);
-        var symbol = $("#s_ticker").text();
-        if(symbol === ""){
-            var message = errorMessage("Error! Failed to get historical charts data.", "");
-            $("#cur_stock2").html(message);
-        }
-
-        showStockChart(symbol);
-    });
-
-    $("#n_feeds").click(function () {
-        var symbol = $("#s_ticker").text();
-        showFeeds(symbol);
-    });
-
-    $("#btn_refresh").click(function () {
-        for (var i = 0; i < $(".fa_symbol").length; i++) {
-            var s = $(".fa_symbol")[i].innerText;
-            var url = url_stock + s+ myAPI_stock;
-
-            $.ajax({
-                'url': 'https://jerrystock-08.appspot.com/',
-                'type': "GET",
-                'data': {"symbol": s},
-                'success': function(data){
-                    data = JSON.parse(data);
-
-                    var obj0 = data["Meta Data"];
-                    var obj1 = data["Time Series (Daily)"];
-                    var symbol = obj0["2. Symbol"];
-                    var recentDay = getAttributeByIndex(obj1, 0);
-                    var close = recentDay["4. close"];
-                    close = Number(close).toFixed(2);
-                    var volume = formatNumber(Number(recentDay["5. volume"]));
-                    var previousDay = getAttributeByIndex(obj1, 1);
-                    var previous_close = previousDay["4. close"];
-                    previous_close = Number(previous_close).toFixed(2);
-
-                    for(var j = 0; j < $(".fa_symbol").length; j++){
-                        if(symbol === $(".fa_symbol")[j].innerText){
-                            $(".fa_price")[j].innerText = close;
-                            $(".fa_volume")[j].innerText = volume;
-//                            console.log(j+ " " + symbol + " " + volume);
-                            var change, html;
-                            if(close > previous_close){
-                                change = close - previous_close;
-                                var percent = 100 * change / previous_close;
-                                html = change.toFixed(2);
-                                html += " (" + percent.toFixed(2) + "%)";
-                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
-                            }else {
-                                change = previous_close - close;
-                                var percent = 100 * change / previous_close;
-                                html = change.toFixed(2);
-                                html += " (" + percent.toFixed(2) + "%)";
-                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
-                            }
-                            $(".fa_change")[j].innerHTML = html;
-                        }
-                    }
-                }
-            });
-        }
-    });
     $('#auto_ref').on('change', function () {
         setInterval(function(){ refresh() }, 5000);
     });
@@ -690,26 +592,6 @@
         }
     }
 
-    $("#fb").click(function () {
-        var obj = {}, chart;
-        chart = $('#cs_right_chart').highcharts();
-        obj.svg = chart.getSVG();
-        obj.type = 'image/png';
-        obj.async = true;
-
-        $.ajax({
-            type: 'post',
-            url: chart.options.exporting.url,
-            data: obj,
-            success: function (data) {
-                var exportUrl = this.url + data;
-                var input = 'https://www.facebook.com/sharer/sharer.php?u=';
-                input += exportUrl;
-                window.open(input, 'fbshare', 'width=640,height=320');
-            }
-        });
-    });
-
     function errorMessage(message, style){
         var html = "<div class=\"alert alert-danger\" style='" + style +"'>";
         html += message;
@@ -717,7 +599,6 @@
         return html
     }
 
-//    var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
     function ascSortSymbol() {
         var table, rows, switching, i, x, y, shouldSwitch;
         table = document.getElementById("fa_content");
@@ -1010,41 +891,10 @@
             $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
         }
     }
-    function clickStar(){
-        $("#star").click(function(){
-            var symbol = $("#s_ticker").text();
-            var lastPrice = $("#last_price").text();
-            var change = $("#change").text();
-            var volume = $("#volume").text();
-            var faID = "newFA" + symbol;
-            if($("#fa_icon").hasClass("fa-star-o")){
-                $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
-                var html = "<tr id='"+faID+"'><td class='fa_symbol'>" + symbol + "</td>";
-                html += "<td class='fa_price'>"+ lastPrice +"</td>";
-                html += "<td class='fa_change'>"+ change;
-                if(change.substring(0,1) !== "-"){
-                    html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>" +"</td>";
-                }else {
-                    html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>" +"</td>";
-                }
-                html += "<td class='fa_volume'>"+ volume +"</td>";
-                html += "<td class='col-md-1'><button class=\"btn btn-default trash\">";
-                html += "<i class=\"fa fa-trash-o\" style=\"font-size:20px\"></i></button></td></tr>";
-
-                $(".tbody1").append(html);
-            }else {
-                $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
-                $("#" + faID).remove();
-                //$("#fa_content tr:last").remove();
-            }
-        });
-    }
 
     var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
     var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
     var inputDate = Date.now() - 24 * 3600000 * 179;
-//    var symbol = $("#symbol").val();
-    clickStar();
 
     function searchValue(data,symbol) {
         //var obj0 = data["Meta Data"];
@@ -1559,47 +1409,213 @@
     function formatNumber (num) {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
     }
-    var app = angular.module("myapp",[]);
-    app.controller("usercontroller", function($scope){
-        $scope.symbolList = [];
 
-        $scope.$watch('symbol', function() {
-            var url_auto = "http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=" + $scope.symbol;
+    function search_btn(){
+        $("#fa_list").css("display", "none");
+        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "none");
+        $("#cur_stock").show();
+        $("#c_stock").parent().addClass('active').siblings().removeClass('active');
+        $("#price").parent().addClass('active').siblings().removeClass('active');
 
+        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#stock_table").html(html1);
+        $("#cs_right_chart").html(html2);
+
+        var symbol = $("#symbol").val();
+        var url = url_stock + symbol+ myAPI_stock;
+        showStar();
+
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/',
+            'type': "GET",
+            'data': {"symbol": symbol},
+            'success': function(data) {
+                data = JSON.parse(data);
+                if(data["Error Message"]){
+                    var message1 = errorMessage("Error! Failed to get current stock data.", "width:80%; margin-top:66px;");
+                    var message2 = errorMessage("Error! Failed to get Price data.", "width:90%;");
+                    $("#stock_table").html(message1);
+                    $("#cs_right_chart").html(message2);
+                }
+                searchValue(data,symbol);
+                draw(data,symbol);
+            },
+            'error': function(xhr, status) {
+                var message1 = errorMessage("Error! Failed to get current stock data.", "width:80%; margin-top:66px;");
+                var message2 = errorMessage("Error! Failed to get Price data.", "width:90%;");
+                $("#stock_table").html(message1);
+                $("#cs_right_chart").html(message2);
+            }
+        });
+    }
+    function clear_btn() {
+        $("#symbol").val('');
+        var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#stock_table").html(html1);
+        $("#cs_right_chart").html(html2);
+        $("#detail_panel").css("display", "none");
+        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
+    }
+    function refresh_btn() {
+        for (var i = 0; i < $(".fa_symbol").length; i++) {
+            var s = $(".fa_symbol")[i].innerText;
             $.ajax({
-                'url': url_auto,
+                'url': 'https://jerrystock-08.appspot.com/',
                 'type': "GET",
-                crossDomain: true,
-                dataType: 'jsonp',
-                'success': function(data) {
-                    $scope.symbolList = [];
-                    for(var i = 0; i < data.length; i++){
-                        var str = JSON.stringify(data[i]["Symbol"]) + " - " + JSON.stringify(data[i]["Name"]) + " (" + JSON.stringify(data[i]["Exchange"]) + ")";
-                        str = str.split('"').join('');
-                        $scope.symbolList.push(str);
+                'data': {"symbol": s},
+                'success': function(data){
+                    data = JSON.parse(data);
+
+                    var obj0 = data["Meta Data"];
+                    var obj1 = data["Time Series (Daily)"];
+                    var symbol = obj0["2. Symbol"];
+                    var recentDay = getAttributeByIndex(obj1, 0);
+                    var close = recentDay["4. close"];
+                    close = Number(close).toFixed(2);
+                    var volume = formatNumber(Number(recentDay["5. volume"]));
+                    var previousDay = getAttributeByIndex(obj1, 1);
+                    var previous_close = previousDay["4. close"];
+                    previous_close = Number(previous_close).toFixed(2);
+
+                    for(var j = 0; j < $(".fa_symbol").length; j++){
+                        if(symbol === $(".fa_symbol")[j].innerText){
+                            $(".fa_price")[j].innerText = close;
+                            $(".fa_volume")[j].innerText = volume;
+
+                            var change, html;
+                            if(close > previous_close){
+                                change = close - previous_close;
+                                var percent = 100 * change / previous_close;
+                                html = change.toFixed(2);
+                                html += " (" + percent.toFixed(2) + "%)";
+                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>";
+                            }else {
+                                change = previous_close - close;
+                                var percent = 100 * change / previous_close;
+                                html = change.toFixed(2);
+                                html += " (" + percent.toFixed(2) + "%)";
+                                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>";
+                            }
+                            $(".fa_change")[j].innerHTML = html;
+                        }
                     }
                 }
             });
+        }
+    }
+    function next_btn() {
+        $("#fa_list").css("display", "none");
+        $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
+        showStar();
+    }
+    function last_btn() {
+        $("#detail_panel").css("display", "none");
+        $("#fa_list").effect('slide', { direction: 'right', mode: 'show' },500);
+        $(".trash").click(function () {
+            $(this).parents('tr').first().remove();
         });
-        $scope.$watch('symbol', function() {
-            $scope.complete = function(string){
-                $scope.hidethis = false;
-                var output = [];
-                angular.forEach($scope.symbolList, function(symbol){
-                    if(symbol.toLowerCase().indexOf(string.toLowerCase()) >= 0)
-                    {
-                        output.push(symbol);
-                    }
-                });
-                $scope.filterSymbol = output;
-            };
-            $scope.fillTextbox = function(string){
-                //$scope.symbol = string;
-                $scope.hidethis = true;
-            };
-        });
+        $(".fa_symbol").click(function () {
+            var html1 = "<div class=\"progress\" style='width: 80%; margin-top:66px;'><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            var html2 = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+            $("#stock_table").html(html1);
+            $("#cs_right_chart").html(html2);
 
-    });
+            var s = $(this).text();
+            $("#fa_list").css("display", "none");
+            $('#detail_panel').effect('slide', { direction: 'left', mode: 'show' },500);
+            $("#cur_stock2").css("display", "none");
+            $("#cur_stock3").css("display", "none");
+            $("#cur_stock").show();
+            $("#c_stock").parent().addClass('active').siblings().removeClass('active');
+            $("#price").parent().addClass('active').siblings().removeClass('active');
+            $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+            var url = url_stock + s+ myAPI_stock;
+
+            $.ajax({
+                'url': 'https://jerrystock-08.appspot.com/',
+                'type': "GET",
+                'data': {"symbol": s},
+                'success': function(data) {
+                    data = JSON.parse(data);
+
+                    searchValue(data,s);
+                    draw(data,s);
+                }
+            });
+        });
+    }
+    function star_btn() {
+        var symbol = $("#s_ticker").text();
+        var lastPrice = $("#last_price").text();
+        var change = $("#change").text();
+        var volume = $("#volume").text();
+        var faID = "newFA" + symbol;
+        if($("#fa_icon").hasClass("fa-star-o")){
+            $("#fa_icon").css({"color": "yellow"}).removeClass('fa-star-o').addClass('fa-star');
+            var html = "<tr id='"+faID+"'><td class='fa_symbol'>" + symbol + "</td>";
+            html += "<td class='fa_price'>"+ lastPrice +"</td>";
+            html += "<td class='fa_change'>"+ change;
+            if(change.substring(0,1) !== "-"){
+                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Green_Arrow_Up.png\" height=18 width=18/>" +"</td>";
+            }else {
+                html += "<img src=\"http://cs-server.usc.edu:45678/hw/hw6/images/Red_Arrow_Down.png\" height=18 width=18/>" +"</td>";
+            }
+            html += "<td class='fa_volume'>"+ volume +"</td>";
+            html += "<td class='col-md-1'><button class=\"btn btn-default trash\">";
+            html += "<i class=\"fa fa-trash-o\" style=\"font-size:20px\"></i></button></td></tr>";
+
+            $(".tbody1").append(html);
+        }else {
+            $("#fa_icon").css({"color": "black"}).removeClass('fa-star').addClass('fa-star-o');
+            $("#" + faID).remove();
+            //$("#fa_content tr:last").remove();
+        }
+    }
+    function fb_btn() {
+        var obj = {}, chart;
+        chart = $('#cs_right_chart').highcharts();
+        obj.svg = chart.getSVG();
+        obj.type = 'image/png';
+        obj.async = true;
+
+        $.ajax({
+            type: 'post',
+            url: chart.options.exporting.url,
+            data: obj,
+            success: function (data) {
+                var exportUrl = this.url + data;
+                var input = 'https://www.facebook.com/sharer/sharer.php?u=';
+                input += exportUrl;
+                window.open(input, 'fbshare', 'width=640,height=320');
+            }
+        });
+    }
+    function c_stock_btn() {
+        $("#cur_stock2").css("display", "none");
+        $("#cur_stock3").css("display", "none");
+        $("#cur_stock").show();
+    }
+    function h_charts_btn() {
+        $("#cur_stock").hide();
+        $("#cur_stock2").css("display", "block");
+        $("#cur_stock3").css("display", "none");
+        var html = "<div class=\"progress\"><div class=\"progress-bar progress-bar-striped active\" role=\"progressbar\" aria-valuenow=\"50\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width:50%\"></div></div>";
+        $("#cur_stock2").html(html);
+        var symbol = $("#s_ticker").text();
+        if(symbol === ""){
+            var message = errorMessage("Error! Failed to get historical charts data.", "");
+            $("#cur_stock2").html(message);
+        }
+        showStockChart(symbol);
+    }
+    function n_feeds_btn() {
+        var symbol = $("#s_ticker").text();
+        showFeeds(symbol);
+    }
 
 </script>
 </html>
