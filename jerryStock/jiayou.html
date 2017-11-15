@@ -1040,8 +1040,6 @@
         });
     }
     function showGraph(symbol) {
-        var url = url_stock + symbol+ myAPI_stock;
-
         $.ajax({
             'url': 'https://jerrystock-08.appspot.com/',
             'type': "GET",
@@ -1054,12 +1052,6 @@
         });
     }
     function showGraph1(symbol, indicator) {
-        var url = "https://www.alphavantage.co/query?function=";
-        url += indicator;
-        url += "&symbol=" + symbol;
-        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
-
-
         $.ajax({
             'url': 'https://jerrystock-08.appspot.com/',
             'type': "GET",
@@ -1072,11 +1064,6 @@
         });
     }
     function showGraph2(symbol, indicator) {
-        var url = "https://www.alphavantage.co/query?function=";
-        url += indicator;
-        url += "&symbol=" + symbol;
-        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
-
         $.ajax({
             'url': 'https://jerrystock-08.appspot.com/',
             'type': "GET",
@@ -1089,11 +1076,6 @@
         });
     }
     function showGraph3(symbol, indicator) {
-        var url = "https://www.alphavantage.co/query?function=";
-        url += indicator;
-        url += "&symbol=" + symbol;
-        url += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
-
         $.ajax({
             'url': 'https://jerrystock-08.appspot.com/',
             'type': "GET",
@@ -1118,7 +1100,6 @@
         indicatorData.reverse();
 
         Highcharts.chart('cs_right_chart', {
-
             chart: {
                 borderColor: '#d8d8d8',
                 borderWidth: 1,

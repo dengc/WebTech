@@ -75,6 +75,18 @@ app2.get('/:symbol', function(req, res){
         });
     });
 });
+app2.get('/his/:symbol', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    var symbol = req.params.symbol;
+    var his_url = "https://www.highcharts.com/samples/data/jsonp.php?filename=";
+    his_url += symbol;
+    his_url += "-c.json&callback=?";
+    console.log(his_url);
+    request(his_url, function(error, response, body) {
+        res.send(body);
+    });
+});
 
 // Start the server
 const PORT = process.env.PORT || 8081;
