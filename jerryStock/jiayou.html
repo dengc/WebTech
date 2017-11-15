@@ -346,7 +346,7 @@
         };
 
         $scope.$watch('symbol', function() {
-            var url_auto = "http://localhost:8082/auto/" + $scope.symbol;
+            var url_auto = "https://jerrystock-08.appspot.com/auto/" + $scope.symbol;
             if($scope.symbol){
                 $.ajax({
                     'url': url_auto,
