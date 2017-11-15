@@ -178,7 +178,7 @@
             <div class="col-md-6" id="input_div"  >
                 <input class="form-control" id="symbol" placeholder="e.g. AAPL" name="symbol" ng-model="symbol" required ng-keyup="complete(symbol)">
                 <ul class="list-group" ng-model="hidethis" ng-hide="hidethis">
-                    <li class="list-group-item" id="symbol_list" ng-repeat="symboldata in filterSymbol" ng-click="fillTextbox(symboldata)">{{symboldata}}</li>
+                    <li class="list-group-item" id="symbol_list" ng-repeat="symboldata in symbolList" ng-click="fillTextbox(symboldata)">{{symboldata}}</li>
                 </ul>
                 <p id="error_message" ng-show="myForm.symbol.$touched && myForm.symbol.$invalid">Please enter a stock ticker symbol.</p>
             </div>
@@ -345,44 +345,29 @@
             n_feeds_btn();
         };
 
-        $scope.symbolList = [];
-
         $scope.$watch('symbol', function() {
-            var url_auto = "http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=" + $scope.symbol;
-
-            $.ajax({
-                'url': url_auto,
-                'type': "GET",
-                crossDomain: true,
-                dataType: 'jsonp',
-                'success': function(data) {
-                    $scope.symbolList = [];
-                    for(var i = 0; i < data.length; i++){
-                        var str = JSON.stringify(data[i]["Symbol"]) + " - " + JSON.stringify(data[i]["Name"]) + " (" + JSON.stringify(data[i]["Exchange"]) + ")";
-                        str = str.split('"').join('');
-                        $scope.symbolList.push(str);
-                    }
-                }
-            });
-        });
-        $scope.$watch('symbol', function() {
-            $scope.complete = function(string){
-                $scope.hidethis = false;
-                var output = [];
-                angular.forEach($scope.symbolList, function(symbol){
-                    if(symbol.toLowerCase().indexOf(string.toLowerCase()) >= 0)
-                    {
-                        output.push(symbol);
+            var url_auto = "http://localhost:8082/auto/" + $scope.symbol;
+            if($scope.symbol){
+                $.ajax({
+                    'url': url_auto,
+                    'type': "GET",
+                    async: false,
+                    'success': function(data) {
+                        $scope.symbolList = [];
+                        for(var i = 0; i < data.length; i++){
+                            var str = JSON.stringify(data[i]["Symbol"]) + " - " + JSON.stringify(data[i]["Name"]) + " (" + JSON.stringify(data[i]["Exchange"]) + ")";
+                            str = str.split('"').join('');
+                            $scope.symbolList.push(str);
+                        }
+                        $scope.fillTextbox = function(string){
+                            $scope.symbol = string.substring(0, string.indexOf(" "));
+                            $scope.hidethis = true;
+                        };
                     }
                 });
-                $scope.filterSymbol = output;
-            };
-            $scope.fillTextbox = function(string){
-                $scope.symbol = string.substring(0, string.indexOf(" "));
-                $scope.hidethis = true;
-            };
-        });
+            }
 
+        });
     });
 
     function IsPC() {

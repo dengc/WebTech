@@ -23,11 +23,7 @@ var request = require('request');
 
 var parseString = require('xml2js').parseString;
 var url = require("url");
-// app.set('view engine', 'html');
-// app.use(cors());
-//app.use('/?symbol=', stock);
-// var url_stock = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
-// var symbol;
+
 
 app.get('/', function(req, res){
     res.status(200).sendfile('./index.html');
@@ -46,7 +42,7 @@ app2.get('/', function(req, res) {
 
     var url_indicator = "https://www.alphavantage.co/query?function=";
     var indicator = params.function;
-    // console.log(JSON.stringify(indicator));
+
     url_indicator += indicator;
     url_indicator += "&symbol=" + symbol;
     url_indicator += "&interval=daily&time_period=10&series_type=open" + myAPI_stock;
@@ -72,6 +68,20 @@ app2.get('/:symbol', function(req, res){
         parseString(body, function (err, result) {
             res.send(result);
         });
+    });
+});
+
+app2.get('/auto/:symbol', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    var symbol = req.params.symbol;
+    var url_auto = "http://dev.markitondemand.com/MODApis/Api/v2/Lookup/jsonp?input=" + symbol;
+
+    request(url_auto, function(error, response, body) {
+        body = body.substr(body.indexOf("[{"));
+        body = body.replace(")", "");
+        body = JSON.parse(body);
+        res.send(body);
     });
 });
 
