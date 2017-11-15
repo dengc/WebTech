@@ -1312,32 +1312,50 @@
     }
 
     function showStockChart(symbol) {
-        $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename='+symbol+'-c.json&callback=?', function (data) {
-            Highcharts.stockChart('cur_stock2', {
-                rangeSelector: {
-                    selected: 1
-                },
-                title: {
-                    text: symbol + ' Stock Value'
-                },
-                subtitle: {
-                    useHTML: true,
-                    text: '<a href="https://www.alphavantage.co/" style="color: blue" target="_blank">Source: Alpha Vantage</a>'
-                },
-                tooltip: {
-                    crosshairs: [false,false],
-                    split: false
-                },
-                series: [{
-                    name: symbol,
-                    data: data,
-                    type: 'area',
-                    threshold: null,
+        $.ajax({
+            'url': 'https://jerrystock-08.appspot.com/',
+            'type': "GET",
+            'data': {"symbol": symbol},
+            'success': function(data) {
+                data = JSON.parse(data);
+//                console.log(data);
+                var obj1 = data['Time Series (Daily)'];
+                var inputDatePrice = Date.now() - 24 * 3600000 * 99;
+                var object = [];
+                for(var i = 0; i < 100; i++){
+                    var object1 = [];
+                    object1.push(inputDatePrice);
+                    inputDatePrice += 24 * 3600000;
+                    object1.push(Number(getAttributeByIndex(obj1,i)['4. close']));
+                    object.push(object1);
+                }
+
+                Highcharts.stockChart('cur_stock2', {
+                    rangeSelector: {
+                        selected: 1
+                    },
+                    title: {
+                        text: symbol + ' Stock Value'
+                    },
+                    subtitle: {
+                        useHTML: true,
+                        text: '<a href="https://www.alphavantage.co/" style="color: blue" target="_blank">Source: Alpha Vantage</a>'
+                    },
                     tooltip: {
-                        valueDecimals: 2
-                    }
-                }]
-            });
+                        crosshairs: [false,false],
+                        split: false
+                    },
+                    series: [{
+                        name: symbol,
+                        data: object,
+                        type: 'area',
+                        threshold: null,
+                        tooltip: {
+                            valueDecimals: 2
+                        }
+                    }]
+                });
+            }
         });
     }
     function showFeeds(symbol) {

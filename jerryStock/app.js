@@ -40,8 +40,7 @@ app2.get('/', function(req, res) {
     var symbol = params.symbol;
 
     url_stock = url_stock + symbol + myAPI_stock;
-    // console.log(symbol);
-    // console.log(url_stock);
+
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
@@ -73,18 +72,6 @@ app2.get('/:symbol', function(req, res){
         parseString(body, function (err, result) {
             res.send(result);
         });
-    });
-});
-app2.get('/his/:symbol', function(req, res){
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    var symbol = req.params.symbol;
-    var his_url = "https://www.highcharts.com/samples/data/jsonp.php?filename=";
-    his_url += symbol;
-    his_url += "-c.json&callback=?";
-    console.log(his_url);
-    request(his_url, function(error, response, body) {
-        res.send(body);
     });
 });
 
