@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     }
 
     @IBAction func searchBtn(_ sender: Any) {
+        
     }
     @IBAction func clearBtn(_ sender: Any) {
         symbolText.text = ""
