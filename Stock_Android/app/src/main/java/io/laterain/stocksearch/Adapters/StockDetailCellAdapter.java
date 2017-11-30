@@ -10,9 +10,6 @@ import android.widget.TextView;
 
 import io.laterain.stocksearch.R;
 
-/**
- * Created by dengyuchi on 5/18/16.
- */
 public class StockDetailCellAdapter extends BaseAdapter {
 
     private String[] mStockDetailTitles = {

@@ -23,9 +23,6 @@ import io.laterain.stocksearch.Adapters.StockDetailCellAdapter;
 import io.laterain.stocksearch.R;
 import io.laterain.stocksearch.Utils.NonScrollableListView;
 
-/**
- * Created by dengyuchi on 5/17/16.
- */
 public class StockDetailFragment extends android.support.v4.app.Fragment {
 
     public String symbol;

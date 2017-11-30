@@ -11,9 +11,6 @@ import android.webkit.WebView;
 import io.laterain.stocksearch.Activities.StockContentActivity;
 import io.laterain.stocksearch.R;
 
-/**
- * Created by dengyuchi on 5/17/16.
- */
 public class HistoricalChartFragment extends android.support.v4.app.Fragment {
 
     public String symbol;

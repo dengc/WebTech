@@ -58,6 +58,39 @@ app2.get('/', function(req, res) {
         });
     }
 });
+app2.get('/mob/:symbol', function(req, res){
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+    var url_stock = "http://homework-8-1267.appspot.com/getInfoMobile.php?getstock=";
+    // var myAPI_stock = "&apikey=OE0QXT6U0BKFHVV8";
+
+    var symbol = req.params.symbol;
+    var url = url_stock + symbol;
+    request(url, function(error, response, body) {
+        body = JSON.parse(body);
+        var lastPrice = body["lastPrice"];
+        var change = body["change"];
+        var changePercent = body["changePercent"];
+        var time = body["timeAndDate"];
+        var volume = body["volume"];
+        var high = body["highPrice"];
+        var low = body["lowPrice"];
+        var open = body["openingPrice"];
+        var json = {
+            "Stock Symbol":body["symbol"],
+            "Last Price":lastPrice.substring(lastPrice.indexOf("$") +2, lastPrice.length),
+            "Change": change + " " + changePercent,
+            "Timestamp": time,
+            "Open":open.substring(open.indexOf("$") +2, open.length),
+            "Close":high.substring(high.indexOf("$") +2, high.length),
+            "Day's Range":low.substring(low.indexOf("$") +2, low.length) + " - " + high.substring(high.indexOf("$") +2, high.length),
+            "Volume": volume
+        };
+        res.send(json);
+    });
+});
+
 app2.get('/:symbol', function(req, res){
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");

@@ -11,9 +11,6 @@ import java.util.ArrayList;
 
 import io.laterain.stocksearch.R;
 
-/**
- * Created by dengyuchi on 5/18/16.
- */
 public class StockNewsCellAdapter extends BaseAdapter {
 
     private ArrayList<String> mStockNewsTitles;

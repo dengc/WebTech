@@ -25,9 +25,6 @@ import io.laterain.stocksearch.Activities.StockContentActivity;
 import io.laterain.stocksearch.Adapters.StockNewsCellAdapter;
 import io.laterain.stocksearch.R;
 
-/**
- * Created by dengyuchi on 5/17/16.
- */
 public class StockNewsFragment extends android.support.v4.app.Fragment {
 
     public String symbol;
