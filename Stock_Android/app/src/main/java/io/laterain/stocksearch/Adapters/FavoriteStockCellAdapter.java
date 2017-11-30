@@ -16,31 +16,22 @@ import java.util.TreeSet;
 
 import io.laterain.stocksearch.R;
 
-/**
- * Created by dengyuchi on 5/18/16.
- */
 public class FavoriteStockCellAdapter extends BaseAdapter {
 
     private ArrayList<String> mFavoriteStockCellSymbols;
     private ArrayList<String> mFavoriteStockCellPrices;
     private ArrayList<String> mFavoriteStockCellChanges;
-    private ArrayList<String> mFavoriteStockCellNames;
-    private ArrayList<String> mFavoriteStockCellMarketCaps;
 
     private static LayoutInflater inflater;
 
     public FavoriteStockCellAdapter(Context context,
                                     ArrayList<String> favoriteListSymbols,
                                     ArrayList<String> favoriteListPrices,
-                                    ArrayList<String> favoriteListChanges,
-                                    ArrayList<String> favoriteListNames,
-                                    ArrayList<String> favoriteListMarketCaps) {
+                                    ArrayList<String> favoriteListChanges) {
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mFavoriteStockCellSymbols = favoriteListSymbols;
         this.mFavoriteStockCellPrices = favoriteListPrices;
         this.mFavoriteStockCellChanges = favoriteListChanges;
-        this.mFavoriteStockCellNames = favoriteListNames;
-        this.mFavoriteStockCellMarketCaps = favoriteListMarketCaps;
     }
 
     @Override
@@ -62,8 +53,6 @@ public class FavoriteStockCellAdapter extends BaseAdapter {
         TextView favoriteStockCellSymbol;
         TextView favoriteStockCellPrice;
         TextView favoriteStockCellChange;
-        TextView favoriteStockCellName;
-        TextView favoriteStockCellMarketCap;
     }
 
     @Override
@@ -76,8 +65,6 @@ public class FavoriteStockCellAdapter extends BaseAdapter {
             holder.favoriteStockCellSymbol = (TextView) convertView.findViewById(R.id.favoriteStockCellSymbol);
             holder.favoriteStockCellPrice = (TextView) convertView.findViewById(R.id.favoriteStockCellPrice);
             holder.favoriteStockCellChange = (TextView) convertView.findViewById(R.id.favoriteStockCellChange);
-            holder.favoriteStockCellName = (TextView) convertView.findViewById(R.id.favoriteStockCellName);
-            holder.favoriteStockCellMarketCap = (TextView) convertView.findViewById(R.id.favoriteStockCellMarketCap);
             convertView.setTag(holder);
         } else {
             holder = (StockNewsCellHolder) convertView.getTag();
@@ -97,20 +84,14 @@ public class FavoriteStockCellAdapter extends BaseAdapter {
             holder.favoriteStockCellChange.setBackgroundColor(Color.parseColor("#43A047"));
             holder.favoriteStockCellChange.setTextColor(Color.WHITE);
         }
-        holder.favoriteStockCellName.setText(mFavoriteStockCellNames.get(position));
-        holder.favoriteStockCellMarketCap.setText(mFavoriteStockCellMarketCaps.get(position));
 
         return convertView;
     }
 
     public void refreshData (ArrayList<String> newPrices,
-                             ArrayList<String> newChanges,
-                             ArrayList<String> newNames,
-                             ArrayList<String> newMarketCap) {
+                             ArrayList<String> newChanges) {
         this.mFavoriteStockCellPrices = newPrices;
         this.mFavoriteStockCellChanges = newChanges;
-        this.mFavoriteStockCellNames = newNames;
-        this.mFavoriteStockCellMarketCaps = newMarketCap;
         notifyDataSetChanged();
     }
 }

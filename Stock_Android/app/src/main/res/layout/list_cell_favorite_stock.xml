@@ -43,30 +43,4 @@
         android:gravity="right"
         android:background="#43A047"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Apple Inc."
-        android:id="@+id/favoriteStockCellName"
-        android:layout_below="@+id/favoriteStockCellSymbol"
-        android:layout_alignLeft="@+id/favoriteStockCellSymbol"
-        android:layout_alignStart="@+id/favoriteStockCellSymbol"
-        android:layout_marginTop="5dp"
-        android:textColor="#000"
-        android:textSize="12dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Market Cap: 521.51 Billion"
-        android:id="@+id/favoriteStockCellMarketCap"
-        android:layout_alignTop="@+id/favoriteStockCellName"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="0dp"
-        android:textColor="#000"
-        android:textSize="12dp" />
-
 </RelativeLayout>

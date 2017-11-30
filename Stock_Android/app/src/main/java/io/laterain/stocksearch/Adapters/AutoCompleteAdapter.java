@@ -16,9 +16,6 @@ import cz.msebera.android.httpclient.Header;
 
 import java.util.ArrayList;
 
-/**
- * Created by dengyuchi on 5/16/16.
- */
 public class AutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
     private ArrayList<String> mData;
 
