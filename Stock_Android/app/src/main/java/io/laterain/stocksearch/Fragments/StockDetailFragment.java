@@ -38,9 +38,6 @@ public class StockDetailFragment extends android.support.v4.app.Fragment {
             "",
             "",
             "",
-            "",
-            "",
-            "",
             ""
     };
 
@@ -83,19 +80,16 @@ public class StockDetailFragment extends android.support.v4.app.Fragment {
                     JSONObject result;
                     try {
                         result = new JSONObject(new String(bytes));
-                        mStockDetailContents[0] = result.getString("name");
-                        mStockDetailContents[1] = result.getString("symbol");
-                        mStockDetailContents[2] = result.getString("lastPrice");
-                        mStockDetailContents[3] = result.getString("change")
+                        mStockDetailContents[0] = result.getString("symbol");
+                        mStockDetailContents[1] = result.getString("lastPrice");
+                        mStockDetailContents[2] = result.getString("change")
                                 + " (" + result.getString("changePercent") + ")";
-                        mStockDetailContents[4] = result.getString("timeAndDate");
+                        mStockDetailContents[3] = result.getString("timeAndDate");
+                        mStockDetailContents[4] = result.getString("openingPrice");
                         mStockDetailContents[5] = result.getString("marketCap");
-                        mStockDetailContents[6] = result.getString("volume");
-                        mStockDetailContents[7] = result.getString("changeYTD")
-                                + " (" + result.getString("changePercentYTD") + ")";
-                        mStockDetailContents[8] = result.getString("highPrice");
-                        mStockDetailContents[9] = result.getString("lowPrice");
-                        mStockDetailContents[10] = result.getString("openingPrice");
+                        mStockDetailContents[6] = result.getString("lowPrice")
+                                + " - " + result.getString("highPrice");
+                        mStockDetailContents[7] = result.getString("volume");
 
                         mAdapter.refreshData(mStockDetailContents);
                     } catch (JSONException e) {

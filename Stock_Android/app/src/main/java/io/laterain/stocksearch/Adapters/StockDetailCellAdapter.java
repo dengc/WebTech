@@ -13,17 +13,14 @@ import io.laterain.stocksearch.R;
 public class StockDetailCellAdapter extends BaseAdapter {
 
     private String[] mStockDetailTitles = {
-            "Name",
-            "Symbol",
+            "Stock Symbol",
             "Last Price",
             "Change",
-            "Time and Date",
-            "Market Cap",
-            "Volume",
-            "Change YTD",
-            "High Price",
-            "Low Price",
-            "Opening Price"
+            "Timestamp",
+            "Open",
+            "Close",
+            "Day's Range",
+            "Volume"
     };
     private String[] mStockDetailContents;
     private static LayoutInflater inflater;
