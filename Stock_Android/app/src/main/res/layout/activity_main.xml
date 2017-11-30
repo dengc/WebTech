@@ -112,7 +112,8 @@
         android:layout_toStartOf="@+id/imageButton"
         android:checked="false"
         android:text="AutoRefresh"
-        android:textColor="@android:color/background_light" />
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp" />
 
     <ListView
         android:id="@+id/favoriteStocksListView"
