@@ -84,9 +84,7 @@ public class MainActivity extends AppCompatActivity {
         this.mAdapter = new FavoriteStockCellAdapter(this,
                 mFavoriteListSymbols,
                 mFavoriteListPrices,
-                mFavoriteListChanges,
-                mFavoriteListNames,
-                mFavoriteListMarketCaps);
+                mFavoriteListChanges);
         favoriteStocksListView.setAdapter(mAdapter);
         favoriteStocksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -114,9 +112,7 @@ public class MainActivity extends AppCompatActivity {
                             mFavoriteListMarketCaps.set(index, "Market Cap: " + result.getString("marketCap"));
                             mAdapter.refreshData(
                                     mFavoriteListPrices,
-                                    mFavoriteListChanges,
-                                    mFavoriteListNames,
-                                    mFavoriteListMarketCaps);
+                                    mFavoriteListChanges);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

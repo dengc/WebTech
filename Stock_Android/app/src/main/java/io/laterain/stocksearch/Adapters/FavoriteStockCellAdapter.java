@@ -75,14 +75,12 @@ public class FavoriteStockCellAdapter extends BaseAdapter {
         String change = mFavoriteStockCellChanges.get(position);
         holder.favoriteStockCellChange.setText(change);
         if (change.startsWith("-")) {
-            holder.favoriteStockCellChange.setBackgroundColor(Color.parseColor("#D32F2F"));
-            holder.favoriteStockCellChange.setTextColor(Color.WHITE);
+            holder.favoriteStockCellChange.setTextColor(Color.parseColor("#D32F2F"));
         } else if (change.startsWith("0.00 (") || change.startsWith("0 (")){
             holder.favoriteStockCellChange.setBackgroundColor(Color.TRANSPARENT);
             holder.favoriteStockCellChange.setTextColor(Color.BLACK);
         } else {
-            holder.favoriteStockCellChange.setBackgroundColor(Color.parseColor("#43A047"));
-            holder.favoriteStockCellChange.setTextColor(Color.WHITE);
+            holder.favoriteStockCellChange.setTextColor(Color.parseColor("#43A047"));
         }
 
         return convertView;
