@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getQuote(View v) {
         String symbol = autoCompleteTextView.getText().toString().split(" - ")[0];
-        if (symbol != null && !symbol.equals("")) {
+        if (symbol != null && !symbol.equals("") && !symbol.equals(" ") && !symbol.equals("  ")&& !symbol.equals("   ") && !symbol.equals("    ") && !symbol.equals("     ") && !symbol.equals("      ")) {
             Intent intent = new Intent(MainActivity.this, StockContentActivity.class);
             intent.putExtra(getString(R.string.symbol_key), symbol);
             startActivity(intent);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getQuote(String symbol) {
-        if (symbol != null && !symbol.equals("")) {
+        if (symbol != null && !symbol.equals("") && !symbol.equals(" ") && !symbol.equals("  ")&& !symbol.equals("   ") && !symbol.equals("    ") && !symbol.equals("     ") && !symbol.equals("      ")) {
             Intent intent = new Intent(MainActivity.this, StockContentActivity.class);
             intent.putExtra(getString(R.string.symbol_key), symbol);
             startActivity(intent);
