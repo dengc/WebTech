@@ -245,3 +245,171 @@ var t = regex.test(str); //true
 var e = regex.exec(str); // e
 var m = str.match(regex); // e
 ```
+
+## Angular JS
+-------------------
+is a js framework, needs to be imported src
+
+### expressions
+```htmlbars
+<div ng-app="">
+    <p>Name: <input type="text" ng-model="name"></p>
+    <p>{{name}}</p>
+    <p><span ng-bind="name"></span></p>
+</div>
+    
+<div ng-app="" ng-init="myCol='lightblue'">
+    <input style="background-color:{{myCol}}" ng-model="myCol">
+</div>
+
+<div ng-app="" ng-init="names=['Jani','Hege','Kai']">
+  <ul>
+    <li ng-repeat="x in names">
+      {{ x }}
+    </li>
+  </ul>
+</div>
+```
+
+### modules
+```htmlbars
+<div ng-app="myApp" ng-controller="myCtrl">
+    {{ firstName + " " + lastName }}
+</div>
+
+<script>
+    var app = angular.module("myApp", []);
+    app.controller("myCtrl", function($scope) {
+        $scope.firstName = "John";
+        $scope.lastName = "Doe";
+    });
+</script>
+```
+### directives
+- ng-app
+- ng-controller
+- ng-bind
+- ng-init
+- ng-model
+- ng-class
+-  ng-repeat
+-  ng-form
+
+
+## Cookies
+-------------------
+- 3rd party cookie: belong to domains different from the one shown in the address bar
+- web advertising: Advertisers, website owners, ad network and visitors
+- Session cookie: is erased when the user closes the Web browser
+- Persistent cookie: is stored on a user’s hard drive
+
+### Opt Out of cookies
+- Select “do not track” in browser Settings
+- Download opt-out cookies
+-  Use browser add-ons
+
+### Fields
+- domain
+- path
+- name/value pair
+- expiration date
+- secure: send over SSL
+- HttpOnly
+
+### Stolen
+- XSS Attachment
+- sniffing network traffic
+
+### Avoid Stolen
+- Secure cookies
+- HttpOnly cookies
+
+## High Performance Websites
+-------------------
+- CND: Content Distribution Network, it improves performance by copying content to multiple servers
+- minimize re-directs: they require an additional trip to the server and back again
+- GET better than POST: send header and data together
+- GZIPed: HTML, CSS, JavaScript, JSON, XML
+### speed up HTML
+- place scripts to the bottom (css at top)
+- move CSS external
+- move JS external (because they are cached)
+
+### reduce HTTP request
+- combine CSS
+- combine JS
+- Combine images into “sprites”
+
+### Improve Caching
+- Etag header
+- Last-Modified header
+- Expired header
+- Cache-Control header
+
+## Ajax
+-------------------
+- self.xmlHttpReq.open('POST', strURL, true);
+- if (self.xmlHttpReq.readyState == 4 && self.xmlHttpReq.status == 200)
+- eval(): used with JSON
+- XMLHttpRequest object cannot be used to upload a file
+
+
+## Web Security
+-------------------
+- vulnerabilities: XSS, Brute Force, content Spoofing
+- Authentication Attacks: Brute Force Attacks, Insufficient Authentication, Weak Password Recovery Validation
+- Diceware: easy-to-memorize but very secure
+- Client Side Attacks: XSS, Clickjacking, Plugin Vulnerabilities
+- DDos attack: when a system is overwhelmed by malicious electronic traffic
+- TOR network: protective layer: encrypts info, makes user anonymous
+- PGP and S/MIME: encrypt and sign emails
+- OpenSSL: vulnerable to Heartbleed Bug
+- Stuxnet: a worm
+- create a password easy to remember but safe: Create a “Pass phrase”
+- JSON array vulnerable to: JavaScript Hijiacking
+- bypass the same-origin policy: CORS, JSONP, AJAX Proxy
+- DKIM keys: too short 
+- browser plugins inherently insecure: they bypass browser sandbox
+
+### Brute Force Attacks
+- automated processes of guessing username, passwords...
+- avoid:
+    - limit times of trial
+    - block IP address after fail trials 
+
+### XSS
+- reduce:
+    - use escaping schemes
+    - tie session cookies to IP address
+
+## JavaScript Frameworks and Serverless
+-------------------
+-  Microservice: API, FaaS, Data Store
+- AngularJS: provides two-way data binding, good for declaring “dynamic views”
+- Virtual Machines: 
+    - charged for every CPU cycle, slow
+    -  Serverless Architecture, Containers (lightweight, portable)
+
+## Secure Web Communication
+-------------------
+- the sender generates the keys used for 'authentication'/ the receiver for 'privacy'
+- hash function: message digest = digital signature: SHA-1, SHA-2
+- CA: issues digital certificates, verifies identities of client and servers
+- SSL protocol: between TCP & HTTP
+- RSA algorithm: too slow
+- Bulk ciphers: RC2, DES -> fast
+
+## HTML5
+-------------------
+-  video “containers”: MP4, Flash, WebM, Quicktime
+-  video codecs: VP8, VP9
+-  Audio Codecs: MP3 (2 channels), AAC (48 channels), AAC+, WAVE
+-  why removed some elements: affect in a negative way
+-  status: recommendation
+
+## Agile Development
+-------------------
+- waterfall: test late
+agile: test early and continuously
+- pigs: have deliverables
+chickens: observers
