@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="64dp">
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="AAPL"
+        android:id="@+id/favoriteStockCellSymbol"
+        android:textSize="20dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="12dp"
+        android:textColor="#000"
+        android:singleLine="true" />
+
+    <TextView
+        android:id="@+id/favoriteStockCellPrice"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/favoriteStockCellSymbol"
+        android:layout_alignBottom="@+id/favoriteStockCellSymbol"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_toEndOf="@+id/favoriteStockCellSymbol"
+        android:layout_toRightOf="@+id/favoriteStockCellSymbol"
+        android:text="$ 95.21"
+        android:textColor="#000"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/favoriteStockCellChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/favoriteStockCellPrice"
+        android:layout_alignBottom="@+id/favoriteStockCellPrice"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginRight="11dp"
+        android:gravity="right"
+        android:text="1.01 (1.07%)"
+        android:textColor="#fff"
+        android:textSize="20dp" />
+
+</RelativeLayout>
